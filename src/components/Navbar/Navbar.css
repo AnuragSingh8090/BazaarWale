@@ -1,0 +1,121 @@
+.navItems .active {
+  color: var(--primary);
+  border-radius: 8px;
+  background-color: var(--primary-light);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 142, 204, 0.1);
+}
+
+.navbarActive {
+  display: flex;
+  animation: openNavbar 0.5s ease 1 forwards;
+}
+
+@keyframes openNavbar {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.navbarInactive {
+  display: flex;
+  animation: closeNavbar 0.5s ease-out 1 forwards;
+}
+
+@keyframes closeNavbar {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+    display: none;
+  }
+}
+
+/* Additional animations */
+.navbar {
+  transition: box-shadow 0.3s ease;
+}
+
+.logoContainer img {
+  /* No transition needed for logo image */
+}
+
+/* Removing the hover effect for logo */
+.logoContainer:hover img {
+  transform: none;
+}
+
+.inputContainer input {
+  transition: all 0.2s ease;
+}
+
+.inputContainer input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.navItems li {
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.navItems li i {
+  transition: transform 0.2s ease;
+}
+
+.navItems li:hover i {
+  transform: translateY(-2px);
+}
+
+.drop_container {
+  transform-origin: top right;
+  animation: dropDown 0.25s ease forwards;
+}
+
+@keyframes dropDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cart_container:hover i {
+  animation: cartShake 0.8s ease;
+}
+
+@keyframes cartShake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(8deg); }
+  40% { transform: rotate(-8deg); }
+  60% { transform: rotate(4deg); }
+  80% { transform: rotate(-4deg); }
+}
+
+.bars_container i {
+  transition: transform 0.3s ease;
+}
+
+.bars_container:hover i {
+  transform: rotate(90deg);
+}
+
+.logoutPopup {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

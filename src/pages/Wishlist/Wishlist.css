@@ -1,0 +1,70 @@
+/* Wishlist page styling */
+:root {
+  --primary: #008ecc;
+  --primary-light: #e6f4f9;
+  --border-light: #ebebeb;
+}
+
+/* Add heart beat animation for heart icon on hover */
+.fa-heart:hover {
+  animation: heartBeat 1s ease-in-out;
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* Smooth hover transitions for wishlist items */
+.wishlist-item-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.wishlist-item-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.wishlist-item-exit {
+  opacity: 1;
+}
+
+.wishlist-item-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Empty wishlist state styling */
+.empty-wishlist-icon {
+  color: var(--primary);
+  opacity: 0.3;
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .wishlist-item-container {
+    flex-direction: column;
+  }
+  
+  .wishlist-item-image {
+    margin-bottom: 1rem;
+  }
+} 

@@ -1,0 +1,117 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.contact_container {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.image_container {
+  position: relative;
+  animation: floatAnimation 6s ease-in-out infinite;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image_container img {
+  transition: transform 0.8s ease;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.image_container:hover img {
+  transform: scale(1.05);
+}
+
+.contactUs_container {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.contactUs_container:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+input, textarea {
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  transform: translateY(-2px);
+}
+
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+button:hover::after {
+  left: 100%;
+}
+
+@media screen and (max-width: 1265px) {
+  .contact_container {
+    gap: 30px;
+  }
+  .contact_container .rowElement div {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 1069px) {
+  .contactUs_container {
+    width: 60%;
+  }
+}
+@media screen and (max-width: 800px) {
+  .contactUs_container {
+    width: 80%;
+  }
+  .image_container {
+    margin-bottom: 20px;
+  }
+}
+@media screen and (max-width: 550px) {
+  .contactUs_container {
+    width: 90%;
+  }
+  .image_container {
+    padding: 10px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .contactUs_container {
+    width: 96%;
+  }
+}

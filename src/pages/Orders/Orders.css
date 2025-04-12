@@ -1,0 +1,42 @@
+/* Orders page styling */
+:root {
+  --primary: #008ecc;
+  --primary-light: #e6f4f9;
+  --border-light: #ebebeb;
+}
+
+/* Add animation for hover effects on buttons */
+.hover\:scale-\[1\.01\]:hover {
+  transition: transform 0.3s ease;
+}
+
+/* Animation for status indicators */
+.text-green-600,
+.text-blue-600,
+.text-purple-600,
+.text-red-600 {
+  transition: color 0.3s ease;
+}
+
+/* Hover effect for order cards */
+.order-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty orders state styling */
+.fa-box-open {
+  color: var(--primary);
+  opacity: 0.3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .flex-col-responsive {
+    flex-direction: column;
+  }
+  
+  .mr-responsive {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+} 

@@ -1,0 +1,14 @@
+/* Hide the fixed checkout button by default */
+.fixed-checkout-btn {
+  display: none;
+}
+
+/* When the order summary has the 'has-fixed-button' class, show the fixed button */
+.has-fixed-button .fixed-checkout-btn {
+  display: block;
+}
+
+/* When not at the 'has-fixed-button' state, add bottom padding to ensure content isn't hidden under the fixed button */
+.has-fixed-button {
+  padding-bottom: 80px; /* Height of the fixed button + padding */
+}
