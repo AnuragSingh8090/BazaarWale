@@ -96,7 +96,7 @@ const Register = () => {
                     type="text"
                     id="fullName"
                     placeholder="Enter your full name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                   />
                 </div>
                 {/* Mobile */}
@@ -121,7 +121,7 @@ const Register = () => {
                       type="number"
                       id="number"
                       placeholder="Enter your mobile number"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:border-blue-500 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder-gray-300"
                     />
                   </div>
                 </div>
@@ -146,7 +146,7 @@ const Register = () => {
                     type="email"
                     id="email"
                     placeholder="Enter your email id"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                   />
                 </div>
                 {/* Password */}
@@ -168,7 +168,7 @@ const Register = () => {
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                     />
                     <button 
                       type="button" 
@@ -209,7 +209,7 @@ const Register = () => {
                     min="10"
                     max="100"
                     placeholder="Your age"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder-gray-300"
                   />
                 </div>
                 {/* Gender */}
@@ -264,7 +264,7 @@ const Register = () => {
 
               <button 
                 disabled={!Register.fullname || !Register.mobile || !Register.email || !Register.password || !Register.gender} 
-                className={`w-full text-white py-2 rounded-lg font-medium text-sm transition duration-300 active:scale-[0.98] shadow-md relative overflow-hidden mt-2 ${
+                className={`w-full text-white py-2 rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 ${
                   Register.fullname && Register.mobile && Register.email && Register.password && Register.gender 
                     ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer" 
                     : "bg-gray-400 opacity-70"
@@ -291,7 +291,7 @@ const Register = () => {
               <div className="flex-1 h-[1px] bg-gray-300"></div>
             </div>
 
-            <button className="w-full flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 active:scale-[0.98] shadow-sm cursor-pointer">
+            <button className="w-full flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 shadow-sm cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"

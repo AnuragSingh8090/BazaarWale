@@ -331,7 +331,7 @@ const Login = () => {
                     type="text"
                     id="emailOrMobile"
                     placeholder="Enter your email or mobile"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                   />
                 </div>
 
@@ -353,7 +353,7 @@ const Login = () => {
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                     />
                     <button 
                       type="button" 
@@ -382,7 +382,7 @@ const Login = () => {
 
                 <button 
                   disabled={!Login.email || !Login.password} 
-                  className={`w-full text-white py-2 rounded-lg font-medium text-sm transition duration-300 active:scale-[0.98] shadow-md relative overflow-hidden ${
+                  className={`w-full text-white py-2 rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden ${
                     Login.email && Login.password 
                       ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer" 
                       : "bg-gray-400 opacity-70"
@@ -417,7 +417,7 @@ const Login = () => {
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value)}
                         placeholder="Enter your registered email or phone"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                         required
                         autoFocus
                       />
@@ -425,7 +425,7 @@ const Login = () => {
                     
                     <button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 active:scale-[0.98] cursor-pointer"
+                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
                       <i className="fa-solid fa-paper-plane mr-2"></i>
                       Send OTP
@@ -475,12 +475,12 @@ const Login = () => {
                           onPaste={handleOtpPaste}
                           ref={otpRefs[index]}
                           placeholder="-"
-                          className={`w-12 h-12 border rounded-lg text-center focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 text-lg font-medium ${
+                          className={`w-12 h-12 border rounded-lg text-center focus:outline-none focus:border-transparent transition-all duration-300 text-lg font-medium placeholder-gray-300 ${
                             otpStatus === 'success' 
-                              ? 'border-green-500 bg-green-50 focus:ring-green-500' 
+                              ? 'border-green-500 bg-green-50 focus:border-green-500' 
                               : otpStatus === 'error'
-                                ? 'border-red-500 bg-red-50 focus:ring-red-500' 
-                                : 'border-gray-300 focus:ring-blue-500'
+                                ? 'border-red-500 bg-red-50 focus:border-red-500' 
+                                : 'border-gray-300 focus:border-blue-500'
                           }`}
                           maxLength={1}
                           required
@@ -496,7 +496,7 @@ const Login = () => {
                     
                     <button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 active:scale-[0.98] cursor-pointer"
+                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
                       <i className="fa-solid fa-check-circle mr-2"></i>
                       Verify OTP
@@ -552,7 +552,7 @@ const Login = () => {
                           value={newPassword}
                           onChange={handlePasswordChange}
                           placeholder="Enter new password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                           minLength={6}
                           required
                           autoFocus
@@ -623,7 +623,7 @@ const Login = () => {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm new password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                           minLength={6}
                           required
                         />
@@ -644,7 +644,7 @@ const Login = () => {
                     
                     <button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 active:scale-[0.98] cursor-pointer"
+                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
                       <i className="fa-solid fa-check mr-2"></i>
                       Reset Password
@@ -667,7 +667,7 @@ const Login = () => {
               <div className="flex-1 h-[1px] bg-gray-300"></div>
             </div>
 
-            <button className="w-full flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 active:scale-[0.98] shadow-sm cursor-pointer">
+            <button className="w-full flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 shadow-sm cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
