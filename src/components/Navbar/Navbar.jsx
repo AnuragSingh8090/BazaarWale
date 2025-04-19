@@ -52,6 +52,10 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".user_container")) {
         hideAccountMenu();
+
+      }
+      if (!event.target.closest(".bars_container") && !event.target.closest(".navbar-container")) {
+        closeNavbar();
       }
     };
     document.addEventListener("click", handleClickOutside);
@@ -100,7 +104,7 @@ const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search eg. iphone 15, laptop, etc."
-                className="w-full transition-all duration-300"
+                className="w-full transition-all duration-300 placeholder:text-[#9f9f9f]"
                 onChange={(e) => setSearchText(e.target.value)}
                 value={searchText}
                 onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
@@ -213,7 +217,7 @@ const Navbar = () => {
       </div>
 
       <ul
-        className="hidden fixed top-0 left-0 z-40 h-screen w-[50%] flex-col items-start navItems px-[10px] py-[10px] text-[14px] font-[500] text-[#4f4f4f] bg-[white] shadow-2xl select-none gap-[10px] border-t-[1px] border-[var(--border-light)] md:flex md:flex-wrap md:static md:w-full md:flex-row md:h-max md:shadow-none md:bg-none"
+        className="hidden navbar-container fixed top-0 left-0 z-40 h-screen w-[50%] flex-col items-start navItems px-[10px] py-[10px] text-[14px] font-[500] text-[#4f4f4f] bg-[white] shadow-2xl select-none gap-[10px] border-t-[1px] border-[var(--border-light)] md:flex md:flex-wrap md:static md:w-full md:flex-row md:h-max md:shadow-none md:bg-none"
         ref={navbarReffrence}
       >
         <div

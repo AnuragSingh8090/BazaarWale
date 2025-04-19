@@ -7,9 +7,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   
-  // States for forgot password flow
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotPasswordStep, setForgotPasswordStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
+  const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
   const [resetEmail, setResetEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
@@ -17,10 +16,9 @@ const Login = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [passwordStrength, setPasswordStrength] = useState(0); // 0: None, 1: Weak, 2: Medium, 3: Strong
-  const [otpStatus, setOtpStatus] = useState(null); // null: initial, 'success': correct, 'error': incorrect
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [otpStatus, setOtpStatus] = useState(null);
   
-  // OTP input refs for auto-focus functionality
   const otpRefs = [
     useRef(null),
     useRef(null),
@@ -30,7 +28,6 @@ const Login = () => {
     useRef(null)
   ];
   
-  // Timer effect for OTP resend
   useEffect(() => {
     let interval;
     if (resendTimer > 0) {
@@ -46,59 +43,46 @@ const Login = () => {
     };
   }, [resendTimer]);
   
-  // Handle OTP input change
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
-    // Only allow digits
     if (!/^\d*$/.test(value)) return;
     
-    // Only allow one digit per input
     if (value.length > 1) return;
     
-    // Update the OTP array
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
     
-    // Auto-focus to next input if value is entered
     if (value !== "" && index < 5) {
       otpRefs[index + 1].current.focus();
     }
   };
   
-  // Handle keydown for OTP inputs (for backspace navigation)
   const handleOtpKeyDown = (e, index) => {
-    // If backspace is pressed and the current field is empty, focus the previous field
     if (e.key === "Backspace" && index > 0 && otp[index] === "") {
       otpRefs[index - 1].current.focus();
     }
   };
   
-  // Handle pasting OTP
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
     
-    // Check if pasted content is a 6-digit number
     if (/^\d{6}$/.test(pastedData)) {
       const newOtp = pastedData.split("");
       setOtp(newOtp);
-      // Focus the last input after pasting
       otpRefs[5].current.focus();
     }
   };
   
-  // Evaluate password strength
   const evaluatePasswordStrength = (password) => {
     if (!password) return 0;
     
     let strength = 0;
     
-    // Length check
     if (password.length >= 8) strength += 1;
     if (password.length >= 12) strength += 1;
     
-    // Complexity checks
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
@@ -108,11 +92,9 @@ const Login = () => {
     if (hasNumbers) strength += 1;
     if (hasSpecialChar) strength += 1;
     
-    // Normalize to 0-3 scale
     return Math.min(3, Math.floor(strength / 2));
   };
   
-  // Handle password change with strength evaluation
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setNewPassword(newPassword);
@@ -132,7 +114,6 @@ const Login = () => {
     }
   };
   
-  // Handle forgot password email submission
   const handleForgotPasswordSubmit = (e) => {
     e.preventDefault();
     if (!resetEmail) {
@@ -140,7 +121,6 @@ const Login = () => {
       return;
     }
     
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10}$/;
     
@@ -149,18 +129,14 @@ const Login = () => {
       return;
     }
     
-    // In a real app, you would send the OTP to the provided email/phone
     console.log("Sending OTP to:", resetEmail);
     
-    // Show sending state
     sucessToast(`OTP has been sent to ${resetEmail}`);
     
-    // Set the next step without delay
     setForgotPasswordStep(2);
-    setResendTimer(30); // Start 30 second timer when OTP is sent
+    setResendTimer(30);
   };
   
-  // Handle OTP verification
   const handleOTPVerification = (e) => {
     e.preventDefault();
     const otpString = otp.join("");
@@ -170,25 +146,20 @@ const Login = () => {
       return;
     }
     
-    // In a real app, you would verify the OTP
     console.log("Verifying OTP:", otpString);
     
-    // Verify OTP
-    if (otpString === "123456") { // Demo validation - in real app this would be server-verified
+    if (otpString === "123456") {
       setOtpStatus('success');
       sucessToast("OTP verified successfully");
       setForgotPasswordStep(3);
     } else {
       setOtpStatus('error');
       errorToast("Invalid OTP. Please try again");
-      // Clear OTP fields on error
       setOtp(["", "", "", "", "", ""]);
-      // Focus on first input field
       otpRefs[0].current.focus();
     }
   };
   
-  // Handle password reset
   const handlePasswordReset = (e) => {
     e.preventDefault();
     if (newPassword.length < 6) {
@@ -201,7 +172,6 @@ const Login = () => {
       return;
     }
     
-    // Password strength check
     const hasUpperCase = /[A-Z]/.test(newPassword);
     const hasLowerCase = /[a-z]/.test(newPassword);
     const hasNumbers = /\d/.test(newPassword);
@@ -212,13 +182,10 @@ const Login = () => {
       return;
     }
     
-    // In a real app, you would update the password in the database
     console.log("Resetting password to:", newPassword);
     
-    // Success message
     sucessToast("Password reset successfully");
     
-    // Reset states and return to login
     setShowForgotPassword(false);
     setForgotPasswordStep(1);
     setResetEmail("");
@@ -227,7 +194,6 @@ const Login = () => {
     setConfirmPassword("");
   };
   
-  // Cancel forgot password flow
   const cancelForgotPassword = () => {
     setShowForgotPassword(false);
     setForgotPasswordStep(1);
@@ -238,10 +204,8 @@ const Login = () => {
     setOtpStatus(null);
   };
   
-  // Toggle between login and forgot password
   const toggleForgotPassword = () => {
     setShowForgotPassword(!showForgotPassword);
-    // Reset form states
     setForgotPasswordStep(1);
     setResetEmail("");
     setOtp(["", "", "", "", "", ""]);
@@ -251,12 +215,11 @@ const Login = () => {
     setOtpStatus(null);
   };
   
-  // Handle resend OTP
   const handleResendOTP = () => {
     console.log("Resending OTP to:", resetEmail);
     
     sucessToast(`OTP resent successfully`);
-    setResendTimer(30); // Start 30 second timer
+    setResendTimer(30);
   };
   
   return (
@@ -275,7 +238,6 @@ const Login = () => {
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 p-4 py-6">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-4xl flex flex-col md:flex-row animate-[fadeIn_0.5s_ease-out]">
           
-          {/* Image Section */}
           <div className="md:w-1/2 bg-gradient-to-tr from-blue-400 to-indigo-500 p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-blue-500 opacity-20 z-0"></div>
             <div className="w-full max-w-md z-10 transform transition-all duration-500 animate-[floating_6s_ease-in-out_infinite]">
@@ -294,12 +256,10 @@ const Login = () => {
               <p className="text-blue-100">Log in to access your account and continue your shopping journey.</p>
             </div>
             
-            {/* Animated shapes */}
             <div className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-blue-300 opacity-20 animate-pulse"></div>
             <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-indigo-300 opacity-20 animate-pulse"></div>
           </div>
           
-          {/* Form Section */}
           <div className="md:w-1/2 p-8 md:p-10">
             <div className="mb-6 text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-2 relative inline-block">
@@ -314,7 +274,6 @@ const Login = () => {
             </div>
             
             {!showForgotPassword ? (
-              // Regular Login Form
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="relative">
                   <label
@@ -396,9 +355,7 @@ const Login = () => {
                 </button>
               </form>
             ) : (
-              // Forgot Password Flow (Inline)
               <div>
-                {/* Step 1: Email/Phone Entry */}
                 {forgotPasswordStep === 1 && (
                   <form onSubmit={handleForgotPasswordSubmit} className="space-y-4">
                     <div className="mb-4">
@@ -444,7 +401,6 @@ const Login = () => {
                   </form>
                 )}
                 
-                {/* Step 2: OTP Verification */}
                 {forgotPasswordStep === 2 && (
                   <form onSubmit={handleOTPVerification} className="space-y-4">
                     <div className="mb-4">
@@ -489,7 +445,6 @@ const Login = () => {
                       ))}
                     </div>
                     
-                    {/* For demo purposes - would be removed in production */}
                     <div className="mt-2 bg-blue-50 p-2 rounded text-xs text-blue-700 text-center">
                       <p><i className="fa-solid fa-info-circle mr-1"></i> For demo purposes, use the OTP: <span className="font-bold">123456</span></p>
                     </div>
@@ -532,7 +487,6 @@ const Login = () => {
                   </form>
                 )}
                 
-                {/* Step 3: New Password */}
                 {forgotPasswordStep === 3 && (
                   <form onSubmit={handlePasswordReset} className="space-y-4">
                     <div className="mb-4">
@@ -571,7 +525,6 @@ const Login = () => {
                         </button>
                       </div>
                       
-                      {/* Password strength indicator */}
                       {newPassword && (
                         <div className="mt-1">
                           <div className="flex items-center gap-2">

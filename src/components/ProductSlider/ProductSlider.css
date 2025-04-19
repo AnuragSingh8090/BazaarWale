@@ -1,0 +1,72 @@
+@keyframes float1 {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-20px, 25px); }
+  50% { transform: translate(0, 40px); }
+  75% { transform: translate(20px, 25px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float2 {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(25px, -15px); }
+  66% { transform: translate(-15px, -30px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float3 {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(30px, 20px); }
+  50% { transform: translate(15px, 35px); }
+  75% { transform: translate(-20px, 15px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float4 {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(-25px, -20px); }
+  66% { transform: translate(20px, -35px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float5 {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(15px, 25px) rotate(5deg); }
+  66% { transform: translate(-20px, 15px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes float-product {
+  0% { transform: translateY(-50%); }
+  50% { transform: translateY(-55%); }
+  100% { transform: translateY(-50%); }
+}
+
+.float-animation-1 {
+  animation: float1 10s ease-in-out infinite;
+}
+
+.float-animation-2 {
+  animation: float2 8s ease-in-out infinite 0.5s;
+}
+
+.float-animation-3 {
+  animation: float3 12s ease-in-out infinite 1s;
+}
+
+.float-animation-4 {
+  animation: float4 9s ease-in-out infinite 0.7s;
+}
+
+.float-animation-5 {
+  animation: float5 7s ease-in-out infinite 1.2s;
+}
+
+.float-product {
+  animation: float-product 3s ease-in-out infinite;
+}
+
+.product-shadow {
+  filter: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.6));
+}
+  
+  
