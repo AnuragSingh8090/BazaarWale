@@ -119,13 +119,13 @@ const ProductSlider = ({ title, subtitle, discount, image, link }) => {
       </div>
 
       <div className="text-white z-[2] absolute top-[50%] translate-y-[-50%] left-[5%] flex items-start flex-col gap-2">
-        <h3 className="text-[12px] md:text-xl lg:text-3xl drop-shadow-xl">
+        <h3 className="text-[13px] md:text-xl lg:text-3xl drop-shadow-xl">
           {title}
         </h3>
         <h1 className="text-[16px] md:text-3xl lg:text-5xl font-[500] drop-shadow-xl">
           {subtitle}
         </h1>
-        <span className="text-[12px] md:text-2xl lg:text-2xl drop-shadow-xl">
+        <span className="text-[13px] md:text-2xl lg:text-2xl drop-shadow-xl">
           {discount}
         </span>
       </div>
