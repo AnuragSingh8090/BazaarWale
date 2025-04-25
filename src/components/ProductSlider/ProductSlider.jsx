@@ -130,7 +130,7 @@ const ProductSlider = ({ title, subtitle, discount, image, link }) => {
         </span>
       </div>
 
-      <div className="absolute float-product  w-[120px] sm:w-[140px] md:w-[190px]  lg:w-[230px] xl:w-[250px] 2xl:w-[280px] z-[2] top-[50%] right-[0%] sm:right-[0%] xl:right-[5%] ">
+      <div className="absolute float-product  w-[120px] sm:w-[140px] md:w-[190px]  lg:w-[230px] xl:w-[250px] 2xl:w-[280px] z-[2] top-[50%] right-[2%] sm:right-[0%] xl:right-[5%] ">
         <img
           src={image}
           alt="watch"

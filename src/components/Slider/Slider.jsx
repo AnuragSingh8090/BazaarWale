@@ -68,7 +68,7 @@ const Slider = () => {
         centeredSlides={true}
         autoplay={{
           delay: 1800,
-          disableOnInteraction: true,
+          disableOnInteraction: false,
         }}
         pagination={{
           clickable: true,
