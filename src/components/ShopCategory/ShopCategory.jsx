@@ -199,38 +199,23 @@ export const HomeEssentials = ({ products }) => {
           </Link>
         </div>
 
-        <div className="mt-2 py-2 px-2 lg:py-4 flex gap-2.5 overflow-x-auto scrollbar-hide scroll-smooth items-center w-full">
+        <div className="mt-2 py-2 px-2 lg:py-4 flex lg:gap-6 xl:gap-8 gap-4 overflow-x-auto scrollbar-hide scroll-smooth items-center w-full">
           {products.map((element, index) => (
             <Link
               to={element.link}
               key={index}
-              className="relative w-[130px]  h-[200px] sm:w-[170px]  sm:h-[240px] md:w-[180px]  md:h-[250px]  lg:w-[190px]  lg:h-[260px] shrink-0 rounded-xl border-2 border-[#f5f5f5] hover:border-[#1d8fcc]  card-shadow overflow-hidden cursor-pointer  flex flex-col items-center justify-center"
+              className=" shrink-0   flex flex-col items-center gap-2 justify-center"
             >
-              <div className="absolute top-0 right-0 w-[30px] h-[40px] md:w-[40px] md:h-[50px]  bg-[#1d8fcc] flex items-center flex-col rounded-bl-lg  justify-center">
-                <p className="text-white text-[10px] md:text-[12px] ">
-                  {element.discount}
-                </p>
-                <p className="text-white text-[10px] md:text-[12px] ">OFF</p>
-              </div>
-              <div className="w-full h-[67%] bg-[#f5f5f5] flex items-center p-3  lg:p-5 justify-center ">
+              <div className=" h-[100px] w-[100px] sm:h-[120px] sm:w-[120px] md:h-[140px] md:w-[140px] border-2 border-[transparent] cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-[#1d8fcc]  bg-[#f5f5f5] flex items-center p-3 overflow-hidden rounded-xl justify-center ">
                 <img
                   src={element.image}
                   alt=""
                   className="w-full  h-full object-contain image-shadow"
                 />
               </div>
-              <div className="w-full h-[33%] bg-[white] flex px-2 py-1 justify-between flex-col">
-                <p className="text-gray-600 text-[11px] sm:text-sm font-medium line-clamp-1">
-                  {element.name}
-                </p>
-                <p className="text-gray-600 text-[11px] sm:text-sm  border-b border-gray-300 py-1 font-[500]">
-                  ₹{element.price}
-                  <span className="text-gray-400 font-normal ml-2 line-through">
-                    ₹{element.originalPrice}
-                  </span>
-                </p>
-                <p className="text-green-500 text-[11px] sm:text-sm font-normal">
-                  Save - ₹{element.saveAmount}
+              <div className="w-full flex px-2 py-1 items-center justify-center">
+                <p className="text-gray-600 text-[11px] sm:text-sm lg:text-md font-medium">
+                  Mobile
                 </p>
               </div>
             </Link>

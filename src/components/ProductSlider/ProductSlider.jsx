@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const ProductSlider = ({ title, subtitle, discount, image, link }) => {
   return (
     
-    <Link to={link}  className="swiperCard select-none bg-[#212844] rounded-2xl p-3 w-full overflow-hidden relative h-[130px] md:h-[200px] lg:h-[230px] 2xl:h-[260px]">
+    <Link to={link}  className="swiperCard select-none bg-[#212844] rounded-2xl p-3 w-full overflow-hidden relative h-[130px] md:h-[180px] ">
       <div className="absolute top-0 left-0 w-full h-full ">
         <div className="absolute top-[-90%] right-[10%] w-[35%] h-[140%] float-animation-1">
           <svg
@@ -119,18 +119,18 @@ const ProductSlider = ({ title, subtitle, discount, image, link }) => {
       </div>
 
       <div className="text-white z-[2] absolute top-[50%] translate-y-[-50%] left-[5%] flex items-start flex-col gap-2">
-        <h3 className="text-[13px] md:text-xl lg:text-3xl drop-shadow-xl">
+        <h3 className="text-[13px] md:text-xl lg:text-2xl drop-shadow-xl">
           {title}
         </h3>
-        <h1 className="text-[16px] md:text-3xl lg:text-5xl font-[500] drop-shadow-xl">
+        <h1 className="text-[16px] md:text-3xl lg:text-3xl font-[500] drop-shadow-xl">
           {subtitle}
         </h1>
-        <span className="text-[13px] md:text-2xl lg:text-2xl drop-shadow-xl">
+        <span className="text-[13px] md:text-xl lg:text-2xl drop-shadow-xl">
           {discount}
         </span>
       </div>
 
-      <div className="absolute float-product  w-[120px] sm:w-[140px] md:w-[190px]  lg:w-[230px] xl:w-[250px] 2xl:w-[280px] z-[2] top-[50%] right-[2%] sm:right-[0%] xl:right-[5%] ">
+      <div className="absolute float-product  w-[120px] sm:w-[140px] md:w-[190px]    z-[2] top-[50%] right-[2%] sm:right-[0%] xl:right-[5%] ">
         <img
           src={image}
           alt="watch"
