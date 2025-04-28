@@ -129,8 +129,9 @@ export const TopElectronicBrands = ({ products }) => {
             <Link
               to={element.link}
               key={index}
-              className="relative   h-[100px] w-[180px] lg:h-[150px] lg:w-[270px] bg-[#313131] shrink-0 rounded-xl   overflow-hidden cursor-pointer  flex  items-center justify-between"
-            >
+              className={`relative  h-[100px] w-[180px] lg:h-[150px] lg:w-[270px]  shrink-0 rounded-xl   overflow-hidden cursor-pointer  flex  items-center justify-between`}
+              style={{'backgroundColor': element.bgcolor}}
+          >
               <div className="absolute top-[-25%] right-[-25%] w-[100%] h-[100%]">
                 <svg
                   width="100%"
@@ -144,34 +145,32 @@ export const TopElectronicBrands = ({ products }) => {
                     cy="84"
                     rx="81.032"
                     ry="79.6104"
-                    fill="#404040"
+                    fill={`${element.bgdark? element.bgdark : `#313131`}`}
                   />
                   <path
                     d="M170.5 84C170.5 130.107 132.453 167.5 85.5 167.5C38.5474 167.5 0.5 130.107 0.5 84C0.5 37.8925 38.5474 0.5 85.5 0.5C132.453 0.5 170.5 37.8925 170.5 84Z"
-                    stroke="#404040"
+                    stroke={`${element.bgdark? element.bgdark : `#313131`}`}
                   />
                 </svg>
               </div>
 
-              <div className="absolute px-3 py-2 z-3 top-0 left-0 h-full w-full flex gap-1  justify-between ">
-                <div className="flex flex-col gap-2 pt-1  shrink-0">
-                  <div className="flex items-center justify-between px-5 py-1 rounded-lg bg-[#494949] text-sm text-white w-max">
+              <div className="absolute px-2 py-1 lg:px-3 lg:py-2 z-3 top-0 left-0 h-full w-full flex gap-1  justify-between ">
+                <div className="flex flex-col justify-between gap-1 pt-1 ">
+                  <div className={`flex items-center justify-between py-1 px-3 font-[500] text-[10px] lg:text-[14px] lg:px-5 lg:py-1 rounded-lg  text-sm  w-max`} style={{'backgroundColor': element.bgdark, 'color': element.textcolor}}>
                     {element.name}
                   </div>
 
-                  <div className="z-[3]  h-[35px] w-[35px]">
-                    <img src={element.logo} alt="" className="h-full w-full object-contain"/>
+
+                  <div className="z-[3] p-1 rounded-lg h-[45%] lg:h-[40%] max-w-[74%] ">
+                    <img src={element.logo} alt="" className="h-full  object-contain"/>
                   </div>
 
-                  <div className="hidden z-[3] w-[36px] bg-white rounded-lg overflow-hidden p-2">
-                    <img src={element.logo} alt="" className="h-full w-full object-contain"/>
-                  </div>
 
-                  <p className="text-white text-lg ">UP to {element.discount} OFF</p>
+                  <p className={` lg:text-[16px] font-[500] text-[12px] text-black`}>UP to {element.discount} OFF</p>
                 </div>
 
-                <div className=" w-[50%] p-3 h-full">
-                  <img src="/productImages/iphone16.png" className="h-full w-full object-cover" alt="" />
+                <div className=" w-[45%] py-1 px-0 h-[90%]  my-auto shrink-0 flex items-center justify-center">
+                  <img src={element.image} className="h-[90%] w-[90%] object-cover" alt="" />
                 </div>
               </div>
             </Link>
