@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { sucessToast } from "../../components/Toasters/Toasters";
+import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
+import { ImSpinner8 } from "react-icons/im";
+
 
 const Contact = () => {
+  const [loading, setLoading] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [Contact, setContact] = useState({
     fullname: "",
     mobile: "",
@@ -11,16 +15,27 @@ const Contact = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(Contact);
-    sucessToast(
-      `Thank You ${Contact.fullname} 👏, Your message sent Sucessfully !!`
-    );
-    setContact({
-      fullname: "",
-      mobile: "",
-      email: "",
-      message: "",
-    });
+    if(isLoggedIn){
+      setLoading(true)
+      console.log(Contact);
+  
+      setTimeout(()=>{
+        setLoading(false)
+        sucessToast(
+          `Thank You ${Contact.fullname} 👏, Your message sent Sucessfully !!`
+        );
+        setContact({
+          fullname: "",
+          mobile: "",
+          email: "",
+          message: "",
+        });
+      },3000)
+    }
+    else{
+      errorToast('Please Login First !!')
+
+    }
   };
   return (
     <>
@@ -64,29 +79,28 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white rounded-xl shadow-lg p-6 overflow-hidden">
-            <div className="relative w-full md:w-[65%] rounded-lg overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 md:items-stretch bg-white rounded-xl shadow-lg p-6 overflow-hidden">
+            <div className="relative w-full lg:w-[60%] rounded-lg overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-transparent z-10 rounded-lg"></div>
-              <img 
-                src="/contactImage.png" 
-                alt="Contact us" 
+              <img
+                src="/contactImage.png"
+                alt="Contact us"
                 className="w-full object-contain rounded-lg mx-auto max-h-[465px]"
               />
             </div>
 
-            <div className="bg-blue-50/70 p-5 rounded-xl w-full md:w-[35%] shadow-inner">
+            <div className="bg-blue-50/70 p-5 rounded-xl w-full lg:w-[40%] shadow-inner">
               <h2 className="text-lg font-bold text-[var(--primary)] mb-3 relative pb-2 before:content-[''] before:absolute before:w-16 before:h-1 before:bg-[var(--primary)] before:bottom-0 before:left-0">
                 Send Message
               </h2>
 
-              <form onSubmit={handleLogin} className="space-y-3">
-                {/* Name and Mobile in single row */}
-                <div className="grid grid-cols-2 gap-3">
+              <form onSubmit={handleLogin} className="space-y-3 flex flex-col gap-2">
+                <div className="flex gap-3">
                   {/* Name */}
-                  <div>
+                  <div className="w-full">
                     <label
                       htmlFor="fullName"
-                      className="block text-xs font-medium text-gray-700 mb-1"
+                      className="block text-xs font-medium text-gray-700 mb-2"
                     >
                       <i className="fa-solid fa-user text-[var(--primary)] mr-1 text-sm"></i>
                       Full Name <span className="text-red-500">*</span>
@@ -100,15 +114,15 @@ const Contact = () => {
                       type="text"
                       id="fullName"
                       placeholder="Enter name"
-                      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all"
+                      className="w-full px-3 py-2 text-xs border placeholder:text-[#a3a3a3] border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all"
                     />
                   </div>
-                  
+
                   {/* Mobile */}
-                  <div>
+                  <div className="w-full">
                     <label
                       htmlFor="number"
-                      className="block text-xs font-medium text-gray-700 mb-1"
+                      className="block text-xs font-medium text-gray-700 mb-2"
                     >
                       <i className="fa-solid fa-phone text-[var(--primary)] mr-1 text-sm"></i>
                       Mobile <span className="text-red-500">*</span>
@@ -119,21 +133,21 @@ const Contact = () => {
                         setContact({ ...Contact, mobile: e.target.value })
                       }
                       value={Contact.mobile}
-                      type="text"
+                      type="number"
                       inputMode="numeric"
                       pattern="[0-9]*"
                       id="number"
                       placeholder="Enter number"
-                      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full px-3 py-2 text-xs border placeholder:text-[#a3a3a3] border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                 </div>
-                
+
                 {/* Email */}
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-xs font-medium text-gray-700 mb-1"
+                    className="block text-xs font-medium text-gray-700 mb-2"
                   >
                     <i className="fa-solid fa-envelope text-[var(--primary)] mr-1 text-sm"></i>
                     Email Address <span className="text-red-500">*</span>
@@ -147,14 +161,14 @@ const Contact = () => {
                     type="email"
                     id="email"
                     placeholder="Enter your email"
-                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all"
+                    className="w-full px-3 py-2 text-xs border placeholder:text-[#a3a3a3] border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-xs font-medium text-gray-700 mb-1"
+                    className="block text-xs font-medium text-gray-700 mb-2"
                   >
                     <i className="fa-solid fa-message text-[var(--primary)] mr-1 text-sm"></i>
                     Your Message <span className="text-red-500">*</span>
@@ -167,15 +181,20 @@ const Contact = () => {
                     required
                     id="message"
                     placeholder="How can we help you?"
-                    className="resize-none h-24 w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all"
+                    className="resize-none h-24 w-full placeholder:text-[#a3a3a3] px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent transition-all"
                   ></textarea>
                 </div>
 
-                <button 
-                  className="w-full bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 rounded-lg font-medium text-xs hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-1"
+                <button
+                  className={`${!Contact.fullname || !Contact.email || !Contact.message || !Contact.mobile ? 'disabled-light' : ''} w-full bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 rounded-lg font-medium text-xs hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-1`}
                 >
-                  <i className="fa-solid fa-paper-plane mr-1 text-sm"></i>
-                  Send Message
+                  {
+                    loading ? (<span className="flex gap-2 items-center ">Sending <ImSpinner8  className="animate-spin"/></span> ) : (<span className="flex gap-2 items-center text-center">
+                      <i className="fa-solid fa-paper-plane mr-1 text-sm"></i>
+                      Send Message
+                    </span>)
+                  }
+
                 </button>
               </form>
 

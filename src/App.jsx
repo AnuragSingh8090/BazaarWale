@@ -16,6 +16,7 @@ import Cancellation_Return_Policy from "./pages/Cancellation_Return_Policy/Cance
 import MyAccount from "./pages/MyAccount/MyAccount";
 import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
+import Products from "./pages/Products/Products";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/electronics" element={<Products />} />
         <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />

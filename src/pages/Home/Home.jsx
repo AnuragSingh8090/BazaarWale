@@ -126,7 +126,7 @@ const Home = () => {
     }
   ];
 
-  const topElectronicBrands = [
+  const topElectronicBrands = [ 
     {
       id: 1,
       logo: "./brand-logo/apple-logo.svg",

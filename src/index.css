@@ -39,3 +39,16 @@
 body {
   background-color: #f6f3f4;
 }
+
+
+.disabled{
+  filter: brightness(0.5) !important;
+  pointer-events: none !important;
+  color: #777777;
+  user-select: none;
+}
+
+.disabled-light{
+  filter: brightness(0.6);
+  pointer-events: none;
+}

@@ -54,7 +54,7 @@ const Navbar = () => {
         hideAccountMenu();
 
       }
-      if (!event.target.closest(".bars_container") && !event.target.closest(".navbar-container")) {
+      if (!event.target.closest(".bars_container") && !event.target.closest(".navbar-container") && navbarReffrence.current.classList.contains('navbarActive'))  {
         closeNavbar();
       }
     };
@@ -146,7 +146,7 @@ const Navbar = () => {
                     className="fa-solid fa-user text-[15px] text-[var(--primary)] active:scale-[0.95] cursor-pointer transition-transform duration-300 hover:scale-[1.15]"
                     title="Account"
                   ></i>
-                  <span className="text-[16px]">Sumit Verma</span>
+                  <span className="text-[16px]">Anurag Kumar</span>
                 </div>
                 {showDrop && isLoggedIn ? (
                   <div className="drop_container z-50 absolute top-[40px] right-[-2px] bg-white py-[6px] px-[4px] rounded-[6px] boxShadow-light">

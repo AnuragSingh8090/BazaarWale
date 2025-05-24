@@ -1,12 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
+import { ImSpinner8 } from "react-icons/im";
+
 
 const Login = () => {
   const [Login, setLogin] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
-  
+
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
   const [resetEmail, setResetEmail] = useState("");
@@ -18,7 +21,7 @@ const Login = () => {
   const [resendTimer, setResendTimer] = useState(0);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [otpStatus, setOtpStatus] = useState(null);
-  
+
   const otpRefs = [
     useRef(null),
     useRef(null),
@@ -27,7 +30,7 @@ const Login = () => {
     useRef(null),
     useRef(null)
   ];
-  
+
   useEffect(() => {
     let interval;
     if (resendTimer > 0) {
@@ -35,119 +38,126 @@ const Login = () => {
         setResendTimer((prevTimer) => prevTimer - 1);
       }, 1000);
     }
-    
+
     return () => {
       if (interval) {
         clearInterval(interval);
       }
     };
   }, [resendTimer]);
-  
+
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
     if (!/^\d*$/.test(value)) return;
-    
+
     if (value.length > 1) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    
+
     if (value !== "" && index < 5) {
       otpRefs[index + 1].current.focus();
     }
   };
-  
+
   const handleOtpKeyDown = (e, index) => {
     if (e.key === "Backspace" && index > 0 && otp[index] === "") {
       otpRefs[index - 1].current.focus();
     }
   };
-  
+
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
-    
+
     if (/^\d{6}$/.test(pastedData)) {
       const newOtp = pastedData.split("");
       setOtp(newOtp);
       otpRefs[5].current.focus();
     }
   };
-  
+
   const evaluatePasswordStrength = (password) => {
     if (!password) return 0;
-    
+
     let strength = 0;
-    
+
     if (password.length >= 8) strength += 1;
     if (password.length >= 12) strength += 1;
-    
+
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
+
     if (hasUpperCase && hasLowerCase) strength += 1;
     if (hasNumbers) strength += 1;
     if (hasSpecialChar) strength += 1;
-    
+
     return Math.min(3, Math.floor(strength / 2));
   };
-  
+
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setNewPassword(newPassword);
     setPasswordStrength(evaluatePasswordStrength(newPassword));
   };
-  
+
   const handleLogin = (e) => {
     e.preventDefault();
+    setLoading(true)
     const { email, password } = Login;
     console.log("Email : ", email, "Password : ", password);
-    if (email === "admin@gmail.com" && password === "admin") {
-      sucessToast("Login Successful !!");
-      navigate("/");
-    } else {
-      errorToast("Invalid Email or Password !!");
-      setLogin({ email: "", password: "" });
-    }
+    setTimeout(() => {
+      const userEmail =  'admin@gmail.com';
+      const userPassword =  'admin';
+
+      if (email === userEmail  && password === userPassword) {
+        setLoading(false)
+        sucessToast("Login Successful !!");
+        navigate("/");
+      } else {
+        setLoading(false)
+        errorToast("Invalid Email or Password !!");
+      }
+    }, 3000)
   };
-  
+
   const handleForgotPasswordSubmit = (e) => {
     e.preventDefault();
     if (!resetEmail) {
       errorToast("Please enter your email or phone number");
       return;
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10}$/;
-    
+
     if (!emailRegex.test(resetEmail) && !phoneRegex.test(resetEmail)) {
       errorToast("Please enter a valid email or 10-digit phone number");
       return;
     }
-    
+
     console.log("Sending OTP to:", resetEmail);
-    
+
     sucessToast(`OTP has been sent to ${resetEmail}`);
-    
+
     setForgotPasswordStep(2);
     setResendTimer(30);
   };
-  
+
   const handleOTPVerification = (e) => {
     e.preventDefault();
     const otpString = otp.join("");
-    
+
     if (otpString.length !== 6 || !/^\d{6}$/.test(otpString)) {
       errorToast("Please enter a valid 6-digit OTP");
       return;
     }
-    
+
     console.log("Verifying OTP:", otpString);
-    
+
     if (otpString === "123456") {
       setOtpStatus('success');
       sucessToast("OTP verified successfully");
@@ -159,33 +169,33 @@ const Login = () => {
       otpRefs[0].current.focus();
     }
   };
-  
+
   const handlePasswordReset = (e) => {
     e.preventDefault();
     if (newPassword.length < 6) {
       errorToast("Password must be at least 6 characters");
       return;
     }
-    
+
     if (newPassword !== confirmPassword) {
       errorToast("Passwords do not match");
       return;
     }
-    
+
     const hasUpperCase = /[A-Z]/.test(newPassword);
     const hasLowerCase = /[a-z]/.test(newPassword);
     const hasNumbers = /\d/.test(newPassword);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
-    
+
     if (!(hasUpperCase && hasLowerCase && hasNumbers)) {
       errorToast("Password must contain uppercase, lowercase and numbers");
       return;
     }
-    
+
     console.log("Resetting password to:", newPassword);
-    
+
     sucessToast("Password reset successfully");
-    
+
     setShowForgotPassword(false);
     setForgotPasswordStep(1);
     setResetEmail("");
@@ -193,7 +203,7 @@ const Login = () => {
     setNewPassword("");
     setConfirmPassword("");
   };
-  
+
   const cancelForgotPassword = () => {
     setShowForgotPassword(false);
     setForgotPasswordStep(1);
@@ -203,7 +213,7 @@ const Login = () => {
     setConfirmPassword("");
     setOtpStatus(null);
   };
-  
+
   const toggleForgotPassword = () => {
     setShowForgotPassword(!showForgotPassword);
     setForgotPasswordStep(1);
@@ -214,17 +224,17 @@ const Login = () => {
     setLogin({ email: "", password: "" });
     setOtpStatus(null);
   };
-  
+
   const handleResendOTP = () => {
     console.log("Resending OTP to:", resetEmail);
-    
+
     sucessToast(`OTP resent successfully`);
     setResendTimer(30);
   };
-  
+
   return (
     <>
-      <style jsx>{`
+      <style>{`
         @keyframes floating {
           0% { transform: translateY(0px) scale(1.05); }
           50% { transform: translateY(-15px) scale(1.05); }
@@ -237,13 +247,13 @@ const Login = () => {
       `}</style>
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 p-4 py-6">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-4xl flex flex-col md:flex-row animate-[fadeIn_0.5s_ease-out]">
-          
+
           <div className="md:w-1/2 bg-gradient-to-tr from-blue-400 to-indigo-500 p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-blue-500 opacity-20 z-0"></div>
             <div className="w-full max-w-md z-10 transform transition-all duration-500 animate-[floating_6s_ease-in-out_infinite]">
-              <img 
-                src="/loginImage.png" 
-                alt="Login" 
+              <img
+                src="/loginImage.png"
+                alt="Login"
                 className="w-full h-auto object-cover rounded-xl shadow-lg"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -255,11 +265,11 @@ const Login = () => {
               <h2 className="text-2xl font-bold mb-2">Welcome Back!</h2>
               <p className="text-blue-100">Log in to access your account and continue your shopping journey.</p>
             </div>
-            
+
             <div className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-blue-300 opacity-20 animate-pulse"></div>
             <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-indigo-300 opacity-20 animate-pulse"></div>
           </div>
-          
+
           <div className="md:w-1/2 p-8 md:p-10">
             <div className="mb-6 text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-2 relative inline-block">
@@ -267,12 +277,12 @@ const Login = () => {
                 <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
               </h2>
               <p className="text-gray-600 text-sm">
-                {showForgotPassword 
-                  ? "Follow the steps to reset your password" 
+                {showForgotPassword
+                  ? "Follow the steps to reset your password"
                   : "Please enter your credentials to continue"}
               </p>
             </div>
-            
+
             {!showForgotPassword ? (
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="relative">
@@ -314,8 +324,8 @@ const Login = () => {
                       placeholder="Enter your password"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex="-1"
@@ -330,28 +340,32 @@ const Login = () => {
                 </div>
 
                 <div className="flex justify-end">
-                  <button 
+                  <button
                     type="button"
                     onClick={toggleForgotPassword}
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                    className="text-sm text-blue-600 disabled hover:text-blue-800 hover:underline transition-colors cursor-pointer"
                   >
                     Forgot Password?
                   </button>
                 </div>
 
-                <button 
-                  disabled={!Login.email || !Login.password} 
-                  className={`w-full text-white py-2 rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden ${
-                    Login.email && Login.password 
-                      ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer" 
-                      : "bg-gray-400 opacity-70"
-                  }`}
+                <button
+                  disabled={!Login.email || !Login.password || loading}
+                  className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden ${Login.email && Login.password
+                    ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer"
+                    : "bg-gray-400 opacity-70"
+                    }`}
                 >
                   {Login.email && Login.password && (
                     <span className="absolute top-0 left-0 w-full h-full bg-white opacity-10 transform -translate-x-full skew-x-[-20deg] animate-[shimmer_2.5s_infinite]"></span>
                   )}
-                  <i className={`fa-solid fa-right-to-bracket mr-2 ${Login.email && Login.password ? "animate-[bounce_1s_ease_infinite]" : ""}`}></i>
-                  Sign In
+                  {
+                    loading ? (<span className="flex gap-2 items-center">Loading.. <ImSpinner8 className='animate-spin' /></span>) : (
+                       <span className="flex gap-2 items-center">
+                        <i className={`fa-solid fa-right-to-bracket mr-2 ${Login.email && Login.password ? "animate-[bounce_1s_ease_infinite]" : ""}`}></i>
+                        Sign In
+                      </span>)
+                  }
                 </button>
               </form>
             ) : (
@@ -379,17 +393,17 @@ const Login = () => {
                         autoFocus
                       />
                     </div>
-                    
-                    <button 
-                      type="submit" 
+
+                    <button
+                      type="submit"
                       className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
                       <i className="fa-solid fa-paper-plane mr-2"></i>
                       Send OTP
                     </button>
-                    
+
                     <div className="text-center mt-4">
-                      <button 
+                      <button
                         type="button"
                         onClick={toggleForgotPassword}
                         className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
@@ -400,7 +414,7 @@ const Login = () => {
                     </div>
                   </form>
                 )}
-                
+
                 {forgotPasswordStep === 2 && (
                   <form onSubmit={handleOTPVerification} className="space-y-4">
                     <div className="mb-4">
@@ -412,12 +426,12 @@ const Login = () => {
                     <p className="text-sm text-gray-600 mb-2">
                       We have sent an OTP to <span className="font-medium">{resetEmail}</span>
                     </p>
-                    
+
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <i className="fa-solid fa-key text-blue-500 mr-2"></i>
                       Enter 6-digit OTP <span className="text-red-500">*</span>
                     </label>
-                    
+
                     <div className="flex justify-center space-x-2">
                       {otp.map((value, index) => (
                         <input
@@ -431,40 +445,39 @@ const Login = () => {
                           onPaste={handleOtpPaste}
                           ref={otpRefs[index]}
                           placeholder="-"
-                          className={`w-12 h-12 border rounded-lg text-center focus:outline-none focus:border-transparent transition-all duration-300 text-lg font-medium placeholder-gray-300 ${
-                            otpStatus === 'success' 
-                              ? 'border-green-500 bg-green-50 focus:border-green-500' 
-                              : otpStatus === 'error'
-                                ? 'border-red-500 bg-red-50 focus:border-red-500' 
-                                : 'border-gray-300 focus:border-blue-500'
-                          }`}
+                          className={`w-12 h-12 border rounded-lg text-center focus:outline-none focus:border-transparent transition-all duration-300 text-lg font-medium placeholder-gray-300 ${otpStatus === 'success'
+                            ? 'border-green-500 bg-green-50 focus:border-green-500'
+                            : otpStatus === 'error'
+                              ? 'border-red-500 bg-red-50 focus:border-red-500'
+                              : 'border-gray-300 focus:border-blue-500'
+                            }`}
                           maxLength={1}
                           required
                           autoFocus={index === 0}
                         />
                       ))}
                     </div>
-                    
+
                     <div className="mt-2 bg-blue-50 p-2 rounded text-xs text-blue-700 text-center">
                       <p><i className="fa-solid fa-info-circle mr-1"></i> For demo purposes, use the OTP: <span className="font-bold">123456</span></p>
                     </div>
-                    
-                    <button 
-                      type="submit" 
+
+                    <button
+                      type="submit"
                       className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
                       <i className="fa-solid fa-check-circle mr-2"></i>
                       Verify OTP
                     </button>
-                    
+
                     <p className="text-xs text-gray-500 text-center mt-2">
-                      Didn't receive the OTP? 
+                      Didn't receive the OTP?
                       {resendTimer > 0 ? (
                         <span className="text-gray-500 ml-1">
                           Resend in <span className="font-medium">{resendTimer}s</span>
                         </span>
                       ) : (
-                        <button 
+                        <button
                           type="button"
                           className="text-blue-600 hover:underline ml-1 cursor-pointer"
                           onClick={handleResendOTP}
@@ -473,9 +486,9 @@ const Login = () => {
                         </button>
                       )}
                     </p>
-                    
+
                     <div className="text-center mt-4">
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setForgotPasswordStep(1)}
                         className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
@@ -486,7 +499,7 @@ const Login = () => {
                     </div>
                   </form>
                 )}
-                
+
                 {forgotPasswordStep === 3 && (
                   <form onSubmit={handlePasswordReset} className="space-y-4">
                     <div className="mb-4">
@@ -511,8 +524,8 @@ const Login = () => {
                           required
                           autoFocus
                         />
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none cursor-pointer"
                           onClick={() => setShowNewPassword(!showNewPassword)}
                           tabIndex="-1"
@@ -524,25 +537,24 @@ const Login = () => {
                           )}
                         </button>
                       </div>
-                      
+
                       {newPassword && (
                         <div className="mt-1">
                           <div className="flex items-center gap-2">
                             <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full transition-all duration-300 ${
-                                  passwordStrength === 0 ? 'w-0' : 
-                                  passwordStrength === 1 ? 'w-1/3 bg-red-500' : 
-                                  passwordStrength === 2 ? 'w-2/3 bg-yellow-500' : 
-                                  'w-full bg-green-500'
-                                }`}
+                              <div
+                                className={`h-full transition-all duration-300 ${passwordStrength === 0 ? 'w-0' :
+                                  passwordStrength === 1 ? 'w-1/3 bg-red-500' :
+                                    passwordStrength === 2 ? 'w-2/3 bg-yellow-500' :
+                                      'w-full bg-green-500'
+                                  }`}
                               ></div>
                             </div>
                             <span className="text-xs font-medium">
-                              {passwordStrength === 0 ? '' : 
-                               passwordStrength === 1 ? 'Weak' : 
-                               passwordStrength === 2 ? 'Medium' : 
-                               'Strong'}
+                              {passwordStrength === 0 ? '' :
+                                passwordStrength === 1 ? 'Weak' :
+                                  passwordStrength === 2 ? 'Medium' :
+                                    'Strong'}
                             </span>
                           </div>
                           <div className="mt-1.5 text-xs text-gray-500">
@@ -564,7 +576,7 @@ const Login = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="relative">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         <i className="fa-solid fa-lock text-blue-500 mr-2"></i>
@@ -580,8 +592,8 @@ const Login = () => {
                           minLength={6}
                           required
                         />
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none cursor-pointer"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           tabIndex="-1"
@@ -594,9 +606,9 @@ const Login = () => {
                         </button>
                       </div>
                     </div>
-                    
-                    <button 
-                      type="submit" 
+
+                    <button
+                      type="submit"
                       className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
                       <i className="fa-solid fa-check mr-2"></i>
@@ -620,7 +632,7 @@ const Login = () => {
               <div className="flex-1 h-[1px] bg-gray-300"></div>
             </div>
 
-            <button className="w-full flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 shadow-sm cursor-pointer">
+            <button className="w-full disabled flex items-center justify-center bg-white border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-300 shadow-sm cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"

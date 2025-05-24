@@ -95,7 +95,7 @@ export const ShopFromCategories = ({ products }) => {
                 />
               </div>
               <div className="w-full flex px-2 py-1 items-center justify-center">
-                <p className="text-gray-600 text-[11px] sm:text-sm lg:text-md font-medium">
+                <p className="text-gray-600 text-[11px] sm:text-sm lg:text-md font-medium text-shadow-lg">
                   Mobile
                 </p>
               </div>
@@ -129,7 +129,7 @@ export const TopElectronicBrands = ({ products }) => {
             <Link
               to={element.link}
               key={index}
-              className={`relative  h-[100px] w-[180px] lg:h-[150px] lg:w-[270px]  shrink-0 rounded-xl   overflow-hidden cursor-pointer  flex  items-center justify-between`}
+              className={`relative  h-[100px] w-[180px]  md:h-[130px] md:w-[220px] lg:h-[150px] lg:w-[270px]  shrink-0 rounded-xl   overflow-hidden cursor-pointer  flex  items-center justify-between`}
               style={{'backgroundColor': element.bgcolor}}
           >
               <div className="absolute top-[-25%] right-[-25%] w-[100%] h-[100%]">
