@@ -1,6 +1,7 @@
 import "./Home.css";
 import { GrabBestDeals, ShopFromCategories, TopElectronicBrands, HomeEssentials } from "../../components/ShopCategory/ShopCategory";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import SubscribeEmail from "../../components/SubscribeEmail/SubscribeEmail";
 import Slider from "../../components/Slider/Slider";
 const Home = () => {
   const grabBestDeals = [
@@ -238,6 +239,7 @@ const Home = () => {
       <ShopFromCategories products={grabBestDeals} />
       <TopElectronicBrands products={topElectronicBrands} />
       <HomeEssentials products={grabBestDeals} />
+      <SubscribeEmail/>
     </div>
   );
 };
