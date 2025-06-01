@@ -54,6 +54,7 @@ function App() {
         <Route path="/kids" element={<Products />} />
         <Route path="/beauty" element={<Products />} />
         <Route path="/home_appliences" element={<Products />} />
+        <Route path="/products" element={<Products />} />
         <Route path="/kitchen" element={<Products />} />
         <Route path="/personal_care" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
