@@ -31,7 +31,7 @@ const Register = () => {
       setLoading(false)
       redirectLogin();
       sucessToast("Account Created Successfully !!");
-    }, 3000)
+    }, 2000)
   };
   return (
     <>

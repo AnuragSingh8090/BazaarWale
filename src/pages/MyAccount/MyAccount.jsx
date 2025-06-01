@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/loginSlice";
+import { useNavigate } from "react-router-dom";
 
 const MyAccount = () => {
-  // UPI Image path
   const upiLogoPath = "/upi.svg";
+  const userData = useSelector(state => state.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  // CSS for animations and transitions
   const activeNavStyle = `
     .section-transition {
       transition: all 0.3s ease-in-out;
@@ -17,18 +21,16 @@ const MyAccount = () => {
     }
   `;
 
-  // User information state
   const [userInfo, setUserInfo] = useState({
-    fullname: "John Doe",
-    email: "john.doe@example.com",
-    mobile: "9876543210",
-    address: "123 Street, City, State, 560001",
-    password: "********",
-    isEmailVerified: false,
-    isMobileVerified: false,
+    fullname: userData.username,
+    email: userData.email,
+    mobile: userData.mobile,
+    address: userData.address,
+    password: userData.password,
+    isEmailVerified: userData.isEmailVerified,
+    isMobileVerified: userData.isMobileVerified,
   });
 
-  // Login activity 
   const [loginActivity, setLoginActivity] = useState([
     {
       id: 1,
@@ -60,19 +62,16 @@ const MyAccount = () => {
   ]);
 
   const handleLogoutDevice = (id) => {
-    // In production this would make an API call to invalidate the session
     setLoginActivity(loginActivity.filter(device => device.id !== id));
     sucessToast("Device logged out successfully!");
   };
 
   const handleLogoutAllDevices = () => {
-    // In production this would make an API call to invalidate all sessions except current
     const currentDevice = loginActivity.find(device => device.current);
     setLoginActivity(currentDevice ? [currentDevice] : []);
     sucessToast("Logged out from all other devices!");
   };
 
-  // For edit mode toggle
   const [editMode, setEditMode] = useState({
     profile: false,
     password: false,
@@ -80,10 +79,8 @@ const MyAccount = () => {
     payment: false,
   });
 
-  // Active section state for navigation
   const [activeSection, setActiveSection] = useState("profile");
   
-  // Sections for navigation
   const sections = [
     { id: "profile", title: "Profile Information", icon: "fa-user" },
     { id: "security", title: "Security Settings", icon: "fa-shield-halved" },
@@ -93,13 +90,11 @@ const MyAccount = () => {
     { id: "wishlist", title: "My Wishlist", icon: "fa-heart" },
   ];
 
-  // Handle scroll to track active section
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100;
       let foundActive = false;
       
-      // Check sections in reverse order to prioritize the ones lower on the page
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
         const element = document.getElementById(`section-${section.id}`);
@@ -112,8 +107,7 @@ const MyAccount = () => {
           break;
         }
       }
-      
-      // Special handling for delete account section
+    
       if (!foundActive) {
         const deleteSection = document.getElementById('section-delete-account');
         if (deleteSection && deleteSection.offsetTop <= scrollPosition) {
@@ -123,15 +117,13 @@ const MyAccount = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    handleScroll(); 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [activeSection]);
 
-  // Function to scroll to a section
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(`section-${sectionId === 'delete-account' ? 'delete-account' : sectionId}`);
     if (section) {
-      // Set active before scrolling for immediate visual feedback
       setActiveSection(sectionId);
       window.scrollTo({
         top: section.offsetTop - 80,
@@ -140,21 +132,18 @@ const MyAccount = () => {
     }
   };
 
-  // Form state for password change
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
-  // Handle profile update
   const handleProfileUpdate = (e) => {
     e.preventDefault();
     sucessToast("Profile updated successfully!");
     setEditMode({ ...editMode, profile: false });
   };
 
-  // Handle password update
   const handlePasswordUpdate = (e) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
@@ -170,17 +159,14 @@ const MyAccount = () => {
     });
   };
 
-  // Handle account deletion confirmation
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   const handleDeleteAccount = () => {
-    // Here we would typically call an API to delete the account
     sucessToast("Account deleted successfully!");
-    // Redirect to homepage or login page after deletion
-    // window.location.href = "/login";
+    dispatch(logoutUser())
+    navigate('/')
   };
 
-  // Email verification
   const [showEmailVerify, setShowEmailVerify] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
   
@@ -200,7 +186,6 @@ const MyAccount = () => {
     }
   };
   
-  // Mobile verification
   const [showMobileVerify, setShowMobileVerify] = useState(false);
   const [mobileOtp, setMobileOtp] = useState("");
   
@@ -220,13 +205,12 @@ const MyAccount = () => {
     }
   };
   
-  // Address management
   const [addresses, setAddresses] = useState([
     {
       id: 1,
-      name: "John Doe",
-      mobile: "9876543210",
-      street: "123 Main Street",
+      name: userData.username,
+      mobile: userData.mobile,
+      street: userData.address,
       city: "Tech City",
       state: "State",
       pincode: "560001",
@@ -253,12 +237,10 @@ const MyAccount = () => {
     e.preventDefault();
     
     if (isEditingAddress) {
-      // Update existing address
       const updatedAddresses = addresses.map(addr => {
         if (addr.id === newAddress.id) {
           return newAddress;
         }
-        // If the edited address is marked as default, update other addresses
         if (newAddress.isDefault && addr.isDefault) {
           return { ...addr, isDefault: false };
         }
@@ -268,10 +250,7 @@ const MyAccount = () => {
       setAddresses(updatedAddresses);
       sucessToast("Address updated successfully!");
     } else {
-      // Add new address
       const addressId = addresses.length > 0 ? Math.max(...addresses.map(a => a.id)) + 1 : 1;
-      
-      // If this is the first address or marked as default, make it default
       const updatedAddresses = newAddress.isDefault 
         ? addresses.map(addr => ({...addr, isDefault: false}))
         : [...addresses];

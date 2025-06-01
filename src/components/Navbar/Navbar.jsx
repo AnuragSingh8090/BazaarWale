@@ -2,15 +2,19 @@ import "./Navbar.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { sucessToast } from "../Toasters/Toasters";
-
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/loginSlice";
+import { removeUserData } from "../../redux/userSlice";
 const Navbar = () => {
   const [searchText, setSearchText] = useState("");
   const [showDrop, setShowDrop] = useState(false);
   const [loginPopup, setLoginPopup] = useState(false);
   const [cartItems, setCartItems] = useState(5);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
   const navbarReffrence = useRef(null);
+  const isLoggedIn = useSelector(state => state.login.isLoggedin)
+  const user = useSelector(state=> state.user)
+  const dispatch = useDispatch()
 
   const handleSearch = () => {
     console.log(searchText);
@@ -20,7 +24,9 @@ const Navbar = () => {
     setLoginPopup(false);
     setShowDrop(false);
     sucessToast("Logout Successfull!!");
-    setIsLoggedIn(false);
+    localStorage.setItem('isLoggedin', false)
+    dispatch(logoutUser())
+    dispatch(removeUserData())
     navigate("/login");
   };
   const showAccountMenu = () => {
@@ -120,7 +126,7 @@ const Navbar = () => {
                       title="Cart"
                     ></i>
                     <span className="absolute top-0 right-[-30%] select-none centerFlex bg-[#d63909] text-white text-[11px] centerFlex rounded-[50%] h-[14px] w-[14px] transition-transform duration-300 hover:scale-110">
-                      {cartItems}
+                      {user ? user.cartItem.length : '0'}
                     </span>
                   </div>
                   <span className="text-[15px]">Cart</span>
@@ -146,7 +152,7 @@ const Navbar = () => {
                     className="fa-solid fa-user text-[15px] text-[var(--primary)] active:scale-[0.95] cursor-pointer transition-transform duration-300 hover:scale-[1.15]"
                     title="Account"
                   ></i>
-                  <span className="text-[16px]">Anurag Kumar</span>
+                  <span className="text-[16px]">{user? user.username : 'Undefined'}</span>
                 </div>
                 {showDrop && isLoggedIn ? (
                   <div className="drop_container z-50 absolute top-[40px] right-[-2px] bg-white py-[6px] px-[4px] rounded-[6px] boxShadow-light">

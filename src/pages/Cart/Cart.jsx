@@ -5,7 +5,6 @@ import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 
 const Cart = () => {
-  // State management for cart items
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -59,15 +58,12 @@ const Cart = () => {
     },
   ]);
 
-  // State for coupon code
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
 
-  // State for charges breakdown
   const [showChargesBreakdown, setShowChargesBreakdown] = useState(false);
 
-  // Available coupon codes
   const availableCoupons = [
     { code: "WELCOME10", discount: 10, type: "percentage" },
     { code: "FLAT100", discount: 100, type: "fixed" },
@@ -76,43 +72,33 @@ const Cart = () => {
   const orderSummaryRef = useRef(null);
   const mainContainerRef = useRef(null);
 
-  // Check scroll position and update order summary visibility
   useEffect(() => {
-    // Function to check if the order summary is in view
     const updateCheckoutButtonPosition = () => {
       if (!orderSummaryRef.current) return;
 
-      // Get the order summary position
       const orderSummaryRect = orderSummaryRef.current.getBoundingClientRect();
       const scrollY = window.scrollY;
       const viewportHeight = window.innerHeight;
 
-      // Check if the bottom part of the order summary is visible
       const isSummaryInView = orderSummaryRect.bottom <= viewportHeight;
 
-      // Get the checkout button inside the order summary
       const summaryCheckoutBtn = orderSummaryRef.current.querySelector(
         ".checkout-btn-container"
       );
 
-      // Apply the fixed position class to the order summary if needed
       if (window.innerWidth < 1024) {
-        // Only on mobile/tablet
         if (isSummaryInView) {
-          // When the summary is visible, don't fix the button
           orderSummaryRef.current.classList.remove("has-fixed-button");
           if (summaryCheckoutBtn) {
             summaryCheckoutBtn.classList.remove("hidden");
           }
         } else {
-          // When summary not visible, fix the button to bottom
           orderSummaryRef.current.classList.add("has-fixed-button");
           if (summaryCheckoutBtn) {
             summaryCheckoutBtn.classList.add("hidden");
           }
         }
       } else {
-        // Always show the button normally on desktop
         orderSummaryRef.current.classList.remove("has-fixed-button");
         if (summaryCheckoutBtn) {
           summaryCheckoutBtn.classList.remove("hidden");
@@ -120,7 +106,6 @@ const Cart = () => {
       }
     };
 
-    // Run check immediately and on scroll/resize
     updateCheckoutButtonPosition();
 
     const handleScroll = () => {
@@ -136,7 +121,6 @@ const Cart = () => {
     };
   }, []);
 
-  // Calculate subtotal
   const calculateSubtotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -144,20 +128,18 @@ const Cart = () => {
     );
   };
 
-  // Calculate delivery fee based on subtotal
   const calculateDeliveryFee = () => {
     const subtotal = calculateSubtotal();
     return subtotal > 1000 ? 0 : 49;
   };
 
-  // Calculate individual charge components
   const calculatePackagingFee = () => {
-    return 15; // Fixed packaging fee
+    return 15;
   };
 
   const calculateGST = () => {
     const subtotal = calculateSubtotal();
-    return Math.round(subtotal * 0.05); // 5% GST
+    return Math.round(subtotal * 0.05); 
   };
 
   const calculatePlatformFee = () => {
@@ -297,7 +279,7 @@ const Cart = () => {
               products and find something you'll love!
             </p>
             <a
-              href="/products"
+              href="/"
               className="inline-block bg-gradient-to-r from-blue-500 to-[var(--primary)] text-white py-3 px-8 rounded-lg font-medium hover:from-blue-600 hover:to-blue-500 transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
             >
               <i className="fa-solid fa-bag-shopping mr-2"></i>

@@ -2,6 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import { ImSpinner8 } from "react-icons/im";
+import { useDispatch,useSelector } from "react-redux";
+import { loginUser } from "../../redux/loginSlice";
+import { setUserData } from "../../redux/userSlice";
 
 
 const Login = () => {
@@ -9,6 +12,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
@@ -114,6 +118,9 @@ const Login = () => {
       const userPassword =  'admin';
 
       if (email === userEmail  && password === userPassword) {
+        dispatch(loginUser())
+        dispatch(setUserData())
+        localStorage.setItem('isLoggedin', true)
         setLoading(false)
         sucessToast("Login Successful !!");
         navigate("/");
@@ -121,7 +128,7 @@ const Login = () => {
         setLoading(false)
         errorToast("Invalid Email or Password !!");
       }
-    }, 3000)
+    }, 2000)
   };
 
   const handleForgotPasswordSubmit = (e) => {
