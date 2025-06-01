@@ -3,7 +3,7 @@ import { Mail, Check, AlertCircle } from 'lucide-react';
 
 export default function SubscribeEmail() {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
 
   const validateEmail = (email) => {
@@ -27,14 +27,11 @@ export default function SubscribeEmail() {
     }
 
     setStatus('loading');
-    
-    // Simulate API call
     setTimeout(() => {
       setStatus('success');
       setMessage('Successfully subscribed! Welcome to our community.');
       setEmail('');
       
-      // Reset success message after 3 seconds
       setTimeout(() => {
         setStatus('idle');
         setMessage('');
