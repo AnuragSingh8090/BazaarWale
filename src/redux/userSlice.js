@@ -16,7 +16,7 @@ const UserSlice = createSlice({
   },
   reducers : {
     setUserData : (state, action)=>{
-        state.username = "Anrag Kumar";
+        state.username = "Anurag Kumar";
         state.email = "anuragkumarsingh154@gmail.com";
         state.isEmailVerified = false;
         state.mobile = "8090674352";
