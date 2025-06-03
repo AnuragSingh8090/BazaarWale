@@ -27,18 +27,29 @@ export default function SubscribeEmail() {
     }
 
     setStatus('loading');
-    setTimeout(() => {
-      setStatus('success');
-      setMessage('Successfully subscribed! Welcome to our community.');
-      setEmail('');
-      
-      setTimeout(() => {
-        setStatus('idle');
+    const URL = 'https://portfolio-backend-3f2x.onrender.com/sendemail';
+    const response = await axios.post(URL, email);
+
+    try{
+      if(response.status === 200){
+        setStatus('success')
         setMessage('');
-      }, 3000);
-    }, 1500);
+        setTimeout(() => {
+          setStatus('idle');
+        }, 2000);
+
+      }
+    }
+    catch(error){
+       setMessage('Error Sending Email Retry')
+       setStatus('idle')
+    }
+
+
   };
 
+
+  
   return (
     <div className=" py-12 ">
       <div className="max-w-full mx-auto">

@@ -40,10 +40,13 @@ const UserSlice = createSlice({
             wishlistItem: [],
             isAccountActive: true,
           }
+    },
+    updateCart : (state, action)=>{
+        state.cartItem.push(action.payload)
     }
   }
 
 });
 
-export const {setUserData, removeUserData} = UserSlice.actions;
+export const {setUserData, removeUserData, updateCart} = UserSlice.actions;
 export default UserSlice.reducer

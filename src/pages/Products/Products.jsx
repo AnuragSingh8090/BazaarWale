@@ -1,5 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { ChevronDown, Grid, List, ShoppingCart, Star } from "lucide-react";
+import { updateCart  } from "../../redux/userSlice";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { sucessToast, warnToast } from "../../components/Toasters/Toasters";
 
 const Projects = () => {
   const [selectedCategories, setSelectedCategories] = useState(["Fashion"]);
@@ -10,6 +15,25 @@ const Projects = () => {
   const [cart, setCart] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("All");
+
+  const dispatch = useDispatch()
+  const isLoggedin = useSelector((state)=> state.login.isLoggedin)
+  const navigate = useNavigate(
+
+  )
+
+  const handleAddToCart = () => {
+    if(isLoggedin)
+    {
+      dispatch(updateCart(product))
+      sucessToast('Product Added to Cart')
+    }
+    else{
+      navigate('/login');
+       warnToast('Please Login First') 
+    }
+
+  }
 
   const products = [
     {
@@ -1050,7 +1074,7 @@ const Projects = () => {
                     </div>
 
                     <button
-                      onClick={() => addToCart(product)}
+                      onClick={handleAddToCart}
                       className={`bg-white border border-blue-500 text-blue-500 py-1.5 px-3 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wide ${
                         viewMode === "list" ? "w-auto min-w-32" : "w-full"
                       }`}
