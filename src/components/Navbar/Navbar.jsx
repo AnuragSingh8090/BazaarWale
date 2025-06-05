@@ -81,7 +81,7 @@ const Navbar = () => {
               <img src="/brand-logo.png" alt="Logo" />
             </div>
             <span
-              className="text-[22px]"
+              className="text-[22px] shrink-0"
               style={{
                 fontFamily: "var(--custom-font)",
                 background: "linear-gradient(to right, #008ecc, #d26c1e)",
@@ -89,7 +89,7 @@ const Navbar = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              BazaarWale
+              Test Branch
             </span>
           </NavLink>
         </div>
