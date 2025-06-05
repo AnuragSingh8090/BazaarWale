@@ -89,7 +89,7 @@ const Navbar = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Test Branch
+              BazaarWale
             </span>
           </NavLink>
         </div>
