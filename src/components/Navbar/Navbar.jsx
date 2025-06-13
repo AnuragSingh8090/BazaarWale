@@ -95,7 +95,7 @@ const Navbar = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              BazaarWale
+              Staging
             </span>
           </NavLink>
         </div>
