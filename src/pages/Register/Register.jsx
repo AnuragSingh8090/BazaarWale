@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { sucessToast } from "../../components/Toasters/Toasters";
 import { ImSpinner8 } from "react-icons/im";
-
+import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
+import axios from "axios";
 
 const Register = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [Register, setRegister] = useState({
     fullname: "",
     mobile: "",
@@ -17,22 +17,39 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+
   function redirectLogin() {
     setTimeout(() => {
-      navigate("/login");
+      navigate("/");
     }, 1000);
   }
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoading(true)
-    console.log(Register);
-    setTimeout(() => {
-      setLoading(false)
-      redirectLogin();
+  const handleRegister = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const user = {
+        name: Register.fullname,
+        email: Register.email,
+        password: Register.password,
+        gender: Register.gender,
+        mobile: Register.mobile,
+      };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
+        user
+      );
       sucessToast("Account Created Successfully !!");
-    }, 3000)
+      // console.log(response);
+      setLoading(false);
+      redirectLogin();
+    } catch (error) {
+      setLoading(false);
+      errorToast(error.response.data.message || "Something went wrong");
+      console.log(error);
+    }
   };
+
   return (
     <>
       <style>{`
@@ -48,7 +65,6 @@ const Register = () => {
       `}</style>
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 p-4 py-6">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-5xl flex flex-col md:flex-row animate-[fadeIn_0.6s_ease-out]">
-
           {/* Image Section - On the left for registration */}
           <div className="md:w-2/5 bg-gradient-to-br from-indigo-500 to-blue-400 p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-blue-500 opacity-10 z-0"></div>
@@ -59,13 +75,17 @@ const Register = () => {
                 className="w-full h-auto object-cover rounded-xl shadow-lg"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://img.freepik.com/free-vector/sign-up-concept-illustration_114360-7865.jpg";
+                  e.target.src =
+                    "https://img.freepik.com/free-vector/sign-up-concept-illustration_114360-7865.jpg";
                 }}
               />
             </div>
             <div className="mt-8 text-center z-10">
               <h2 className="text-2xl font-bold mb-2">Join Our Community!</h2>
-              <p className="text-blue-100">Create an account to enjoy exclusive benefits and personalized shopping.</p>
+              <p className="text-blue-100">
+                Create an account to enjoy exclusive benefits and personalized
+                shopping.
+              </p>
             </div>
 
             {/* Animated elements */}
@@ -80,10 +100,12 @@ const Register = () => {
                 Create Account
                 <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
               </h2>
-              <p className="text-gray-600 text-sm">Fill in your details to get started</p>
+              <p className="text-gray-600 text-sm">
+                Fill in your details to get started
+              </p>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleRegister} className="space-y-4">
               <div className="flex flex-col md:flex-row gap-4 w-full">
                 {/* Name */}
                 <div className="w-full">
@@ -222,9 +244,7 @@ const Register = () => {
                 </div>
                 {/* Gender */}
                 <div className="w-full">
-                  <label
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     <i className="fa-solid fa-venus-mars text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
                     Gender <span className="text-red-500">*</span>
                   </label>
@@ -242,8 +262,16 @@ const Register = () => {
                           }
                           className="absolute opacity-0 w-5 h-5"
                         />
-                        <div className={`w-5 h-5 rounded-full border ${Register.gender === "male" ? "border-blue-500" : "border-gray-300"} flex items-center justify-center`}>
-                          {Register.gender === "male" && <div className="w-3 h-3 rounded-full bg-blue-500"></div>}
+                        <div
+                          className={`w-5 h-5 rounded-full border ${
+                            Register.gender === "male"
+                              ? "border-blue-500"
+                              : "border-gray-300"
+                          } flex items-center justify-center`}
+                        >
+                          {Register.gender === "male" && (
+                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          )}
                         </div>
                       </div>
                       <span className="ml-2 text-gray-700">Male</span>
@@ -260,8 +288,16 @@ const Register = () => {
                           }
                           className="absolute opacity-0 w-5 h-5"
                         />
-                        <div className={`w-5 h-5 rounded-full border ${Register.gender === "female" ? "border-blue-500" : "border-gray-300"} flex items-center justify-center`}>
-                          {Register.gender === "female" && <div className="w-3 h-3 rounded-full bg-blue-500"></div>}
+                        <div
+                          className={`w-5 h-5 rounded-full border ${
+                            Register.gender === "female"
+                              ? "border-blue-500"
+                              : "border-gray-300"
+                          } flex items-center justify-center`}
+                        >
+                          {Register.gender === "female" && (
+                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          )}
                         </div>
                       </div>
                       <span className="ml-2 text-gray-700">Female</span>
@@ -271,30 +307,70 @@ const Register = () => {
               </div>
 
               <button
-                disabled={!Register.fullname || !Register.mobile || !Register.email || !Register.password || !Register.gender || loading}
-                className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 ${Register.fullname && Register.mobile && Register.email && Register.password && Register.gender
+                disabled={
+                  !Register.fullname ||
+                  !Register.mobile ||
+                  !Register.email ||
+                  !Register.password ||
+                  !Register.gender ||
+                  loading
+                }
+                className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 ${
+                  Register.fullname &&
+                  Register.mobile &&
+                  Register.email &&
+                  Register.password &&
+                  Register.gender
                     ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer"
                     : "bg-gray-400 opacity-70"
-                  }`}
+                }`}
               >
-                {Register.fullname && Register.mobile && Register.email && Register.password && Register.gender && (
-                  <span className="absolute top-0 left-0 w-full h-full bg-white opacity-10 transform -translate-x-full skew-x-[-20deg] animate-[shimmer_2.5s_infinite]"></span>
+                {Register.fullname &&
+                  Register.mobile &&
+                  Register.email &&
+                  Register.password &&
+                  Register.gender && (
+                    <span className="absolute top-0 left-0 w-full h-full bg-white opacity-10 transform -translate-x-full skew-x-[-20deg] animate-[shimmer_2.5s_infinite]"></span>
+                  )}
+                {loading ? (
+                  <span className="flex gap-2 items-center">
+                    Loading.. <ImSpinner8 className="animate-spin" />
+                  </span>
+                ) : (
+                  <span>
+                    <i
+                      className={`fa-solid fa-user-plus mr-2 ${
+                        Register.fullname &&
+                        Register.mobile &&
+                        Register.email &&
+                        Register.password &&
+                        Register.gender
+                          ? "animate-[bounce_1s_ease_infinite]"
+                          : ""
+                      }`}
+                    ></i>
+                    Register
+                  </span>
                 )}
-                {
-                  loading ? (<span className="flex gap-2 items-center">Loading.. <ImSpinner8 className='animate-spin' /></span>) : (
-                    <span>
-                      <i className={`fa-solid fa-user-plus mr-2 ${Register.fullname && Register.mobile && Register.email && Register.password && Register.gender ? "animate-[bounce_1s_ease_infinite]" : ""}`}></i>
-                      Register
-                    </span>)
-                }
+              </button>
 
-
+              <button
+                onClick={() => navigate("/")}
+                className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer`}
+              >
+                <span>
+                  <i className={`fa-solid fa-arrow-left mr-2 `}></i>
+                  Back to Homepage
+                </span>
               </button>
             </form>
 
             <p className="text-sm text-gray-600 mt-5 text-center">
               Already have an account?{" "}
-              <Link to="/login" className="text-blue-600 hover:underline font-medium transition-colors duration-300">
+              <Link
+                to="/login"
+                className="text-blue-600 hover:underline font-medium transition-colors duration-300"
+              >
                 Login
               </Link>
             </p>
