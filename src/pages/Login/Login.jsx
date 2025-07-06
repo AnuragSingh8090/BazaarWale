@@ -64,10 +64,12 @@ const Login = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
         user
       );
+      const token = response.data.token;
+      localStorage.setItem('userId',token)
       sucessToast("Login Successfully !!");
       setLoading(false);
       redirectLogin();
-      // console.log(response);
+      console.log(response,token);
     } catch (error) {
       setLoading(false);
       errorToast(
@@ -209,8 +211,8 @@ const Login = () => {
     }
   };
 
-  const handlePasswordReset =async (e) => {
-    try{
+  const handlePasswordReset = async (e) => {
+    try {
       e.preventDefault();
       if (newPassword.length < 6) {
         errorToast("Password must be at least 6 characters");
@@ -225,38 +227,43 @@ const Login = () => {
       const hasLowerCase = /[a-z]/.test(newPassword);
       const hasNumbers = /\d/.test(newPassword);
       const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
-  
+
       if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar)) {
-        errorToast("Password must contain uppercase, lowercase , numbers and special characters");
+        errorToast(
+          "Password must contain uppercase, lowercase , numbers and special characters"
+        );
         return;
       }
-      
-      setLoading(true)
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`,{email:resetEmail, password : newPassword})
 
-      if(response.status === 200){
-        setLoading(false)
-        sucessToast("Password reset successfully");        
+      setLoading(true);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`,
+        { email: resetEmail, password: newPassword }
+      );
+
+      if (response.status === 200) {
+        setLoading(false);
+        sucessToast("Password reset successfully");
         setShowForgotPassword(false);
         setForgotPasswordStep(1);
         setResetEmail("");
         setOtp(["", "", "", "", "", ""]);
         setNewPassword("");
         setConfirmPassword("");
-
       }
+    } catch (error) {
+      setLoading(false);
+      errorToast(
+        error.response
+          ? error.response.data.message
+          : "Failed to Update Your Password !!"
+      );
+      console.log(error);
     }
-    catch(error){
-      setLoading(false)
-      errorToast(error.response ?  error.response.data.message : 'Failed to Update Your Password !!')
-      console.log(error)
-    }
-
-
   };
 
   const cancelForgotPassword = () => {
-    setLoading(false)
+    setLoading(false);
     setShowForgotPassword(false);
     setForgotPasswordStep(1);
     setResetEmail("");
@@ -277,7 +284,7 @@ const Login = () => {
     setOtpStatus(null);
   };
 
-  const handleResendOTP = async() => {
+  const handleResendOTP = async () => {
     if (!resetEmail) {
       errorToast("Please enter your email or phone number");
       return;
@@ -779,22 +786,19 @@ const Login = () => {
 
                     <button
                       type="submit"
-                      disabled = {loading ? true : false}
+                      disabled={loading ? true : false}
                       className="w-full flex items-center gap-2 justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
-                      {
-                        loading ? (
-                          <span className="flex gap-2 items-center pointer-none ">
+                      {loading ? (
+                        <span className="flex gap-2 items-center pointer-none ">
                           Loading.. <ImSpinner8 className="animate-spin" />
                         </span>
-                        ) : (
-                          <span className="flex items-center gap-2">
+                      ) : (
+                        <span className="flex items-center gap-2">
                           <i className="fa-solid fa-check mr-2"></i>
                           Reset Password
-                          </span>
-
-                        )
-                      }
+                        </span>
+                      )}
                     </button>
                   </form>
                 )}
