@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import { ImSpinner8 } from "react-icons/im";
-
+import axios from "axios";
 
 const Contact = () => {
-  const [loading, setLoading] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [Contact, setContact] = useState({
     fullname: "",
     mobile: "",
@@ -13,28 +13,38 @@ const Contact = () => {
     message: "",
   });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if(isLoggedIn){
-      setLoading(true)
-      console.log(Contact);
-  
-      setTimeout(()=>{
-        setLoading(false)
-        sucessToast(
-          `Thank You ${Contact.fullname} 👏, Your message sent Sucessfully !!`
-        );
-        setContact({
-          fullname: "",
-          mobile: "",
-          email: "",
-          message: "",
-        });
-      },3000)
-    }
-    else{
-      errorToast('Please Login First !!')
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
 
+      const message = {
+        name: Contact.fullname,
+        email: Contact.email,
+        mobile: Contact.mobile,
+        message: Contact.message,
+      };
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/contact`,
+        message
+      );
+      setLoading(false);
+      sucessToast(
+        `Thank You ${Contact.fullname} 👏, Your message sent Sucessfully !!`
+      );
+      setContact({
+        fullname: "",
+        mobile: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      setLoading(false);
+      errorToast(
+        error.response ? error.response.data.message : "Something went wrong"
+      );
+      console.log(error);
     }
   };
   return (
@@ -43,9 +53,12 @@ const Contact = () => {
         <div className="max-w-[1200px] mx-auto">
           {/* Header Section */}
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-3">Get In Touch</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-3">
+              Get In Touch
+            </h1>
             <p className="text-gray-600 max-w-xl mx-auto text-sm md:text-base">
-              Have questions or feedback? We're here to help! Fill out the form below and our team will get back to you as soon as possible.
+              Have questions or feedback? We're here to help! Fill out the form
+              below and our team will get back to you as soon as possible.
             </p>
           </div>
 
@@ -56,8 +69,15 @@ const Contact = () => {
                 <i className="fa-solid fa-phone text-[var(--primary)] text-xl"></i>
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Call Us</h3>
-              <p className="text-gray-600 text-center text-xs">Mon-Sat: 9:00 AM - 6:00 PM</p>
-              <a href="tel:+918090674352" className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline">+91 8090674352</a>
+              <p className="text-gray-600 text-center text-xs">
+                Mon-Sat: 9:00 AM - 6:00 PM
+              </p>
+              <a
+                href="tel:+918090674352"
+                className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline"
+              >
+                +91 8090674352
+              </a>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
@@ -65,8 +85,15 @@ const Contact = () => {
                 <i className="fa-solid fa-envelope text-[var(--primary)] text-xl"></i>
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Email Us</h3>
-              <p className="text-gray-600 text-center text-xs">We'll respond within 24 hours</p>
-              <a href="mailto:support@bazaarwale.com" className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline">support@bazaarwale.com</a>
+              <p className="text-gray-600 text-center text-xs">
+                We'll respond within 24 hours
+              </p>
+              <a
+                href="mailto:support@bazaarwale.com"
+                className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline"
+              >
+                support@bazaarwale.com
+              </a>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
@@ -74,8 +101,12 @@ const Contact = () => {
                 <i className="fa-solid fa-location-dot text-[var(--primary)] text-xl"></i>
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Visit Us</h3>
-              <p className="text-gray-600 text-center text-xs">BazaarWale Headquarters</p>
-              <p className="text-[var(--primary)] font-medium mt-1 text-center text-xs">123 E-Commerce Plaza, Digital Lane, Tech City - 560001</p>
+              <p className="text-gray-600 text-center text-xs">
+                BazaarWale Headquarters
+              </p>
+              <p className="text-[var(--primary)] font-medium mt-1 text-center text-xs">
+                123 E-Commerce Plaza, Digital Lane, Tech City - 560001
+              </p>
             </div>
           </div>
 
@@ -94,7 +125,10 @@ const Contact = () => {
                 Send Message
               </h2>
 
-              <form onSubmit={handleLogin} className="space-y-3 flex flex-col gap-2">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-3 flex flex-col gap-2"
+              >
                 <div className="flex gap-3">
                   {/* Name */}
                   <div className="w-full">
@@ -186,32 +220,56 @@ const Contact = () => {
                 </div>
 
                 <button
-                  className={`${!Contact.fullname || !Contact.email || !Contact.message || !Contact.mobile ? 'disabled-light' : ''} w-full bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 rounded-lg font-medium text-xs hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-1`}
+                  className={`${
+                    !Contact.fullname ||
+                    !Contact.email ||
+                    !Contact.message ||
+                    !Contact.mobile
+                      ? "disabled-light"
+                      : ""
+                  } w-full bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 rounded-lg font-medium text-xs hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-1`}
                 >
-                  {
-                    loading ? (<span className="flex gap-2 items-center ">Sending <ImSpinner8  className="animate-spin"/></span> ) : (<span className="flex gap-2 items-center text-center">
+                  {loading ? (
+                    <span className="flex gap-2 items-center ">
+                      Sending <ImSpinner8 className="animate-spin" />
+                    </span>
+                  ) : (
+                    <span className="flex gap-2 items-center text-center">
                       <i className="fa-solid fa-paper-plane mr-1 text-sm"></i>
                       Send Message
-                    </span>)
-                  }
-
+                    </span>
+                  )}
                 </button>
               </form>
 
               {/* Social Media Links */}
               <div className="mt-4 pt-3 border-t border-blue-100">
-                <p className="text-xs text-[var(--primary)] mb-2 text-center">Connect with us:</p>
+                <p className="text-xs text-[var(--primary)] mb-2 text-center">
+                  Connect with us:
+                </p>
                 <div className="flex space-x-2 justify-center">
-                  <a href="#" className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
+                  >
                     <i className="fa-brands fa-facebook-f text-xs"></i>
                   </a>
-                  <a href="#" className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
+                  >
                     <i className="fa-brands fa-twitter text-xs"></i>
                   </a>
-                  <a href="#" className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
+                  >
                     <i className="fa-brands fa-instagram text-xs"></i>
                   </a>
-                  <a href="#" className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
+                  >
                     <i className="fa-brands fa-linkedin-in text-xs"></i>
                   </a>
                 </div>

@@ -135,7 +135,7 @@ const Login = () => {
     setPasswordStrength(evaluatePasswordStrength(newPassword));
   };
 
-  const handleForgotPasswordSubmit = (e) => {
+  const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
     if (!resetEmail) {
       errorToast("Please enter your email or phone number");
@@ -150,15 +150,31 @@ const Login = () => {
       return;
     }
 
-    console.log("Sending OTP to:", resetEmail);
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/auth/validateresetpasswordemail`,
+        { email: resetEmail }
+      );
 
-    sucessToast(`OTP has been sent to ${resetEmail}`);
-
-    setForgotPasswordStep(2);
-    setResendTimer(30);
+      if (response.status === 200) {
+        setLoading(false);
+        sucessToast(`OTP has been sent to ${resetEmail}`);
+        setForgotPasswordStep(2);
+        setResendTimer(30);
+      }
+    } catch (error) {
+      setLoading(false);
+      errorToast(
+        error.response ? error.response.data.message : "Failed to send OTP"
+      );
+      console.log(error);
+    }
   };
 
-  const handleOTPVerification = (e) => {
+  const handleOTPVerification = async (e) => {
     e.preventDefault();
     const otpString = otp.join("");
 
@@ -167,55 +183,80 @@ const Login = () => {
       return;
     }
 
-    console.log("Verifying OTP:", otpString);
-
-    if (otpString === "123456") {
-      setOtpStatus("success");
-      sucessToast("OTP verified successfully");
-      setForgotPasswordStep(3);
-    } else {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordotp`,
+        { email: resetEmail, otp: otpString }
+      );
+      if (response.status === 200) {
+        setLoading(false);
+        setOtpStatus("success");
+        sucessToast("OTP verified successfully");
+        setForgotPasswordStep(3);
+      }
+    } catch (error) {
+      setLoading(false);
       setOtpStatus("error");
-      errorToast("Invalid OTP. Please try again");
       setOtp(["", "", "", "", "", ""]);
       otpRefs[0].current.focus();
+      errorToast(
+        error.response
+          ? error.response.data.message
+          : "Failed to Varify Please Try Again!!"
+      );
+      console.log(error);
     }
   };
 
-  const handlePasswordReset = (e) => {
-    e.preventDefault();
-    if (newPassword.length < 6) {
-      errorToast("Password must be at least 6 characters");
-      return;
+  const handlePasswordReset =async (e) => {
+    try{
+      e.preventDefault();
+      if (newPassword.length < 6) {
+        errorToast("Password must be at least 6 characters");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        errorToast("Passwords do not match");
+        return;
+      }
+
+      const hasUpperCase = /[A-Z]/.test(newPassword);
+      const hasLowerCase = /[a-z]/.test(newPassword);
+      const hasNumbers = /\d/.test(newPassword);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+  
+      if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar)) {
+        errorToast("Password must contain uppercase, lowercase , numbers and special characters");
+        return;
+      }
+      
+      setLoading(true)
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`,{email:resetEmail, password : newPassword})
+
+      if(response.status === 200){
+        setLoading(false)
+        sucessToast("Password reset successfully");        
+        setShowForgotPassword(false);
+        setForgotPasswordStep(1);
+        setResetEmail("");
+        setOtp(["", "", "", "", "", ""]);
+        setNewPassword("");
+        setConfirmPassword("");
+
+      }
+    }
+    catch(error){
+      setLoading(false)
+      errorToast(error.response ?  error.response.data.message : 'Failed to Update Your Password !!')
+      console.log(error)
     }
 
-    if (newPassword !== confirmPassword) {
-      errorToast("Passwords do not match");
-      return;
-    }
 
-    const hasUpperCase = /[A-Z]/.test(newPassword);
-    const hasLowerCase = /[a-z]/.test(newPassword);
-    const hasNumbers = /\d/.test(newPassword);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
-
-    if (!(hasUpperCase && hasLowerCase && hasNumbers)) {
-      errorToast("Password must contain uppercase, lowercase and numbers");
-      return;
-    }
-
-    console.log("Resetting password to:", newPassword);
-
-    sucessToast("Password reset successfully");
-
-    setShowForgotPassword(false);
-    setForgotPasswordStep(1);
-    setResetEmail("");
-    setOtp(["", "", "", "", "", ""]);
-    setNewPassword("");
-    setConfirmPassword("");
   };
 
   const cancelForgotPassword = () => {
+    setLoading(false)
     setShowForgotPassword(false);
     setForgotPasswordStep(1);
     setResetEmail("");
@@ -236,11 +277,42 @@ const Login = () => {
     setOtpStatus(null);
   };
 
-  const handleResendOTP = () => {
-    console.log("Resending OTP to:", resetEmail);
+  const handleResendOTP = async() => {
+    if (!resetEmail) {
+      errorToast("Please enter your email or phone number");
+      return;
+    }
 
-    sucessToast(`OTP resent successfully`);
-    setResendTimer(30);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!emailRegex.test(resetEmail) && !phoneRegex.test(resetEmail)) {
+      errorToast("Please enter a valid email or 10-digit phone number");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/auth/validateresetpasswordemail`,
+        { email: resetEmail }
+      );
+
+      if (response.status === 200) {
+        setLoading(false);
+        sucessToast(`OTP has been sent to ${resetEmail}`);
+        setForgotPasswordStep(2);
+        setResendTimer(30);
+      }
+    } catch (error) {
+      setLoading(false);
+      errorToast(
+        error.response ? error.response.data.message : "Failed to send OTP"
+      );
+      console.log(error);
+    }
   };
 
   return (
@@ -359,7 +431,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={toggleForgotPassword}
-                    className="text-sm text-blue-600 disabled hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                    className="text-sm text-blue-600  hover:text-blue-800 hover:underline transition-colors cursor-pointer"
                   >
                     Forgot Password?
                   </button>
@@ -438,10 +510,19 @@ const Login = () => {
 
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
+                      disabled={loading ? true : false}
+                      className="w-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
-                      <i className="fa-solid fa-paper-plane mr-2"></i>
-                      Send OTP
+                      {loading ? (
+                        <span className="flex gap-2 items-center event-none pointer-none ">
+                          Loading.. <ImSpinner8 className="animate-spin" />
+                        </span>
+                      ) : (
+                        <span className="fled gap-2 items-center">
+                          <i className="fa-solid fa-paper-plane mr-2"></i>
+                          Send OTP
+                        </span>
+                      )}
                     </button>
 
                     <div className="text-center mt-4">
@@ -504,20 +585,21 @@ const Login = () => {
                       ))}
                     </div>
 
-                    <div className="mt-2 bg-blue-50 p-2 rounded text-xs text-blue-700 text-center">
-                      <p>
-                        <i className="fa-solid fa-info-circle mr-1"></i> For
-                        demo purposes, use the OTP:{" "}
-                        <span className="font-bold">123456</span>
-                      </p>
-                    </div>
-
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
+                      disabled={loading ? true : false}
+                      className="w-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
-                      <i className="fa-solid fa-check-circle mr-2"></i>
-                      Verify OTP
+                      {loading ? (
+                        <span className="flex gap-2 items-center pointer-none ">
+                          Loading.. <ImSpinner8 className="animate-spin" />
+                        </span>
+                      ) : (
+                        <span className="flex gap-2 items-center">
+                          <i className="fa-solid fa-check-circle mr-2"></i>
+                          Verify OTP
+                        </span>
+                      )}
                     </button>
 
                     <p className="text-xs text-gray-500 text-center mt-2">
@@ -541,7 +623,10 @@ const Login = () => {
                     <div className="text-center mt-4">
                       <button
                         type="button"
-                        onClick={() => setForgotPasswordStep(1)}
+                        onClick={() => {
+                          setForgotPasswordStep(1);
+                          setOtp(["", "", "", "", "", ""]);
+                        }}
                         className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
                       >
                         <i className="fa-solid fa-arrow-left mr-1"></i>
@@ -694,10 +779,22 @@ const Login = () => {
 
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
+                      disabled = {loading ? true : false}
+                      className="w-full flex items-center gap-2 justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
                     >
-                      <i className="fa-solid fa-check mr-2"></i>
-                      Reset Password
+                      {
+                        loading ? (
+                          <span className="flex gap-2 items-center pointer-none ">
+                          Loading.. <ImSpinner8 className="animate-spin" />
+                        </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                          <i className="fa-solid fa-check mr-2"></i>
+                          Reset Password
+                          </span>
+
+                        )
+                      }
                     </button>
                   </form>
                 )}
