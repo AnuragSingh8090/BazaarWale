@@ -65,11 +65,11 @@ const Login = () => {
         user
       );
       const token = response.data.token;
-      localStorage.setItem('userId',token)
+      localStorage.setItem("userId", token);
       sucessToast("Login Successfully !!");
       setLoading(false);
       redirectLogin();
-      console.log(response,token);
+      console.log(response, token);
     } catch (error) {
       setLoading(false);
       errorToast(
@@ -799,6 +799,18 @@ const Login = () => {
                           Reset Password
                         </span>
                       )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        cancelForgotPassword();
+                        navigate("/login");
+                      }}
+                      className="text-sm w-full flex items-center justify-center text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                    >
+                      <i className="fa-solid fa-arrow-left mr-1"></i>
+                      Back to Login
                     </button>
                   </form>
                 )}
