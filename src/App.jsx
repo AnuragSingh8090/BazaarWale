@@ -18,11 +18,16 @@ import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
 import Products from "./pages/Products/Products";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import checkBackendConnection from "./services/checkBackendConnection";
 
 function App() {
   const location = useLocation();
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  
+  useEffect(()=>{
+    checkBackendConnection()
+  },[])
 
   return (
     <>

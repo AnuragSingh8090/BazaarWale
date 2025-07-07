@@ -19,6 +19,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setLoginPopup(false);
     setShowDrop(false);
+    localStorage.clear()
     sucessToast("Logout Successfull!!");
     setIsLoggedIn(false);
     navigate("/login");
