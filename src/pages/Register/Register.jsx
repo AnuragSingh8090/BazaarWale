@@ -18,7 +18,7 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  function redirectLogin() {
+  function redirectHome() {
     setTimeout(() => {
       navigate("/");
     }, 1000);
@@ -39,10 +39,12 @@ const Register = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
         user
       );
+      const token = response.data.token;
+      localStorage.setItem("userId", token);
       sucessToast("Account Created Successfully !!");
       // console.log(response);
       setLoading(false);
-      redirectLogin();
+      redirectHome();
     } catch (error) {
       setLoading(false);
       errorToast(error.response.data.message || "Something went wrong");
