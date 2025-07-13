@@ -448,13 +448,11 @@ const Login = () => {
                   disabled={!Login.email || !Login.password || loading}
                   className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden ${
                     Login.email && Login.password
-                      ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer"
+                      ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer"
                       : "bg-gray-400 opacity-70"
                   }`}
                 >
-                  {Login.email && Login.password && (
-                    <span className="absolute top-0 left-0 w-full h-full bg-white opacity-10 transform -translate-x-full skew-x-[-20deg] animate-[shimmer_2.5s_infinite]"></span>
-                  )}
+
                   {loading ? (
                     <span className="flex gap-2 items-center">
                       Loading.. <ImSpinner8 className="animate-spin" />

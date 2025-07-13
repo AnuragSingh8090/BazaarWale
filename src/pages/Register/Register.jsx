@@ -323,17 +323,10 @@ const Register = () => {
                   Register.email &&
                   Register.password &&
                   Register.gender
-                    ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 animate-[pulse_2s_infinite] cursor-pointer"
+                    ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer"
                     : "bg-gray-400 opacity-70"
                 }`}
               >
-                {Register.fullname &&
-                  Register.mobile &&
-                  Register.email &&
-                  Register.password &&
-                  Register.gender && (
-                    <span className="absolute top-0 left-0 w-full h-full bg-white opacity-10 transform -translate-x-full skew-x-[-20deg] animate-[shimmer_2.5s_infinite]"></span>
-                  )}
                 {loading ? (
                   <span className="flex gap-2 items-center">
                     Loading.. <ImSpinner8 className="animate-spin" />
