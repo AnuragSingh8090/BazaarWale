@@ -71,6 +71,7 @@ const Login = () => {
       );
       const { token } = response.data;
       const { name, email, cart, userId } = response.data.user;
+      sucessToast("Login Successfully !!");
       dispatch(loginStart());
 
       setTimeout(() => {
@@ -85,7 +86,6 @@ const Login = () => {
         );
         navigate("/");
       }, 1500);
-      sucessToast("Login Successfully !!");
       setLoading(false);
     } catch (error) {
       setLoading(false);

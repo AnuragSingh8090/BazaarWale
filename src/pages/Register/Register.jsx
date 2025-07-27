@@ -4,7 +4,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../store/slices/userSlice";
+import { loginUser, loginStart } from "../../store/slices/userSlice";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function redirectHome() {
@@ -44,6 +44,7 @@ const Register = () => {
       );
       const { token } = response.data;
       const { name, email, cart, userId } = response.data.user;
+      sucessToast("Account Created Successfully !!");
       dispatch(loginStart());
       setTimeout(() => {
         dispatch(
@@ -56,9 +57,8 @@ const Register = () => {
           })
         );
         navigate("/");
-      }, 1000);
+      }, 1500);
 
-      sucessToast("Account Created Successfully !!");
       // console.log(response);
       setLoading(false);
       redirectHome();

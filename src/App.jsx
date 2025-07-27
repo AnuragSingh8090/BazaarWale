@@ -38,12 +38,13 @@ function App() {
 
   const fetchUserData = async () => {
     const token = localStorage.getItem("userToken");
-
+    console.log(token);
     if (!token) {
       dispatch(logoutUser());
       return;
     }
 
+    
     try {
       dispatch(loginStart());
       const response = await axios.get(
@@ -59,8 +60,6 @@ function App() {
       dispatch(loginUser({ name, email, userId, cart, token }));
     } catch (error) {
       dispatch(logoutUser());
-
-      console.error("Error fetching user data:", error);
     }
   };
 
@@ -79,9 +78,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={isLoggedin ? <Navigate to="/" /> : <Login />} />
+        <Route
+          path="/login"
+          element={isLoggedin ? <Navigate to="/" /> : <Login />}
+        />
         <Route path="/electronics" element={<Products />} />
-        <Route path="/register" element={isLoggedin ? <Navigate to="/" /> : <Register />} />
+        <Route
+          path="/register"
+          element={isLoggedin ? <Navigate to="/" /> : <Register />}
+        />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -98,8 +103,8 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="*" element={<Error />} />
       </Routes>
-      {!isAuthPage && <Footer />}
       <ToastContainer />
+      {!isAuthPage && <Footer />}
     </>
   );
 }
