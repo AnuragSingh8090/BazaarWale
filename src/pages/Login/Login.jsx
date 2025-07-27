@@ -10,6 +10,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const [resetEmailorMobile, setResetEmailorMobile] = useState('')
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
   const [resetEmail, setResetEmail] = useState("");
@@ -163,7 +164,8 @@ const Login = () => {
 
       if (response.status === 200) {
         setLoading(false);
-        sucessToast(`OTP has been sent to ${resetEmail}`);
+        sucessToast(response.data.message);
+        setResetEmailorMobile(response.data.message)
         setForgotPasswordStep(2);
         setResendTimer(30);
       }
@@ -555,7 +557,7 @@ const Login = () => {
                     </div>
                     <p className="text-sm text-gray-600 mb-2">
                       We have sent an OTP to{" "}
-                      <span className="font-medium">{resetEmail}</span>
+                      <span className="font-medium">{resetEmailorMobile}</span>
                     </p>
 
                     <label className="block text-sm font-medium text-gray-700 mb-2">
