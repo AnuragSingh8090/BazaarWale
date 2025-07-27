@@ -2,16 +2,21 @@ import "./Navbar.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { sucessToast } from "../Toasters/Toasters";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../store/slices/userSlice";
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState("");
   const [showDrop, setShowDrop] = useState(false);
   const [loginPopup, setLoginPopup] = useState(false);
-  const [cartItems, setCartItems] = useState(5);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const userName = useSelector((state) => state.user.user.name);
+  const cartItems = useSelector((state) => state.user.user.cart);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedin);
+
   const navigate = useNavigate();
   const navbarReffrence = useRef(null);
 
+  const dispatch = useDispatch();
   const handleSearch = () => {
     console.log(searchText);
   };
@@ -19,9 +24,8 @@ const Navbar = () => {
   const handleLogout = () => {
     setLoginPopup(false);
     setShowDrop(false);
-    localStorage.clear()
+    dispatch(logoutUser());
     sucessToast("Logout Successfull!!");
-    setIsLoggedIn(false);
     navigate("/login");
   };
   const showAccountMenu = () => {
@@ -53,9 +57,12 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".user_container")) {
         hideAccountMenu();
-
       }
-      if (!event.target.closest(".bars_container") && !event.target.closest(".navbar-container") && navbarReffrence.current.classList.contains('navbarActive'))  {
+      if (
+        !event.target.closest(".bars_container") &&
+        !event.target.closest(".navbar-container") &&
+        navbarReffrence.current.classList.contains("navbarActive")
+      ) {
         closeNavbar();
       }
     };
@@ -121,7 +128,7 @@ const Navbar = () => {
                       title="Cart"
                     ></i>
                     <span className="absolute top-0 right-[-30%] select-none centerFlex bg-[#d63909] text-white text-[11px] centerFlex rounded-[50%] h-[14px] w-[14px] transition-transform duration-300 hover:scale-110">
-                      {cartItems}
+                      {cartItems.length || "0"}
                     </span>
                   </div>
                   <span className="text-[15px]">Cart</span>
@@ -147,7 +154,7 @@ const Navbar = () => {
                     className="fa-solid fa-user text-[15px] text-[var(--primary)] active:scale-[0.95] cursor-pointer transition-transform duration-300 hover:scale-[1.15]"
                     title="Account"
                   ></i>
-                  <span className="text-[16px]">Anurag Kumar</span>
+                  <span className="text-[16px]">{userName || "User Name"}</span>
                 </div>
                 {showDrop && isLoggedIn ? (
                   <div className="drop_container z-50 absolute top-[40px] right-[-2px] bg-white py-[6px] px-[4px] rounded-[6px] boxShadow-light">
@@ -185,7 +192,8 @@ const Navbar = () => {
                           className="active:scale-[0.95] select-none cursor-pointer"
                           onClick={hideAccountMenu}
                         >
-                          <i className="fa-solid fa-heart mr-[6px]"></i> My Wishlist
+                          <i className="fa-solid fa-heart mr-[6px]"></i> My
+                          Wishlist
                         </span>
                       </NavLink>
 

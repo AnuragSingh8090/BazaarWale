@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import { ImSpinner8 } from "react-icons/im";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { loginStart, loginUser } from "../../store/slices/userSlice";
 
 const Login = () => {
   const [Login, setLogin] = useState({ email: "", password: "" });
@@ -10,7 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const [resetEmailorMobile, setResetEmailorMobile] = useState('')
+  const [resetEmailorMobile, setResetEmailorMobile] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
   const [resetEmail, setResetEmail] = useState("");
@@ -22,6 +24,8 @@ const Login = () => {
   const [resendTimer, setResendTimer] = useState(0);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [otpStatus, setOtpStatus] = useState(null);
+
+  const dispatch = useDispatch();
 
   const otpRefs = [
     useRef(null),
@@ -50,7 +54,7 @@ const Login = () => {
   function redirectLogin() {
     setTimeout(() => {
       navigate("/");
-    }, 1000);
+    }, 1500);
   }
 
   const handleLogin = async (e) => {
@@ -65,12 +69,24 @@ const Login = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
         user
       );
-      const token = response.data.token;
-      localStorage.setItem("userId", token);
+      const { token } = response.data;
+      const { name, email, cart, userId } = response.data.user;
+      dispatch(loginStart());
+
+      setTimeout(() => {
+        dispatch(
+          loginUser({
+            token,
+            name,
+            email,
+            cart,
+            userId,
+          })
+        );
+        navigate("/");
+      }, 1500);
       sucessToast("Login Successfully !!");
       setLoading(false);
-      redirectLogin();
-      console.log(response, token);
     } catch (error) {
       setLoading(false);
       errorToast(
@@ -165,7 +181,7 @@ const Login = () => {
       if (response.status === 200) {
         setLoading(false);
         sucessToast(response.data.message);
-        setResetEmailorMobile(response.data.message)
+        setResetEmailorMobile(response.data.message);
         setForgotPasswordStep(2);
         setResendTimer(30);
       }
@@ -454,7 +470,6 @@ const Login = () => {
                       : "bg-gray-400 opacity-70"
                   }`}
                 >
-
                   {loading ? (
                     <span className="flex gap-2 items-center">
                       Loading.. <ImSpinner8 className="animate-spin" />

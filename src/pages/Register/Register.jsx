@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../store/slices/userSlice";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,7 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch()
   const navigate = useNavigate();
 
   function redirectHome() {
@@ -39,8 +42,22 @@ const Register = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
         user
       );
-      const token = response.data.token;
-      localStorage.setItem("userId", token);
+      const { token } = response.data;
+      const { name, email, cart, userId } = response.data.user;
+      dispatch(loginStart());
+      setTimeout(() => {
+        dispatch(
+          loginUser({
+            token,
+            name,
+            email,
+            cart,
+            userId,
+          })
+        );
+        navigate("/");
+      }, 1000);
+
       sucessToast("Account Created Successfully !!");
       // console.log(response);
       setLoading(false);

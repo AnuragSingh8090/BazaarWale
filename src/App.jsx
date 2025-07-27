@@ -17,17 +17,61 @@ import MyAccount from "./pages/MyAccount/MyAccount";
 import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
 import Products from "./pages/Products/Products";
+import LoadingPage from "./components/loadinPage/LoadingPage";
+import { Navigate } from "react-router-dom";
+import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import checkBackendConnection from "./services/checkBackendConnection";
+import { loginStart, loginUser, logoutUser } from "./store/slices/userSlice";
 
 function App() {
   const location = useLocation();
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
-  
-  useEffect(()=>{
-    checkBackendConnection()
-  },[])
+  const isLoggedin = useSelector((state) => state.user.isLoggedin);
+  const isAuthPage =
+    location.pathname === "/login" || location.pathname === "/register";
+
+  const dispatch = useDispatch();
+  const isUserLoading = useSelector((state) => state.user.loading);
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("userToken");
+
+    if (!token) {
+      dispatch(logoutUser());
+      return;
+    }
+
+    try {
+      dispatch(loginStart());
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/userdatabasic`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { name, email, userId, cart } = response.data.user;
+      dispatch(loginUser({ name, email, userId, cart, token }));
+    } catch (error) {
+      dispatch(logoutUser());
+
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    checkBackendConnection();
+    fetchUserData();
+  }, []);
+
+  if (isUserLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <>
@@ -35,9 +79,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={isLoggedin ? <Navigate to="/" /> : <Login />} />
         <Route path="/electronics" element={<Products />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={isLoggedin ? <Navigate to="/" /> : <Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -46,7 +90,10 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/privacy_policy" element={<Privacy_Policy />} />
-        <Route path="/cancellation_return_policy" element={<Cancellation_Return_Policy />} />
+        <Route
+          path="/cancellation_return_policy"
+          element={<Cancellation_Return_Policy />}
+        />
         <Route path="/account" element={<MyAccount />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="*" element={<Error />} />
