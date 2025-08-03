@@ -52,3 +52,12 @@ body {
   filter: brightness(0.6);
   pointer-events: none;
 }
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

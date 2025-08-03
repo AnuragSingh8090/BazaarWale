@@ -19,32 +19,28 @@ import Checkout from "./pages/Checkout/Checkout";
 import Products from "./pages/Products/Products";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
+import { loginUser, logoutUser, loginStart } from "./store/slices/userSlice";
+import axios from "axios";
 import checkBackendConnection from "./services/checkBackendConnection";
-import { loginStart, loginUser, logoutUser } from "./store/slices/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const isLoggedin = useSelector((state) => state.user.isLoggedin);
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
-
-  const dispatch = useDispatch();
   const isUserLoading = useSelector((state) => state.user.loading);
 
-  const fetchUserData = async () => {
+  const ValidateUserLogin = async () => {
     const token = localStorage.getItem("userToken");
-    console.log(token);
     if (!token) {
       dispatch(logoutUser());
       return;
     }
 
-    
     try {
       dispatch(loginStart());
       const response = await axios.get(
@@ -63,9 +59,21 @@ function App() {
     }
   };
 
+  const validateUserEveryTime = () => {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      dispatch(logoutUser());
+      return;
+    }
+  };
+
+  useEffect(() => {
+    validateUserEveryTime();
+  }, [location.pathname]);
+
   useEffect(() => {
     checkBackendConnection();
-    fetchUserData();
+    ValidateUserLogin();
   }, []);
 
   if (isUserLoading) {
@@ -93,14 +101,14 @@ function App() {
         <Route path="/about_us" element={<About_Us />} />
         <Route path="/terms_conditions" element={<Terms_Conditions />} />
         <Route path="/faq" element={<FAQ />} />
-        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/wishlist" element={isLoggedin ? <Wishlist /> : <Navigate to="/login" />} />
         <Route path="/privacy_policy" element={<Privacy_Policy />} />
         <Route
           path="/cancellation_return_policy"
           element={<Cancellation_Return_Policy />}
         />
-        <Route path="/account" element={<MyAccount />} />
-        <Route path="/orders" element={<Orders />} />
+        <Route path="/account" element={isLoggedin ? <MyAccount /> : <Navigate to="/login" />} />
+        <Route path="/orders" element={isLoggedin ? <Orders /> : <Navigate to="/login" />} />
         <Route path="*" element={<Error />} />
       </Routes>
       <ToastContainer />

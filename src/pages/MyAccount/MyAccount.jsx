@@ -1,8 +1,64 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../store/slices/userSlice";
 
 const MyAccount = () => {
+  const [userLoading, setUserLoading] = useState(false);
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    isEmailVerified: null,
+    isMobileVerified: null,
+    twoFactorAuth: null,
+    loginActivity: false, //this is hardcoded need to make api
+    address: [],
+    paymentMethod: [],
+    gender: "",
+  });
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("userToken");
+    try {
+      setUserLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/userdata`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const user = response.data.user;
+      setUserData({
+        name: user.name,
+        email: user.email,
+        mobile: user.mobile,
+        isEmailVerified: user.isEmailVerified,
+        isMobileVerified: user.isMobileVerified,
+        twoFactorAuth: user.twoFactorAuth,
+        gender: user.gender,
+      });
+      setUserLoading(false);
+      console.log("response", response.data.user);
+    } catch (error) {
+      // setUserLoading(false);
+      if (error.response.data.message === "jwt expired") {
+        errorToast("Session Expired!! Please Login again");
+      } else {
+        errorToast("Something Went Wrong, Failed to get Data!!");
+        console.log(error);
+      }
+    }
+  };
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const dispatch = useDispatch();
   // UPI Image path
   const upiLogoPath = "/upi.svg";
 
@@ -19,14 +75,26 @@ const MyAccount = () => {
 
   // User information state
   const [userInfo, setUserInfo] = useState({
-    fullname: "John Doe",
-    email: "john.doe@example.com",
-    mobile: "9876543210",
-    address: "123 Street, City, State, 560001",
-    password: "********",
-    isEmailVerified: false,
-    isMobileVerified: false,
+    name: "",
+    email: "",
+    mobile: "",
+    gender: "",
+    isEmailVerified: null,
+    isMobileVerified: null,
   });
+
+  useEffect(() => {
+    setUserInfo({
+      ...userInfo,
+      name: userData.name,
+      email: userData.email,
+      mobile: userData.mobile,
+      gender: userData.gender,
+      isEmailVerified: userData.isEmailVerified,
+      isMobileVerified: userData.isMobileVerified,
+      address: userData.address,
+    });
+  }, [userData]);
 
   // Login activity
   const [loginActivity, setLoginActivity] = useState([
@@ -176,19 +244,38 @@ const MyAccount = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDeleteAccount = () => {
-    // Here we would typically call an API to delete the account
+    dispatch(logoutUser());
     sucessToast("Account deleted successfully!");
-    // Redirect to homepage or login page after deletion
-    // window.location.href = "/login";
   };
 
   // Email verification
   const [showEmailVerify, setShowEmailVerify] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
 
-  const handleSendEmailOTP = () => {
-    sucessToast("Verification code sent to your email!");
-    setShowEmailVerify(true);
+  const handleSendEmailOTP = async () => {
+    try{
+      setEmailLoading(true);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/user/auth/send-email-otp`,{
+        email : userInfo.email,
+        headers : {
+          Authorization : `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      sucessToast("Verification code sent to your email!");
+      console.log("response", response.data);
+      setShowEmailVerify(true);
+      setEmailLoading(false);
+    }
+    catch(error){
+      setEmailLoading(false);
+      if(error.response.data.message === "jwt expired"){
+        errorToast("Session Expired!! Please Login again");
+      }
+      else{
+        errorToast("Something Went Wrong, Failed to send OTP!!");
+      }
+    }
   };
 
   const verifyEmail = () => {
@@ -525,7 +612,6 @@ const MyAccount = () => {
       <ScrollToTop />
       <style>{activeNavStyle}</style>
       <div className="max-w-[1200px] mx-auto">
-        {/* Header Section */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-3">
             My Account
@@ -542,319 +628,384 @@ const MyAccount = () => {
             <div className="sticky xl:top-31 lg:top-[165px]">
               {/* User Profile Summary */}
               <div className="bg-white rounded-xl shadow-md overflow-hidden mb-4">
-                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-5 text-white">
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 border-4 border-white shadow-lg cursor-pointer">
-                      <span className="text-2xl text-blue-500 font-bold">
-                        {userInfo.fullname
-                          .split(" ")
-                          .map((name) => name[0])
-                          .join("")}
-                      </span>
+                {userLoading ? (
+                  <div className="h-[152px] w-full rounded-md bg-gray-300 animate-pulse"></div>
+                ) : (
+                  <div className=" bg-gradient-to-r from-blue-500 to-indigo-600 p-5 text-white">
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 border-4 border-white shadow-lg cursor-pointer">
+                        <span className="text-2xl text-blue-500 font-bold">
+                          {userData.name
+                            .split(" ")
+                            .map((name) => name[0])
+                            .join("")}
+                        </span>
+                      </div>
+                      <h2 className="text-base font-bold">{userData.name}</h2>
+                      <p className="text-blue-100 text-xs">{userData.email}</p>
                     </div>
-                    <h2 className="text-base font-bold">{userInfo.fullname}</h2>
-                    <p className="text-blue-100 text-xs">{userInfo.email}</p>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Navigation Menu */}
-              <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <h3 className="text-xs font-medium text-[var(--primary)]">
-                    Account Settings
-                  </h3>
-                </div>
-                <div className="py-2 px-2">
-                  <ul className="space-y-0.5">
-                    {sections.map((section) => (
-                      <li key={section.id}>
-                        <button
-                          onClick={() => scrollToSection(section.id)}
-                          className={`w-full flex items-center text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 cursor-pointer ${
-                            activeSection === section.id
-                              ? "bg-blue-50 text-[var(--primary)] font-medium translate-x-1"
-                              : "text-gray-700 hover:bg-gray-50"
-                          }`}
-                        >
-                          <i
-                            className={`fa-solid ${
-                              section.icon
-                            } w-5 text-center mr-2 transition-all duration-300 ${
+              {userLoading ? (
+                <div className="h-[332px] w-full rounded-xl shadow-md bg-gray-300 animate-pulse"></div>
+              ) : (
+                <div className="bg-white  rounded-xl shadow-md overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <h3 className="text-xs font-medium text-[var(--primary)]">
+                      Account Settings
+                    </h3>
+                  </div>
+                  <div className="py-2 px-2">
+                    <ul className="space-y-0.5">
+                      {sections.map((section) => (
+                        <li key={section.id}>
+                          <button
+                            onClick={() => scrollToSection(section.id)}
+                            className={`w-full flex items-center text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 cursor-pointer ${
                               activeSection === section.id
-                                ? "text-[var(--primary)] scale-110"
-                                : "text-gray-400"
-                            }`}
-                          ></i>
-                          <span
-                            className={`transition-all duration-300 ${
-                              activeSection === section.id
-                                ? "translate-x-0.5"
-                                : ""
+                                ? "bg-blue-50 text-[var(--primary)] font-medium translate-x-1"
+                                : "text-gray-700 hover:bg-gray-50"
                             }`}
                           >
-                            {section.title}
-                          </span>
+                            <i
+                              className={`fa-solid ${
+                                section.icon
+                              } w-5 text-center mr-2 transition-all duration-300 ${
+                                activeSection === section.id
+                                  ? "text-[var(--primary)] scale-110"
+                                  : "text-gray-400"
+                              }`}
+                            ></i>
+                            <span
+                              className={`transition-all duration-300 ${
+                                activeSection === section.id
+                                  ? "translate-x-0.5"
+                                  : ""
+                              }`}
+                            >
+                              {section.title}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+
+                      <li className="pt-1.5 mt-1.5 border-t border-gray-100">
+                        <button
+                          onClick={() => scrollToSection("delete-account")}
+                          className="w-full flex items-center text-left px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-all duration-300 cursor-pointer"
+                        >
+                          <i className="fa-solid fa-trash w-5 text-center mr-2"></i>
+                          Delete Account
                         </button>
                       </li>
-                    ))}
-
-                    <li className="pt-1.5 mt-1.5 border-t border-gray-100">
-                      <button
-                        onClick={() => scrollToSection("delete-account")}
-                        className="w-full flex items-center text-left px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-all duration-300 cursor-pointer"
-                      >
-                        <i className="fa-solid fa-trash w-5 text-center mr-2"></i>
-                        Delete Account
-                      </button>
-                    </li>
-                  </ul>
+                    </ul>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
           {/* Main Content Sections */}
           <div className="lg:col-span-3 space-y-6">
             {/* Profile Settings */}
-            <div
-              id="section-profile"
-              className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
-            >
-              <div className="flex justify-between items-center p-6 border-b border-gray-200">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800">
-                    Profile Information
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    Update your personal details
-                  </p>
+            {userLoading ? (
+              <div className="h-[233px] w-full rounded-xl shadow-md bg-gray-300 animate-pulse"></div>
+            ) : (
+              <div
+                id="section-profile"
+                className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
+              >
+                <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-800">
+                      Profile Information
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      Update your personal details
+                    </p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setEditMode({ ...editMode, profile: !editMode.profile })
+                    }
+                    className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
+                  >
+                    <i
+                      className={`fa-solid ${
+                        editMode.profile ? "fa-times" : "fa-pen"
+                      } mr-1`}
+                    ></i>
+                    {editMode.profile ? "Cancel" : "Edit"}
+                  </button>
                 </div>
-                <button
-                  onClick={() =>
-                    setEditMode({ ...editMode, profile: !editMode.profile })
-                  }
-                  className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
-                >
-                  <i
-                    className={`fa-solid ${
-                      editMode.profile ? "fa-times" : "fa-pen"
-                    } mr-1`}
-                  ></i>
-                  {editMode.profile ? "Cancel" : "Edit"}
-                </button>
-              </div>
 
-              <div className="p-6">
-                {editMode.profile ? (
-                  <form onSubmit={handleProfileUpdate} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          htmlFor="fullname"
-                          className="block text-xs font-medium text-gray-700 mb-1"
-                        >
-                          <i className="fa-solid fa-user text-[var(--primary)] mr-1"></i>
-                          Full Name
-                        </label>
-                        <input
-                          type="text"
-                          id="fullname"
-                          value={userInfo.fullname}
-                          onChange={(e) =>
-                            setUserInfo({
-                              ...userInfo,
-                              fullname: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-xs font-medium text-gray-700 mb-1"
-                        >
-                          <i className="fa-solid fa-envelope text-[var(--primary)] mr-1"></i>
-                          Email
-                        </label>
-                        <div className="flex">
-                          <input
-                            type="email"
-                            id="email"
-                            value={userInfo.email}
-                            onChange={(e) =>
-                              setUserInfo({
-                                ...userInfo,
-                                email: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
-                            disabled={userInfo.isEmailVerified}
-                          />
-                          {!userInfo.isEmailVerified && (
-                            <button
-                              type="button"
-                              onClick={handleSendEmailOTP}
-                              className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
-                            >
-                              Verify
-                            </button>
-                          )}
-                          {userInfo.isEmailVerified && (
-                            <div className="bg-green-50 text-green-600 px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 flex items-center">
-                              <i className="fa-solid fa-check-circle mr-1"></i>{" "}
-                              Verified
-                            </div>
-                          )}
-                        </div>
-                        {showEmailVerify && (
-                          <div className="mt-2 flex">
-                            <input
-                              type="text"
-                              placeholder="Enter 6-digit OTP"
-                              maxLength={6}
-                              value={emailOtp}
-                              onChange={(e) =>
-                                setEmailOtp(e.target.value.replace(/\D/g, ""))
-                              }
-                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
-                            />
-                            <button
-                              type="button"
-                              onClick={verifyEmail}
-                              className="bg-[var(--primary)] text-white px-3 py-2 text-xs rounded-r-lg hover:opacity-90 cursor-pointer"
-                            >
-                              Submit
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          htmlFor="mobile"
-                          className="block text-xs font-medium text-gray-700 mb-1"
-                        >
-                          <i className="fa-solid fa-phone text-[var(--primary)] mr-1"></i>
-                          Mobile Number
-                        </label>
-                        <div className="flex">
+                <div className="p-6">
+                  {editMode.profile ? (
+                    <form onSubmit={handleProfileUpdate} className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label
+                            htmlFor="fullname"
+                            className="block text-xs font-medium text-gray-700 mb-1"
+                          >
+                            <i className="fa-solid fa-user text-[var(--primary)] mr-1"></i>
+                            Full Name
+                          </label>
                           <input
                             type="text"
-                            id="mobile"
-                            value={userInfo.mobile}
+                            id="fullname"
+                            value={userInfo.name}
                             onChange={(e) =>
                               setUserInfo({
                                 ...userInfo,
-                                mobile: e.target.value.replace(/\D/g, ""),
+                                name: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
-                            disabled={userInfo.isMobileVerified}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
                           />
-                          {!userInfo.isMobileVerified && (
-                            <button
-                              type="button"
-                              onClick={handleSendMobileOTP}
-                              className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="mobile"
+                            className="block text-xs font-medium text-gray-700 mb-1"
+                          >
+                            <i className="fa-solid fa-phone text-[var(--primary)] mr-1"></i>
+                            Gender
+                          </label>
+                          <div className="flex">
+                            <select
+                              value={userInfo.gender}
+                              onChange={(e) =>
+                                setUserInfo({
+                                  ...userInfo,
+                                  gender: e.target.value,
+                                })
+                              }
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
                             >
-                              Verify
-                            </button>
-                          )}
-                          {userInfo.isMobileVerified && (
-                            <div className="bg-green-50 text-green-600 px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 flex items-center">
-                              <i className="fa-solid fa-check-circle mr-1"></i>{" "}
-                              Verified
+                              <option
+                                value="male"
+                                selected={userInfo.gender === "male"}
+                              >
+                                Male
+                              </option>
+                              <option
+                                value="female"
+                                selected={userInfo.gender === "female"}
+                              >
+                                Female
+                              </option>
+                              <option
+                                value="other"
+                                selected={userInfo.gender === "other"}
+                              >
+                                Other
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label
+                            htmlFor="mobile"
+                            className="block text-xs font-medium text-gray-700 mb-1"
+                          >
+                            <i className="fa-solid fa-phone text-[var(--primary)] mr-1"></i>
+                            Mobile Number
+                          </label>
+                          <div className="flex">
+                            <input
+                              type="text"
+                              id="mobile"
+                              value={userInfo.mobile}
+                              onChange={(e) =>
+                                setUserInfo({
+                                  ...userInfo,
+                                  mobile: e.target.value.replace(/\D/g, ""),
+                                })
+                              }
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
+                              disabled={userInfo.isMobileVerified}
+                            />
+                            {!userInfo.isMobileVerified && (
+                              <button
+                                type="button"
+                                onClick={handleSendMobileOTP}
+                                className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
+                              >
+                                Verify
+                              </button>
+                            )}
+                            {userInfo.isMobileVerified && (
+                              <div className="bg-green-50 text-green-600 px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 flex items-center">
+                                <i className="fa-solid fa-check-circle mr-1"></i>{" "}
+                                Verified
+                              </div>
+                            )}
+                          </div>
+                          {showMobileVerify && (
+                            <div className="mt-2 flex">
+                              <input
+                                type="text"
+                                placeholder="Enter 6-digit OTP"
+                                maxLength={6}
+                                value={mobileOtp}
+                                onChange={(e) =>
+                                  setMobileOtp(
+                                    e.target.value.replace(/\D/g, "")
+                                  )
+                                }
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
+                              />
+                              <button
+                                type="button"
+                                onClick={verifyMobile}
+                                className="bg-[var(--primary)] text-white px-3 py-2 text-xs rounded-r-lg hover:opacity-90 cursor-pointer"
+                              >
+                                Submit
+                              </button>
                             </div>
                           )}
                         </div>
-                        {showMobileVerify && (
-                          <div className="mt-2 flex">
+
+                        <div>
+                          <label
+                            htmlFor="email"
+                            className="block text-xs font-medium text-gray-700 mb-1"
+                          >
+                            <i className="fa-solid fa-envelope text-[var(--primary)] mr-1"></i>
+                            Email
+                          </label>
+                          <div className="flex">
                             <input
-                              type="text"
-                              placeholder="Enter 6-digit OTP"
-                              maxLength={6}
-                              value={mobileOtp}
+                              type="email"
+                              id="email"
+                              value={userInfo.email}
                               onChange={(e) =>
-                                setMobileOtp(e.target.value.replace(/\D/g, ""))
+                                setUserInfo({
+                                  ...userInfo,
+                                  email: e.target.value,
+                                })
                               }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
+                              disabled={userInfo.isEmailVerified}
                             />
-                            <button
-                              type="button"
-                              onClick={verifyMobile}
-                              className="bg-[var(--primary)] text-white px-3 py-2 text-xs rounded-r-lg hover:opacity-90 cursor-pointer"
-                            >
-                              Submit
-                            </button>
+                            {!userInfo.isEmailVerified && (
+                              <button
+                                type="button"
+                                onClick={handleSendEmailOTP}
+                                className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
+                              >
+                                Verify
+                              </button>
+                            )}
+                            {userInfo.isEmailVerified && (
+                              <div className="bg-green-50 text-green-600 px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 flex items-center">
+                                <i className="fa-solid fa-check-circle mr-1"></i>{" "}
+                                Verified
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex justify-end">
-                      <button
-                        type="submit"
-                        className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
-                      >
-                        <i className="fa-solid fa-save mr-1"></i>
-                        Save Changes
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-gray-500">Full Name</p>
-                        <p className="text-sm font-medium">
-                          {userInfo.fullname}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Email</p>
-                        <div className="flex items-center">
-                          <p className="text-sm font-medium">
-                            {userInfo.email}
-                          </p>
-                          {userInfo.isEmailVerified ? (
-                            <span className="ml-2 text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center">
-                              <i className="fa-solid fa-check-circle mr-1"></i>{" "}
-                              Verified
-                            </span>
-                          ) : (
-                            <span className="ml-2 text-xs text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
-                              Not Verified
-                            </span>
+                          {showEmailVerify && (
+                            <div className="mt-2 flex">
+                              <input
+                                type="text"
+                                placeholder="Enter 6-digit OTP"
+                                maxLength={6}
+                                value={emailOtp}
+                                onChange={(e) =>
+                                  setEmailOtp(e.target.value.replace(/\D/g, ""))
+                                }
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
+                              />
+                              <button
+                                type="button"
+                                onClick={verifyEmail}
+                                className="bg-[var(--primary)] text-white px-3 py-2 text-xs rounded-r-lg hover:opacity-90 cursor-pointer"
+                              >
+                                Submit
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-gray-500">Mobile Number</p>
-                        <div className="flex items-center">
-                          <p className="text-sm font-medium">
-                            {userInfo.mobile}
-                          </p>
-                          {userInfo.isMobileVerified ? (
-                            <span className="ml-2 text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center">
-                              <i className="fa-solid fa-check-circle mr-1"></i>{" "}
-                              Verified
-                            </span>
-                          ) : (
-                            <span className="ml-2 text-xs text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
-                              Not Verified
-                            </span>
-                          )}
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                        >
+                          <i className="fa-solid fa-save mr-1"></i>
+                          Save Changes
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-gray-500">Full Name</p>
+                          <p className="text-sm font-medium">{userData.name}</p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-gray-500">Gender</p>
+                          <div className="flex items-center">
+                            <p className="text-sm font-medium capitalize">
+                              {userData.gender}
+                            </p>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-gray-500">Mobile Number</p>
+                          <div className="flex items-center">
+                            <p className="text-sm font-medium">
+                              {userData.mobile}
+                            </p>
+                            {userData.isMobileVerified ? (
+                              <span className="ml-2 text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center">
+                                <i className="fa-solid fa-check-circle mr-1"></i>{" "}
+                                Verified
+                              </span>
+                            ) : (
+                              <span className="ml-2 text-xs text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
+                                Not Verified
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-xs text-gray-500">Email</p>
+                          <div className="flex items-center">
+                            <p className="text-sm font-medium">
+                              {userData.email}
+                            </p>
+                            {userData.isEmailVerified ? (
+                              <span className="ml-2 text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center">
+                                <i className="fa-solid fa-check-circle mr-1"></i>{" "}
+                                Verified
+                              </span>
+                            ) : (
+                              <span className="ml-2 text-xs text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
+                                Not Verified
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Security Settings */}
             <div
@@ -1978,107 +2129,119 @@ const MyAccount = () => {
             </div>
 
             {/* My Orders and Wishlist Sections */}
-            <div
-              id="section-orders"
-              className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
-            >
-              <div className="p-6 text-center">
-                <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
-                  <i className="fa-solid fa-box text-[var(--primary)] text-xl"></i>
+            {userLoading ? (
+              <div className="h-[216px] w-full rounded-xl shadow-md bg-gray-300 animate-pulse"></div>
+            ) : (
+              <div
+                id="section-orders"
+                className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
+              >
+                <div className="p-6 text-center">
+                  <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                    <i className="fa-solid fa-box text-[var(--primary)] text-xl"></i>
+                  </div>
+                  <h2 className="text-lg font-bold text-gray-800 mb-2">
+                    My Orders
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    View your order history and track current orders
+                  </p>
+                  <a
+                    href="/orders"
+                    className="inline-block bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                  >
+                    View All Orders
+                  </a>
                 </div>
-                <h2 className="text-lg font-bold text-gray-800 mb-2">
-                  My Orders
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  View your order history and track current orders
-                </p>
-                <a
-                  href="/orders"
-                  className="inline-block bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
-                >
-                  View All Orders
-                </a>
               </div>
-            </div>
+            )}
 
-            <div
-              id="section-wishlist"
-              className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
-            >
-              <div className="p-6 text-center">
-                <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
-                  <i className="fa-solid fa-heart text-red-500 text-xl"></i>
+            {userLoading ? (
+              <div className="h-[216px] w-full rounded-xl shadow-md bg-gray-300 animate-pulse"></div>
+            ) : (
+              <div
+                id="section-wishlist"
+                className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
+              >
+                <div className="p-6 text-center">
+                  <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
+                    <i className="fa-solid fa-heart text-red-500 text-xl"></i>
+                  </div>
+                  <h2 className="text-lg font-bold text-gray-800 mb-2">
+                    My Wishlist
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    View and manage your favorite products
+                  </p>
+                  <a
+                    href="/wishlist"
+                    className="inline-block bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                  >
+                    View Wishlist
+                  </a>
                 </div>
-                <h2 className="text-lg font-bold text-gray-800 mb-2">
-                  My Wishlist
-                </h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  View and manage your favorite products
-                </p>
-                <a
-                  href="/wishlist"
-                  className="inline-block bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
-                >
-                  View Wishlist
-                </a>
               </div>
-            </div>
+            )}
 
             {/* Delete Account Section */}
-            <div
-              id="section-delete-account"
-              className="bg-white rounded-xl shadow-md overflow-hidden border border-red-100 scroll-mt-24"
-            >
-              <div className="p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-red-100 p-3 rounded-full">
-                    <i className="fa-solid fa-exclamation-triangle text-red-500"></i>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-800 mb-1">
-                      Delete Account
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      Once you delete your account, there is no going back.
-                      Please be certain.
-                    </p>
+            {userLoading ? (
+              <div className="h-[148px] w-full rounded-xl shadow-md bg-gray-300 animate-pulse"></div>
+            ) : (
+              <div
+                id="section-delete-account"
+                className="bg-white rounded-xl shadow-md overflow-hidden border border-red-100 scroll-mt-24"
+              >
+                <div className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-red-100 p-3 rounded-full">
+                      <i className="fa-solid fa-exclamation-triangle text-red-500"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800 mb-1">
+                        Delete Account
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Once you delete your account, there is no going back.
+                        Please be certain.
+                      </p>
 
-                    {showDeleteConfirm ? (
-                      <div className="bg-red-50 p-4 rounded-lg border border-red-200 mb-4">
-                        <p className="text-sm text-red-700 mb-3">
-                          Are you sure you want to delete your account? All of
-                          your data will be permanently removed. This action
-                          cannot be undone.
-                        </p>
-                        <div className="flex space-x-3">
-                          <button
-                            onClick={handleDeleteAccount}
-                            className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-medium active:scale-[0.98] transition-all cursor-pointer"
-                          >
-                            <i className="fa-solid fa-trash mr-1"></i>
-                            Yes, Delete My Account
-                          </button>
-                          <button
-                            onClick={() => setShowDeleteConfirm(false)}
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium active:scale-[0.98] transition-all cursor-pointer"
-                          >
-                            Cancel
-                          </button>
+                      {showDeleteConfirm ? (
+                        <div className="bg-red-50 p-4 rounded-lg border border-red-200 mb-4">
+                          <p className="text-sm text-red-700 mb-3">
+                            Are you sure you want to delete your account? All of
+                            your data will be permanently removed. This action
+                            cannot be undone.
+                          </p>
+                          <div className="flex space-x-3">
+                            <button
+                              onClick={handleDeleteAccount}
+                              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-medium active:scale-[0.98] transition-all cursor-pointer"
+                            >
+                              <i className="fa-solid fa-trash mr-1"></i>
+                              Yes, Delete My Account
+                            </button>
+                            <button
+                              onClick={() => setShowDeleteConfirm(false)}
+                              className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium active:scale-[0.98] transition-all cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setShowDeleteConfirm(true)}
-                        className="flex items-center text-red-500 hover:text-red-600 text-sm font-medium bg-red-50 hover:bg-red-100 py-2 px-4 rounded-lg transition-colors active:scale-[0.98] cursor-pointer"
-                      >
-                        <i className="fa-solid fa-trash mr-1"></i>
-                        Delete My Account
-                      </button>
-                    )}
+                      ) : (
+                        <button
+                          onClick={() => setShowDeleteConfirm(true)}
+                          className="flex items-center text-red-500 hover:text-red-600 text-sm font-medium bg-red-50 hover:bg-red-100 py-2 px-4 rounded-lg transition-colors active:scale-[0.98] cursor-pointer"
+                        >
+                          <i className="fa-solid fa-trash mr-1"></i>
+                          Delete My Account
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

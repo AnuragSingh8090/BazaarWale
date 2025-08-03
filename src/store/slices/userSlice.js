@@ -18,11 +18,13 @@ const userSlice = createSlice({
     loginStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.token = null;
     },
 
     loginError: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+      state.token = null;
     },
 
     loginUser: (state, action) => {
