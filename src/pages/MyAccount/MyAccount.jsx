@@ -292,10 +292,37 @@ const MyAccount = () => {
 
   // Handle account deletion confirmation
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const handleDeleteAccount = () => {
-    dispatch(logoutUser());
-    sucessToast("Account deleted successfully!");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('userToken')
+    try {
+      setDeleteLoading(true);
+      if(!token){
+        return;
+      }
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/delete-user`, {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setShowDeleteConfirm(false);
+      setDeleteLoading(false);
+      dispatch(logoutUser());
+      sucessToast("Account deleted successfully!");
+    } catch (error) {
+      setDeleteLoading(false);
+      setShowDeleteConfirm(false);
+      if (error.response.data.message === "jwt expired") {
+        errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
+      } else {
+        console.log(error);
+        errorToast(error.response.data.message);
+      }
+    }
   };
 
   // Email verification
@@ -2314,10 +2341,19 @@ const MyAccount = () => {
                           <div className="flex space-x-3">
                             <button
                               onClick={handleDeleteAccount}
-                              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-medium active:scale-[0.98] transition-all cursor-pointer"
+                              disabled={deleteLoading}
+                              className="bg-red-500 hover:bg-red-600 w-[210px] text-white py-2 px-4 rounded-lg text-sm font-medium active:scale-[0.98] transition-all cursor-pointer"
                             >
-                              <i className="fa-solid fa-trash mr-1"></i>
-                              Yes, Delete My Account
+                              {deleteLoading ? (
+                                <div className="flex items-center justify-center h-full">
+                                  <div className="w-4 h-4 border-4 border-gray-300 border-t-[var(--primary)] rounded-full animate-spin"></div>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <i className="fa-solid fa-trash mr-1"></i>
+                                  Yes, Delete My Account
+                                </div>
+                              )}
                             </button>
                             <button
                               onClick={() => setShowDeleteConfirm(false)}
@@ -2330,7 +2366,7 @@ const MyAccount = () => {
                       ) : (
                         <button
                           onClick={() => setShowDeleteConfirm(true)}
-                          className="flex items-center text-red-500 hover:text-red-600 text-sm font-medium bg-red-50 hover:bg-red-100 py-2 px-4 rounded-lg transition-colors active:scale-[0.98] cursor-pointer"
+                          className="flex items-center  text-red-500 hover:text-red-600 text-sm font-medium bg-red-50 hover:bg-red-100 py-2 px-4 rounded-lg transition-colors active:scale-[0.98] cursor-pointer"
                         >
                           <i className="fa-solid fa-trash mr-1"></i>
                           Delete My Account
