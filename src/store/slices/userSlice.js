@@ -37,6 +37,12 @@ const userSlice = createSlice({
       localStorage.setItem("userToken", token);
     },
 
+    updateUserData: (state, action) => {
+      const { name, email } = action.payload;
+      state.user.name = name;
+      state.user.email = email;
+    },
+
     logoutUser: (state) => {
       state.isLoggedin = false;
       state.error = null;
@@ -53,6 +59,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { loginStart, loginError, loginUser, logoutUser } =
+export const { loginStart, loginError, loginUser, logoutUser, updateUserData } =
   userSlice.actions;
 export default userSlice.reducer;

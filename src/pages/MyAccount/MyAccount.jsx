@@ -3,7 +3,7 @@ import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../store/slices/userSlice";
+import { logoutUser, updateUserData } from "../../store/slices/userSlice";
 
 const MyAccount = () => {
   const [userLoading, setUserLoading] = useState(false);
@@ -48,6 +48,7 @@ const MyAccount = () => {
       // setUserLoading(false);
       if (error.response.data.message === "jwt expired") {
         errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
       } else {
         errorToast("Something Went Wrong, Failed to get Data!!");
         console.log(error);
@@ -217,11 +218,60 @@ const MyAccount = () => {
     confirmPassword: "",
   });
 
+  const [userProfileUpdateLoading, setUserProfileUpdateLoading] =
+    useState(false);
   // Handle profile update
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    sucessToast("Profile updated successfully!");
-    setEditMode({ ...editMode, profile: false });
+
+    const userUpdatedDetails = {
+      name: userInfo.name,
+      email: userInfo.email,
+      gender: userInfo.gender,
+      mobile: userInfo.mobile,
+      isMobileVerified: userInfo.isMobileVerified,
+      isEmailVerified: userInfo.isEmailVerified,
+    };
+    try {
+      setUserProfileUpdateLoading(true);
+      const token = localStorage.getItem("userToken");
+      if (!token) {
+        errorToast("Failed to update Profile");
+        dispatch(logoutUser());
+        return;
+      }
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/update-user-profile`,
+        userUpdatedDetails,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      dispatch(updateUserData({ name: userInfo.name, email: userInfo.email }));
+      setUserData({
+        ...userData,
+        name: userInfo.name,
+        email: userInfo.email,
+        mobile: userInfo.mobile,
+        gender: userInfo.gender,
+        isMobileVerified: userInfo.isMobileVerified,
+        isMobileVerified: userInfo.isMobileVerified,
+      });
+      setUserProfileUpdateLoading(false);
+      sucessToast("Profile updated successfully!");
+      setEditMode({ ...editMode, profile: false });
+    } catch (error) {
+      setUserProfileUpdateLoading(false);
+      if (error.response.data.message === "jwt expired") {
+        errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
+      } else {
+        errorToast("Failed to Update Profile!!");
+        console.log(error);
+      }
+    }
   };
 
   // Handle password update
@@ -252,50 +302,83 @@ const MyAccount = () => {
   const [showEmailVerify, setShowEmailVerify] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
+  const [emailOtpLoading, setEmailOtpLoading] = useState(false);
 
   const handleSendEmailOTP = async () => {
-    try{
+    try {
       setEmailLoading(true);
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/user/auth/send-email-otp`,{
-        email : userInfo.email,
-        headers : {
-          Authorization : `Bearer ${localStorage.getItem("token")}`
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/verify-user-email`,
+        { email: userInfo.email },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
         }
-      });
+      );
       sucessToast("Verification code sent to your email!");
-      console.log("response", response.data);
       setShowEmailVerify(true);
       setEmailLoading(false);
-    }
-    catch(error){
+    } catch (error) {
       setEmailLoading(false);
-      if(error.response.data.message === "jwt expired"){
+      if (error.response.data.message === "jwt expired") {
         errorToast("Session Expired!! Please Login again");
-      }
-      else{
+        dispatch(logoutUser());
+      } else {
         errorToast("Something Went Wrong, Failed to send OTP!!");
+        console.log(error);
       }
     }
   };
 
-  const verifyEmail = () => {
-    if (emailOtp.length === 6) {
+  const verifyEmail = async () => {
+    if (emailOtp.length !== 6) {
+      errorToast("Please enter a valid 6-digit code");
+      return;
+    }
+
+    try {
+      setEmailOtpLoading(true);
+      await axios.post(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/user/auth/verify-user-email-otp`,
+        { email: userInfo.email, otp: emailOtp },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
+        }
+      );
+
+      setEmailOtpLoading(false);
+      setUserData({ ...userData, isEmailVerified: true });
       setUserInfo({ ...userInfo, isEmailVerified: true });
       sucessToast("Email verified successfully!");
       setShowEmailVerify(false);
       setEmailOtp("");
-    } else {
-      errorToast("Please enter a valid 6-digit code");
+    } catch (error) {
+      setEmailOtpLoading(false);
+      if (error.response.data.message === "jwt expired") {
+        errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
+      } else {
+        console.log(error);
+        errorToast(error.response.data.message);
+      }
     }
   };
 
   // Mobile verification
   const [showMobileVerify, setShowMobileVerify] = useState(false);
+  const [mobileLoading, setMobileLoading] = useState(false);
   const [mobileOtp, setMobileOtp] = useState("");
+  const [mobileOtpLoading, setMobileOtpLoading] = useState(false);
 
   const handleSendMobileOTP = () => {
-    sucessToast("Verification code sent to your mobile number!");
-    setShowMobileVerify(true);
+    // sucessToast("Verification code sent to your mobile number!");
+    errorToast("This Service is Not Enabled Yet!!");
+    // setShowMobileVerify(true);
   };
 
   const verifyMobile = () => {
@@ -641,7 +724,9 @@ const MyAccount = () => {
                             .join("")}
                         </span>
                       </div>
-                      <h2 className="text-base font-bold">{userData.name}</h2>
+                      <h2 className="text-base font-bold">
+                        {userData.name.split(" ").slice(0, 2).join(" ")}
+                      </h2>
                       <p className="text-blue-100 text-xs">{userData.email}</p>
                     </div>
                   </div>
@@ -787,24 +872,13 @@ const MyAccount = () => {
                               }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
                             >
-                              <option
-                                value="male"
-                                selected={userInfo.gender === "male"}
-                              >
-                                Male
+                              <option value="" disabled>
+                                {" "}
+                                Select Gender
                               </option>
-                              <option
-                                value="female"
-                                selected={userInfo.gender === "female"}
-                              >
-                                Female
-                              </option>
-                              <option
-                                value="other"
-                                selected={userInfo.gender === "other"}
-                              >
-                                Other
-                              </option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
+                              <option value="others">Other</option>
                             </select>
                           </div>
                         </div>
@@ -823,6 +897,7 @@ const MyAccount = () => {
                               type="text"
                               id="mobile"
                               value={userInfo.mobile}
+                              maxLength={10}
                               onChange={(e) =>
                                 setUserInfo({
                                   ...userInfo,
@@ -892,16 +967,24 @@ const MyAccount = () => {
                                   email: e.target.value,
                                 })
                               }
+                              readOnly={emailLoading}
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
                               disabled={userInfo.isEmailVerified}
                             />
                             {!userInfo.isEmailVerified && (
                               <button
                                 type="button"
+                                disabled={emailLoading}
                                 onClick={handleSendEmailOTP}
                                 className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
                               >
-                                Verify
+                                {emailLoading ? (
+                                  <div className="flex items-center justify-center h-full w-full">
+                                    <div className="w-6 h-6 border-4 border-gray-300 border-t-[var(--primary)] rounded-full animate-spin"></div>
+                                  </div>
+                                ) : (
+                                  "Verify"
+                                )}
                               </button>
                             )}
                             {userInfo.isEmailVerified && (
@@ -918,6 +1001,7 @@ const MyAccount = () => {
                                 placeholder="Enter 6-digit OTP"
                                 maxLength={6}
                                 value={emailOtp}
+                                readOnly={emailOtpLoading}
                                 onChange={(e) =>
                                   setEmailOtp(e.target.value.replace(/\D/g, ""))
                                 }
@@ -926,9 +1010,16 @@ const MyAccount = () => {
                               <button
                                 type="button"
                                 onClick={verifyEmail}
+                                disabled={emailOtpLoading}
                                 className="bg-[var(--primary)] text-white px-3 py-2 text-xs rounded-r-lg hover:opacity-90 cursor-pointer"
                               >
-                                Submit
+                                {emailOtpLoading ? (
+                                  <div className="flex items-center justify-center h-full w-full">
+                                    <div className="w-6 h-6 border-4 border-gray-300 border-t-[var(--primary)] rounded-full animate-spin"></div>
+                                  </div>
+                                ) : (
+                                  "Submit"
+                                )}
                               </button>
                             </div>
                           )}
@@ -937,10 +1028,19 @@ const MyAccount = () => {
                       <div className="flex justify-end">
                         <button
                           type="submit"
-                          className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                          disabled={userProfileUpdateLoading}
+                          className="bg-gradient-to-r from-blue-300 w-[161.26px] to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                         >
-                          <i className="fa-solid fa-save mr-1"></i>
-                          Save Changes
+                          {userProfileUpdateLoading ? (
+                            <div className="flex items-center justify-center h-full w-full">
+                              <div className="w-6 h-6 border-4 border-gray-300 border-t-[var(--primary)] rounded-full animate-spin"></div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <i className="fa-solid fa-save mr-1"></i>
+                              Save Changes
+                            </div>
+                          )}
                         </button>
                       </div>
                     </form>
@@ -960,7 +1060,6 @@ const MyAccount = () => {
                             </p>
                           </div>
                         </div>
-
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

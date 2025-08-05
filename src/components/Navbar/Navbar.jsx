@@ -154,7 +154,9 @@ const Navbar = () => {
                     className="fa-solid fa-user text-[15px] text-[var(--primary)] active:scale-[0.95] cursor-pointer transition-transform duration-300 hover:scale-[1.15]"
                     title="Account"
                   ></i>
-                  <span className="text-[16px]">{userName || "User Name"}</span>
+                  <span className="text-[16px]">
+                    {userName.split(" ").slice(0, 2).join(" ") || "User Name"}
+                  </span>
                 </div>
                 {showDrop && isLoggedIn ? (
                   <div className="drop_container z-50 absolute top-[40px] right-[-2px] bg-white py-[6px] px-[4px] rounded-[6px] boxShadow-light">
