@@ -14,7 +14,7 @@ const MyAccount = () => {
     isEmailVerified: null,
     isMobileVerified: null,
     twoFactorAuth: null,
-    loginActivity: false, //this is hardcoded need to make api
+    loginActivity: null,
     address: [],
     paymentMethod: [],
     gender: "",
@@ -294,14 +294,15 @@ const MyAccount = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const handleDeleteAccount = async () => {
-    const token = localStorage.getItem('userToken')
+    const token = localStorage.getItem("userToken");
     try {
       setDeleteLoading(true);
-      if(!token){
+      if (!token) {
         return;
       }
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/delete-user`, {},
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/delete-user`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -416,6 +417,80 @@ const MyAccount = () => {
       setMobileOtp("");
     } else {
       errorToast("Please enter a valid 6-digit code");
+    }
+  };
+
+  const [twoFactorAuthLoading, setTwoFactorAuthLoading] = useState(false);
+  // Update Two Factor Auth
+  const updateTwoFactorAuth = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("userToken");
+    try {
+      setTwoFactorAuthLoading(true);
+      if (!token) {
+        return;
+      }
+      setUserData({ ...userData, twoFactorAuth: e.target.checked });
+      const stringTwoFactorAuth = userData.twoFactorAuth ? "false" : "true";
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/user/auth/manage-twofactor-auth `,
+        { twoFactorAuth: stringTwoFactorAuth },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setTwoFactorAuthLoading(false);
+      sucessToast(response.data.message);
+    } catch (error) {
+      setTwoFactorAuthLoading(false);
+      if (error.response.data.message === "jwt expired") {
+        errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
+      } else {
+        console.log(error);
+        errorToast(error.response.data.message);
+      }
+    }
+  };
+
+  const [loginActivityLoading, setLoginActivityLoading] = useState(false);
+  // Update Login Activity
+  const updateLoginActivity = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("userToken");
+    try {
+      setLoginActivityLoading(true);
+      if (!token) {
+        return;
+      }
+      setUserData({ ...userData, loginActivity: e.target.checked });
+      const stringLoginActivity = userData.loginActivity ? "false" : "true";
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/user/auth/manage-login-activity`,
+        { loginActivity: stringLoginActivity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setLoginActivityLoading(false);
+      sucessToast(response.data.message);
+    } catch (error) {
+      setLoginActivityLoading(false);
+      if (error.response.data.message === "jwt expired") {
+        errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
+      } else {
+        console.log(error);
+        errorToast(error.response.data.message);
+      }
     }
   };
 
@@ -1134,248 +1209,270 @@ const MyAccount = () => {
             )}
 
             {/* Security Settings */}
-            <div
-              id="section-security"
-              className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
-            >
-              <div className="flex justify-between items-center p-6 border-b border-gray-200">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800">
-                    Security Settings
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    Manage your password and security preferences
-                  </p>
+            {userLoading ? (
+              <div className="h-[560px] w-full rounded-xl shadow-md bg-gray-300 animate-pulse"></div>
+            ) : (
+              <div
+                id="section-security"
+                className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
+              >
+                <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-800">
+                      Security Settings
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      Manage your password and security preferences
+                    </p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setEditMode({ ...editMode, password: !editMode.password })
+                    }
+                    className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
+                  >
+                    <i
+                      className={`fa-solid ${
+                        editMode.password ? "fa-times" : "fa-pen"
+                      } mr-1`}
+                    ></i>
+                    {editMode.password ? "Cancel" : "Change"}
+                  </button>
                 </div>
-                <button
-                  onClick={() =>
-                    setEditMode({ ...editMode, password: !editMode.password })
-                  }
-                  className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
-                >
-                  <i
-                    className={`fa-solid ${
-                      editMode.password ? "fa-times" : "fa-pen"
-                    } mr-1`}
-                  ></i>
-                  {editMode.password ? "Cancel" : "Change"}
-                </button>
-              </div>
 
-              <div className="p-6">
-                {editMode.password ? (
-                  <form onSubmit={handlePasswordUpdate} className="space-y-4">
-                    <div>
-                      <label
-                        htmlFor="currentPassword"
-                        className="block text-xs font-medium text-gray-700 mb-1"
-                      >
-                        <i className="fa-solid fa-lock text-[var(--primary)] mr-1"></i>
-                        Current Password
-                      </label>
-                      <input
-                        type="password"
-                        id="currentPassword"
-                        value={passwordForm.currentPassword}
-                        onChange={(e) =>
-                          setPasswordForm({
-                            ...passwordForm,
-                            currentPassword: e.target.value,
-                          })
-                        }
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-6">
+                  {editMode.password ? (
+                    <form onSubmit={handlePasswordUpdate} className="space-y-4">
                       <div>
                         <label
-                          htmlFor="newPassword"
+                          htmlFor="currentPassword"
                           className="block text-xs font-medium text-gray-700 mb-1"
                         >
-                          <i className="fa-solid fa-key text-[var(--primary)] mr-1"></i>
-                          New Password
+                          <i className="fa-solid fa-lock text-[var(--primary)] mr-1"></i>
+                          Current Password
                         </label>
                         <input
                           type="password"
-                          id="newPassword"
-                          value={passwordForm.newPassword}
+                          id="currentPassword"
+                          value={passwordForm.currentPassword}
                           onChange={(e) =>
                             setPasswordForm({
                               ...passwordForm,
-                              newPassword: e.target.value,
+                              currentPassword: e.target.value,
                             })
                           }
                           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
                           required
                         />
                       </div>
-                      <div>
-                        <label
-                          htmlFor="confirmPassword"
-                          className="block text-xs font-medium text-gray-700 mb-1"
-                        >
-                          <i className="fa-solid fa-check-double text-[var(--primary)] mr-1"></i>
-                          Confirm New Password
-                        </label>
-                        <input
-                          type="password"
-                          id="confirmPassword"
-                          value={passwordForm.confirmPassword}
-                          onChange={(e) =>
-                            setPasswordForm({
-                              ...passwordForm,
-                              confirmPassword: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end">
-                      <button
-                        type="submit"
-                        className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
-                      >
-                        <i className="fa-solid fa-key mr-1"></i>
-                        Update Password
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-gray-500">Password</p>
-                        <p className="text-sm font-medium">
-                          {userInfo.password}
-                        </p>
-                      </div>
-                      <div className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                        <i className="fa-solid fa-shield-check mr-1"></i>
-                        Secure
-                      </div>
-                    </div>
-
-                    <div className="mt-2 pt-2 border-t border-gray-100">
-                      <p className="text-xs text-gray-500 mb-2">
-                        Additional Security Options
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            id="2fa"
-                            className="h-4 w-4 text-[var(--primary)] rounded border-gray-300 focus:ring-[var(--primary)] cursor-pointer"
-                          />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                           <label
-                            htmlFor="2fa"
-                            className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                            htmlFor="newPassword"
+                            className="block text-xs font-medium text-gray-700 mb-1"
                           >
-                            Enable Two-Factor Authentication
+                            <i className="fa-solid fa-key text-[var(--primary)] mr-1"></i>
+                            New Password
                           </label>
+                          <input
+                            type="password"
+                            id="newPassword"
+                            value={passwordForm.newPassword}
+                            onChange={(e) =>
+                              setPasswordForm({
+                                ...passwordForm,
+                                newPassword: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
+                            required
+                          />
                         </div>
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            id="loginAlert"
-                            className="h-4 w-4 text-[var(--primary)] rounded border-gray-300 focus:ring-[var(--primary)] cursor-pointer"
-                          />
+                        <div>
                           <label
-                            htmlFor="loginAlert"
-                            className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                            htmlFor="confirmPassword"
+                            className="block text-xs font-medium text-gray-700 mb-1"
                           >
-                            Email me about unusual login activity
+                            <i className="fa-solid fa-check-double text-[var(--primary)] mr-1"></i>
+                            Confirm New Password
                           </label>
+                          <input
+                            type="password"
+                            id="confirmPassword"
+                            value={passwordForm.confirmPassword}
+                            onChange={(e) =>
+                              setPasswordForm({
+                                ...passwordForm,
+                                confirmPassword: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
+                            required
+                          />
                         </div>
                       </div>
-                    </div>
-
-                    {/* Login Activity Section */}
-                    <div className="mt-4 pt-3 border-t border-gray-100">
-                      <div className="flex justify-between items-center mb-3">
-                        <p className="text-sm font-medium text-gray-700">
-                          Login Activity
-                        </p>
+                      <div className="flex justify-end">
                         <button
-                          onClick={handleLogoutAllDevices}
-                          className="text-xs text-red-600 hover:text-red-700 font-medium cursor-pointer"
+                          type="submit"
+                          className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                         >
-                          <i className="fa-solid fa-right-from-bracket mr-1"></i>
-                          Logout from all other devices
+                          <i className="fa-solid fa-key mr-1"></i>
+                          Update Password
                         </button>
                       </div>
+                    </form>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500">Password</p>
+                          <p className="text-sm font-medium">**********</p>
+                        </div>
+                        <div className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                          <i className="fa-solid fa-shield-check mr-1"></i>
+                          Secure
+                        </div>
+                      </div>
 
-                      <div className="space-y-3">
-                        {loginActivity.map((session) => (
+                      <div className="mt-2 pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-2">
+                          Additional Security Options
+                        </p>
+                        <div className="space-y-2">
                           <div
-                            key={session.id}
-                            className={`p-3 rounded-lg border ${
-                              session.current
-                                ? "border-green-200 bg-green-50"
-                                : "border-gray-200"
-                            } relative`}
+                            className={`flex items-center ${
+                              twoFactorAuthLoading
+                                ? "pointer-none cursor-not-allowed"
+                                : ""
+                            }`}
                           >
-                            <div className="flex justify-between items-start">
-                              <div className="flex items-start space-x-3">
-                                <div className="mt-0.5">
-                                  <i
-                                    className={`fa-solid ${
-                                      session.device.includes("iPhone") ||
-                                      session.device.includes("Android")
-                                        ? "fa-mobile-screen"
-                                        : "fa-desktop"
-                                    } text-gray-500`}
-                                  ></i>
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium flex items-center">
-                                    {session.device}
-                                    {session.current && (
-                                      <span className="ml-2 text-xs text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
-                                        Current
-                                      </span>
-                                    )}
-                                  </p>
-                                  <div className="flex flex-wrap gap-y-1 gap-x-3 text-xs text-gray-500 mt-1">
-                                    <p>
-                                      <i className="fa-solid fa-globe mr-1"></i>{" "}
-                                      {session.browser}
+                            <input
+                              type="checkbox"
+                              id="2fa"
+                              onChange={updateTwoFactorAuth}
+                              disabled={twoFactorAuthLoading}
+                              checked={userData.twoFactorAuth}
+                              className="h-4 w-4 text-[var(--primary)] rounded border-gray-300 focus:ring-[var(--primary)] cursor-pointer"
+                            />
+                            <label
+                              htmlFor="2fa"
+                              className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                            >
+                              Enable Two-Factor Authentication
+                            </label>
+                          </div>
+                          <div
+                            className={`flex items-center ${
+                              loginActivityLoading
+                                ? "pointer-none cursor-not-allowed"
+                                : ""
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              id="loginAlert"
+                              checked={userData.loginActivity}
+                              onChange={updateLoginActivity}
+                              disabled={loginActivityLoading}
+                              className="h-4 w-4 text-[var(--primary)] rounded border-gray-300 focus:ring-[var(--primary)] cursor-pointer"
+                            />
+                            <label
+                              htmlFor="loginAlert"
+                              className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                            >
+                              Email me about unusual login activity
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Login Activity Section */}
+                      <div className="mt-4 pt-3 border-t border-gray-100">
+                        <div className="flex justify-between items-center mb-3">
+                          <p className="text-sm font-medium text-gray-700">
+                            Login Activity
+                          </p>
+                          <button
+                            onClick={handleLogoutAllDevices}
+                            className="text-xs text-red-600 hover:text-red-700 font-medium cursor-pointer"
+                          >
+                            <i className="fa-solid fa-right-from-bracket mr-1"></i>
+                            Logout from all other devices
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          {loginActivity.map((session) => (
+                            <div
+                              key={session.id}
+                              className={`p-3 rounded-lg border ${
+                                session.current
+                                  ? "border-green-200 bg-green-50"
+                                  : "border-gray-200"
+                              } relative`}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div className="flex items-start space-x-3">
+                                  <div className="mt-0.5">
+                                    <i
+                                      className={`fa-solid ${
+                                        session.device.includes("iPhone") ||
+                                        session.device.includes("Android")
+                                          ? "fa-mobile-screen"
+                                          : "fa-desktop"
+                                      } text-gray-500`}
+                                    ></i>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium flex items-center">
+                                      {session.device}
+                                      {session.current && (
+                                        <span className="ml-2 text-xs text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+                                          Current
+                                        </span>
+                                      )}
                                     </p>
-                                    <p>
-                                      <i className="fa-solid fa-location-dot mr-1"></i>{" "}
-                                      {session.location}
-                                    </p>
-                                    <p>
-                                      <i className="fa-solid fa-network-wired mr-1"></i>{" "}
-                                      {session.ip}
-                                    </p>
-                                    <p>
-                                      <i className="fa-regular fa-clock mr-1"></i>{" "}
-                                      {session.time}
-                                    </p>
+                                    <div className="flex flex-wrap gap-y-1 gap-x-3 text-xs text-gray-500 mt-1">
+                                      <p>
+                                        <i className="fa-solid fa-globe mr-1"></i>{" "}
+                                        {session.browser}
+                                      </p>
+                                      <p>
+                                        <i className="fa-solid fa-location-dot mr-1"></i>{" "}
+                                        {session.location}
+                                      </p>
+                                      <p>
+                                        <i className="fa-solid fa-network-wired mr-1"></i>{" "}
+                                        {session.ip}
+                                      </p>
+                                      <p>
+                                        <i className="fa-regular fa-clock mr-1"></i>{" "}
+                                        {session.time}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
+                                {!session.current && (
+                                  <button
+                                    onClick={() =>
+                                      handleLogoutDevice(session.id)
+                                    }
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 hover:text-red-700 font-medium cursor-pointer bg-red-50 hover:bg-red-100 p-2.5 rounded-full w-9 h-9 flex items-center justify-center"
+                                    title="Logout from this device"
+                                  >
+                                    <i className="fa-solid fa-right-from-bracket text-base"></i>
+                                  </button>
+                                )}
                               </div>
-                              {!session.current && (
-                                <button
-                                  onClick={() => handleLogoutDevice(session.id)}
-                                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 hover:text-red-700 font-medium cursor-pointer bg-red-50 hover:bg-red-100 p-2.5 rounded-full w-9 h-9 flex items-center justify-center"
-                                  title="Logout from this device"
-                                >
-                                  <i className="fa-solid fa-right-from-bracket text-base"></i>
-                                </button>
-                              )}
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Address Book */}
             <div
