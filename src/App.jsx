@@ -59,7 +59,7 @@ function App() {
     }
   };
 
-  const validateUserEveryTime = () => {
+  const validateUserEveryTime = async () => {
     const token = localStorage.getItem("userToken");
     if (!token) {
       dispatch(logoutUser());

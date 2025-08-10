@@ -46,11 +46,17 @@ const MyAccount = () => {
       console.log("response", response.data.user);
     } catch (error) {
       // setUserLoading(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
-        errorToast("Something Went Wrong, Failed to get Data!!");
+        errorToast(
+          error.response.data.message ||
+            "Something Went Wrong, Failed to get Data!!"
+        );
         console.log(error);
       }
     }
@@ -82,6 +88,9 @@ const MyAccount = () => {
     gender: "",
     isEmailVerified: null,
     isMobileVerified: null,
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
   useEffect(() => {
@@ -211,13 +220,6 @@ const MyAccount = () => {
     }
   };
 
-  // Form state for password change
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-
   const [userProfileUpdateLoading, setUserProfileUpdateLoading] =
     useState(false);
   // Handle profile update
@@ -264,30 +266,94 @@ const MyAccount = () => {
       setEditMode({ ...editMode, profile: false });
     } catch (error) {
       setUserProfileUpdateLoading(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
-        errorToast("Failed to Update Profile!!");
+        errorToast(error.response.data.message ||"Failed to Update Profile!!");
         console.log(error);
       }
     }
   };
 
+  const [passwordLoading, setPasswordLoading] = useState(false);
   // Handle password update
-  const handlePasswordUpdate = (e) => {
+  const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      errorToast("Passwords do not match!");
+    const token = localStorage.getItem("userToken");
+    if (!token) {
       return;
     }
-    sucessToast("Password updated successfully!");
-    setEditMode({ ...editMode, password: false });
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
+    if (
+      !userData.currentPassword ||
+      !userData.newPassword ||
+      !userData.confirmNewPassword
+    ) {
+      errorToast("All Fields are Required !!");
+      return;
+    }
+
+    if (
+      userData.currentPassword.length < 6 ||
+      userData.newPassword.length < 6
+    ) {
+      errorToast("Password must be greater than 6 characters");
+      return;
+    }
+
+    if (userData.newPassword !== userData.confirmNewPassword) {
+      errorToast("New Password and Confirm password not matching!");
+      return;
+    }
+
+    if (userData.currentPassword === userData.newPassword) {
+      errorToast("New Password and Current password can not be same!");
+      return;
+    }
+    try {
+      setPasswordLoading(true);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/change-password`,
+        {
+          currentPassword: userData.currentPassword,
+          newPassword: userData.newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response);
+      setPasswordLoading(false);
+      setEditMode({ ...editMode, password: false });
+      sucessToast("Password Updated Successfully!!");
+      setUserData({
+        ...userData,
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
+    } catch (error) {
+      setPasswordLoading(false);
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
+        errorToast("Session Expired!! Please Login again");
+        dispatch(logoutUser());
+      } else {
+        errorToast(
+          error.response.data.message ||
+            "Something Went Wrong, Failed to update password!!"
+        );
+        console.log(error);
+      }
+    }
   };
 
   // Handle account deletion confirmation
@@ -316,12 +382,15 @@ const MyAccount = () => {
     } catch (error) {
       setDeleteLoading(false);
       setShowDeleteConfirm(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
         console.log(error);
-        errorToast(error.response.data.message);
+        errorToast(error.response.data.message|| "Something Went wrong, Failed to Delete account");
       }
     }
   };
@@ -349,11 +418,17 @@ const MyAccount = () => {
       setEmailLoading(false);
     } catch (error) {
       setEmailLoading(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
-        errorToast("Something Went Wrong, Failed to send OTP!!");
+        errorToast(
+          error.response.data.message ||
+            "Something Went Wrong, Failed to send OTP!!"
+        );
         console.log(error);
       }
     }
@@ -387,12 +462,15 @@ const MyAccount = () => {
       setEmailOtp("");
     } catch (error) {
       setEmailOtpLoading(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
         console.log(error);
-        errorToast(error.response.data.message);
+        errorToast(error.response.data.message || "Something went wrong, Failed to verify email");
       }
     }
   };
@@ -447,12 +525,15 @@ const MyAccount = () => {
       sucessToast(response.data.message);
     } catch (error) {
       setTwoFactorAuthLoading(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
         console.log(error);
-        errorToast(error.response.data.message);
+        errorToast(error.response.data.message||"Something went wrong, Failed to change 2FA");
       }
     }
   };
@@ -484,12 +565,15 @@ const MyAccount = () => {
       sucessToast(response.data.message);
     } catch (error) {
       setLoginActivityLoading(false);
-      if (error.response.data.message === "jwt expired") {
+      if (
+        error.response.data.message === "jwt expired" ||
+        error.response.data.message === "invalid token"
+      ) {
         errorToast("Session Expired!! Please Login again");
         dispatch(logoutUser());
       } else {
         console.log(error);
-        errorToast(error.response.data.message);
+        errorToast(error.response.data.message || "Something went wrong, Failed to update login Activity");
       }
     }
   };
@@ -1254,10 +1338,11 @@ const MyAccount = () => {
                         <input
                           type="password"
                           id="currentPassword"
-                          value={passwordForm.currentPassword}
+                          value={userData.currentPassword}
+                          disabled={passwordLoading}
                           onChange={(e) =>
-                            setPasswordForm({
-                              ...passwordForm,
+                            setUserData({
+                              ...userData,
                               currentPassword: e.target.value,
                             })
                           }
@@ -1277,10 +1362,11 @@ const MyAccount = () => {
                           <input
                             type="password"
                             id="newPassword"
-                            value={passwordForm.newPassword}
+                            value={userData.newPassword}
+                            disabled={passwordLoading}
                             onChange={(e) =>
-                              setPasswordForm({
-                                ...passwordForm,
+                              setUserData({
+                                ...userData,
                                 newPassword: e.target.value,
                               })
                             }
@@ -1299,11 +1385,12 @@ const MyAccount = () => {
                           <input
                             type="password"
                             id="confirmPassword"
-                            value={passwordForm.confirmPassword}
+                            disabled={passwordLoading}
+                            value={userData.confirmNewPassword}
                             onChange={(e) =>
-                              setPasswordForm({
-                                ...passwordForm,
-                                confirmPassword: e.target.value,
+                              setUserData({
+                                ...userData,
+                                confirmNewPassword: e.target.value,
                               })
                             }
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-transparent cursor-text"
@@ -1313,11 +1400,20 @@ const MyAccount = () => {
                       </div>
                       <div className="flex justify-end">
                         <button
+                          disabled={passwordLoading}
                           type="submit"
-                          className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                          className="bg-gradient-to-r w-[179px] from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                         >
-                          <i className="fa-solid fa-key mr-1"></i>
-                          Update Password
+                          {passwordLoading ? (
+                            <div className="flex items-center justify-center h-full">
+                              <div className="w-4 h-4 border-4 border-gray-300 border-t-[var(--primary)] rounded-full animate-spin"></div>
+                            </div>
+                          ) : (
+                            <>
+                              <i className="fa-solid fa-key mr-1"></i>
+                              Update Password
+                            </>
+                          )}
                         </button>
                       </div>
                     </form>
