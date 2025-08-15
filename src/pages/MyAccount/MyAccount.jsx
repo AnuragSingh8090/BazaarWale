@@ -259,7 +259,7 @@ const MyAccount = () => {
         mobile: userInfo.mobile,
         gender: userInfo.gender,
         isMobileVerified: userInfo.isMobileVerified,
-        isMobileVerified: userInfo.isMobileVerified,
+        isEmailVerified: userInfo.isEmailVerified,
       });
       setUserProfileUpdateLoading(false);
       sucessToast("Profile updated successfully!");
@@ -540,7 +540,7 @@ const MyAccount = () => {
 
   const [loginActivityLoading, setLoginActivityLoading] = useState(false);
   // Update Login Activity
-  const updateLoginActivity = async (e) => {
+  const updateLoginActivity = async (e) => {  
     e.preventDefault();
     const token = localStorage.getItem("userToken");
     try {
