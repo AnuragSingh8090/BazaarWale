@@ -40,6 +40,7 @@ const MyAccount = () => {
         isEmailVerified: user.isEmailVerified,
         isMobileVerified: user.isMobileVerified,
         twoFactorAuth: user.twoFactorAuth,
+        loginActivity: user.loginActivity,
         gender: user.gender,
       });
       setUserLoading(false);
@@ -1467,9 +1468,9 @@ const MyAccount = () => {
                             <input
                               type="checkbox"
                               id="loginAlert"
-                              checked={userData.loginActivity}
                               onChange={updateLoginActivity}
                               disabled={loginActivityLoading}
+                              checked={userData.loginActivity}
                               className="h-4 w-4 text-[var(--primary)] rounded border-gray-300 focus:ring-[var(--primary)] cursor-pointer"
                             />
                             <label
