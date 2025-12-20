@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
@@ -21,16 +21,30 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const abortControllerRef = useRef(null);
+
   function redirectHome() {
     setTimeout(() => {
       navigate("/");
     }, 1000);
   }
 
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
   const handleRegister = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
       const user = {
         name: Register.fullname,
         email: Register.email,
@@ -40,7 +54,8 @@ const Register = () => {
       };
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
-        user
+        user,
+        { signal: abortControllerRef.current.signal }
       );
       const { token } = response.data;
       const { name, email, cart, userId } = response.data.user;
@@ -64,6 +79,7 @@ const Register = () => {
       redirectHome();
     } catch (error) {
       setLoading(false);
+      if (error.message === 'canceled') return;
       errorToast(error.response.data.message || "Something went wrong");
       console.log(error);
     }
@@ -367,6 +383,7 @@ const Register = () => {
               </button>
 
               <button
+              type="button"
                 onClick={() => navigate("/")}
                 className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer`}
               >

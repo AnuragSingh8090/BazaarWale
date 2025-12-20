@@ -36,6 +36,8 @@ const Login = () => {
     useRef(null),
   ];
 
+  const abortControllerRef = useRef(null);
+
   useEffect(() => {
     let interval;
     if (resendTimer > 0) {
@@ -51,6 +53,16 @@ const Login = () => {
     };
   }, [resendTimer]);
 
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+
+
   function redirectLogin() {
     setTimeout(() => {
       navigate("/");
@@ -61,13 +73,18 @@ const Login = () => {
     try {
       e.preventDefault();
       setLoading(true);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
       const user = {
         email: Login.email,
         password: Login.password,
       };
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-        user
+        user,
+        { signal: abortControllerRef.current.signal }
       );
       const { token } = response.data;
       const { name, email, cart, userId } = response.data.user;
@@ -89,10 +106,11 @@ const Login = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      if (error.message === 'canceled') return;
       errorToast(
         error.response ? error.response.data.message : "Something went wrong"
       );
-      console.log(error);
+      console.log("Error",error);
     }
   };
 
@@ -171,11 +189,16 @@ const Login = () => {
 
     try {
       setLoading(true);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
       const response = await axios.post(
         `${
           import.meta.env.VITE_BACKEND_URL
         }/api/auth/validateresetpasswordemail`,
-        { email: resetEmail }
+        { email: resetEmail },
+        { signal: abortControllerRef.current.signal }
       );
 
       if (response.status === 200) {
@@ -187,6 +210,7 @@ const Login = () => {
       }
     } catch (error) {
       setLoading(false);
+      if (error.message === 'canceled') return;
       errorToast(
         error.response ? error.response.data.message : "Failed to send OTP"
       );
@@ -205,9 +229,14 @@ const Login = () => {
 
     try {
       setLoading(true);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordotp`,
-        { email: resetEmail, otp: otpString }
+        { email: resetEmail, otp: otpString },
+        { signal: abortControllerRef.current.signal }
       );
       if (response.status === 200) {
         setLoading(false);
@@ -216,6 +245,7 @@ const Login = () => {
         setForgotPasswordStep(3);
       }
     } catch (error) {
+      if (error.message === 'canceled') return;
       setLoading(false);
       setOtpStatus("error");
       setOtp(["", "", "", "", "", ""]);
@@ -254,9 +284,14 @@ const Login = () => {
       }
 
       setLoading(true);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`,
-        { email: resetEmail, password: newPassword }
+        { email: resetEmail, password: newPassword },
+        { signal: abortControllerRef.current.signal }
       );
 
       if (response.status === 200) {
@@ -270,6 +305,7 @@ const Login = () => {
         setConfirmPassword("");
       }
     } catch (error) {
+      if (error.message === 'canceled') return;
       setLoading(false);
       errorToast(
         error.response
@@ -292,6 +328,10 @@ const Login = () => {
   };
 
   const toggleForgotPassword = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setLoading(false);
     setShowForgotPassword(!showForgotPassword);
     setForgotPasswordStep(1);
     setResetEmail("");
@@ -318,11 +358,16 @@ const Login = () => {
 
     try {
       setLoading(true);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
       const response = await axios.post(
         `${
           import.meta.env.VITE_BACKEND_URL
         }/api/auth/validateresetpasswordemail`,
-        { email: resetEmail }
+        { email: resetEmail },
+        { signal: abortControllerRef.current.signal }
       );
 
       if (response.status === 200) {
@@ -332,6 +377,7 @@ const Login = () => {
         setResendTimer(30);
       }
     } catch (error) {
+      if (error.message === 'canceled') return;
       setLoading(false);
       errorToast(
         error.response ? error.response.data.message : "Failed to send OTP"
@@ -489,6 +535,7 @@ const Login = () => {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => navigate("/")}
                   className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer`}
                 >
