@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -22,61 +22,33 @@ import { Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser, logoutUser, loginStart } from "./store/slices/userSlice";
-import axios from "axios";
 import checkBackendConnection from "./services/checkBackendConnection";
+import loginInterceptor from "./services/loginIntercepter";
 
 function App() {
-  const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
+  const isLoading = useSelector((state) => state.user.loading);
   const isLoggedin = useSelector((state) => state.user.isLoggedin);
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/register";
-  const isUserLoading = useSelector((state) => state.user.loading);
+  const isAuthPage =location.pathname === "/login" || location.pathname === "/register";
 
-  const ValidateUserLogin = async () => {
-    const token = localStorage.getItem("userToken");
-    if (!token) {
-      dispatch(logoutUser());
-      return;
-    }
 
-    try {
-      dispatch(loginStart());
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/userdatabasic`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const { name, email, userId, cart } = response.data.user;
-      dispatch(loginUser({ name, email, userId, cart, token }));
-    } catch (error) {
-      dispatch(logoutUser());
-    }
-  };
-
-  const validateUserEveryTime = async () => {
-    const token = localStorage.getItem("userToken");
-    if (!token) {
-      dispatch(logoutUser());
-      return;
-    }
-  };
-
-  useEffect(() => {
-    validateUserEveryTime();
-  }, [location.pathname]);
+  loginInterceptor();
 
   useEffect(() => {
     checkBackendConnection();
-    ValidateUserLogin();
   }, []);
 
-  if (isUserLoading) {
+  useEffect(()=>{
+    localStorage.setItem('Last Path',location.pathname)
+    navigate(localStorage.getItem('Last Path'))
+    localStorage.removeItem('Last Path')
+  },[])
+
+
+
+
+  if (isLoading) {
     return <LoadingPage />;
   }
 
@@ -88,27 +60,27 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route
           path="/login"
-          element={isLoggedin ? <Navigate to="/" /> : <Login />}
+          element={isLoggedin ? <Navigate to="/"  /> : <Login />} 
         />
-        <Route path="/electronics" element={<Products />} />
         <Route
           path="/register"
-          element={isLoggedin ? <Navigate to="/" /> : <Register />}
+          element={isLoggedin ? <Navigate to="/"  /> : <Register />}
         />
+        <Route path="/electronics" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/about_us" element={<About_Us />} />
         <Route path="/terms_conditions" element={<Terms_Conditions />} />
         <Route path="/faq" element={<FAQ />} />
-        <Route path="/wishlist" element={isLoggedin ? <Wishlist /> : <Navigate to="/login" />} />
+        <Route path="/wishlist" element={  isLoggedin ? <Wishlist /> : <Navigate to="/login"  />} />
         <Route path="/privacy_policy" element={<Privacy_Policy />} />
         <Route
           path="/cancellation_return_policy"
           element={<Cancellation_Return_Policy />}
         />
-        <Route path="/account" element={isLoggedin ? <MyAccount /> : <Navigate to="/login" />} />
-        <Route path="/orders" element={isLoggedin ? <Orders /> : <Navigate to="/login" />} />
+        <Route path="/account" element={  isLoggedin ? <MyAccount /> : <Navigate to="/login"  />} />
+        <Route path="/orders" element={  isLoggedin ? <Orders /> : <Navigate to="/login"  />} />
         <Route path="*" element={<Error />} />
       </Routes>
       <ToastContainer />

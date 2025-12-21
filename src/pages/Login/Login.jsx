@@ -5,6 +5,7 @@ import { ImSpinner8 } from "react-icons/im";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginStart, loginUser } from "../../store/slices/userSlice";
+import apiService from "../../services/apiService";
 
 const Login = () => {
   const [Login, setLogin] = useState({ email: "", password: "" });
@@ -62,13 +63,6 @@ const Login = () => {
   }, []);
 
 
-
-  function redirectLogin() {
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
-  }
-
   const handleLogin = async (e) => {
     try {
       e.preventDefault();
@@ -81,13 +75,15 @@ const Login = () => {
         email: Login.email,
         password: Login.password,
       };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-        user,
-        { signal: abortControllerRef.current.signal }
-      );
-      const { token } = response.data;
-      const { name, email, cart, userId } = response.data.user;
+      // const response = await axios.post(
+      //   `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+      //   user,
+      //   { signal: abortControllerRef.current.signal }
+      // );
+
+      const response = await apiService.loginUser(user, abortControllerRef.current.signal);
+      const  token  = response.token;
+      const { name, email, cart, userId } = response.user;
       sucessToast("Login Successfully !!");
       dispatch(loginStart());
 
@@ -102,7 +98,7 @@ const Login = () => {
           })
         );
         navigate("/");
-      }, 1500);
+      }, 1000);
       setLoading(false);
     } catch (error) {
       setLoading(false);

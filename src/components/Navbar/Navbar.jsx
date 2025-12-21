@@ -26,7 +26,7 @@ const Navbar = () => {
     setShowDrop(false);
     dispatch(logoutUser());
     sucessToast("Logout Successfull!!");
-    navigate("/login");
+    navigate("/");
   };
   const showAccountMenu = () => {
     setShowDrop(true);

@@ -44,7 +44,7 @@ const MyAccount = () => {
         gender: user.gender,
       });
       setUserLoading(false);
-      console.log("response", response.data.user);
+      // console.log("response", response.data.user);
     } catch (error) {
       // setUserLoading(false);
       if (
