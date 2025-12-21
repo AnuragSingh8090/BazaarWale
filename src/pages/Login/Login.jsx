@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import { ImSpinner8 } from "react-icons/im";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginStart, loginUser } from "../../store/slices/userSlice";
 import apiService from "../../services/apiService";
@@ -75,12 +74,6 @@ const Login = () => {
         email: Login.email,
         password: Login.password,
       };
-      // const response = await axios.post(
-      //   `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-      //   user,
-      //   { signal: abortControllerRef.current.signal }
-      // );
-
       const response = await apiService.loginUser(user, abortControllerRef.current.signal);
       const  token  = response.token;
       const { name, email, cart, userId } = response.user;
@@ -189,18 +182,11 @@ const Login = () => {
         abortControllerRef.current.abort();
       }
       abortControllerRef.current = new AbortController();
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/auth/validateresetpasswordemail`,
-        { email: resetEmail },
-        { signal: abortControllerRef.current.signal }
-      );
-
-      if (response.status === 200) {
+      const response = await apiService.validateResetPasswordEmail({ email: resetEmail }, abortControllerRef.current.signal)
+      if (response.success ) {
         setLoading(false);
-        sucessToast(response.data.message);
-        setResetEmailorMobile(response.data.message);
+        sucessToast(response.message);
+        setResetEmailorMobile(response.message);
         setForgotPasswordStep(2);
         setResendTimer(30);
       }
@@ -229,20 +215,16 @@ const Login = () => {
         abortControllerRef.current.abort();
       }
       abortControllerRef.current = new AbortController();
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordotp`,
-        { email: resetEmail, otp: otpString },
-        { signal: abortControllerRef.current.signal }
-      );
-      if (response.status === 200) {
+      const response = await apiService.validateResetPasswordOtp({ email: resetEmail, otp: otpString }, abortControllerRef.current.signal)
+      if (response.success) {
         setLoading(false);
         setOtpStatus("success");
         sucessToast("OTP verified successfully");
         setForgotPasswordStep(3);
       }
     } catch (error) {
-      if (error.message === 'canceled') return;
       setLoading(false);
+      if (error.message === 'canceled') return;
       setOtpStatus("error");
       setOtp(["", "", "", "", "", ""]);
       otpRefs[0].current.focus();
@@ -284,11 +266,7 @@ const Login = () => {
         abortControllerRef.current.abort();
       }
       abortControllerRef.current = new AbortController();
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`,
-        { email: resetEmail, password: newPassword },
-        { signal: abortControllerRef.current.signal }
-      );
+      const response = await apiService.resetPassword({ email: resetEmail, password: newPassword }, abortControllerRef.current.signal)
 
       if (response.status === 200) {
         setLoading(false);
@@ -358,23 +336,17 @@ const Login = () => {
         abortControllerRef.current.abort();
       }
       abortControllerRef.current = new AbortController();
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/auth/validateresetpasswordemail`,
-        { email: resetEmail },
-        { signal: abortControllerRef.current.signal }
-      );
+      const response = await apiService.validateResetPasswordEmail({ email: resetEmail }, abortControllerRef.current.signal)
 
-      if (response.status === 200) {
+      if (response.success) {
         setLoading(false);
         sucessToast(`OTP has been sent to ${resetEmail}`);
         setForgotPasswordStep(2);
         setResendTimer(30);
       }
     } catch (error) {
-      if (error.message === 'canceled') return;
       setLoading(false);
+      if (error.message === 'canceled') return;
       errorToast(
         error.response ? error.response.data.message : "Failed to send OTP"
       );

@@ -51,6 +51,42 @@ const apiService = {
     }
   },
 
+  validateResetPasswordEmail: async (data, signal = null) => {
+    try {
+      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordemail`, data, headerData
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+
+  validateResetPasswordOtp: async (data, signal = null) => {
+    try {
+      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordotp`, data, headerData
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+  resetPassword: async (data, signal = null) => {
+    try {
+      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`, data, headerData
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+
+
   
 };
 
