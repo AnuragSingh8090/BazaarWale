@@ -1,6 +1,8 @@
 import "./Footer.css";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Footer = () => {
+  const contactDetails = useSelector((state) => state.contact);
   return (
     <div className="footer bg-[var(--primary)]  w-full text-[white] px-[15px] py-[10px] flex flex-col items-center md:px-[30px] md:py-[20px] lg:py-[10px]">
       <div className="w-full lg:w-[90%] xl:w-[80%]">
@@ -64,32 +66,52 @@ const Footer = () => {
               Contact US
             </h2>
             <ul className=" text-gray-300  flex  flex-col gap-1   text-[14px] font-light mt-2 ">
-              <li className="hover:text-white flex items-center gap-2">
-                <i className="fa-solid fa-phone text-12"></i>+91 8090674352
-              </li>
+              {contactDetails.mobileNumber ? (
+                <li className="hover:text-white flex items-center gap-2">
+                  <i className="fa-solid fa-phone text-12"></i>
+                  {contactDetails.mobileNumber}
+                </li>
+              ) : null}
 
-              <li className="hover:text-white flex items-center gap-2">
-                <i className="fa-brands fa-whatsapp text-12"></i>+91 8090674352
-              </li>
+              {contactDetails.whatsAppNumber ? (
+                <li className="hover:text-white flex items-center gap-2">
+                  <i className="fa-brands fa-whatsapp text-12"></i>
+                  {contactDetails.whatsAppNumber}
+                </li>
+              ) : null}
 
-              <li className="hover:text-white flex items-center gap-2">
-                <i className="fa-solid fa-envelope text-12 "></i>
-                anuragkumarsingh154@gmail.com
-              </li>
+              {contactDetails.emailId ? (
+                <li className="hover:text-white flex items-center gap-2">
+                  <i className="fa-brands fa-at text-12"></i>
+                  {contactDetails.emailId}
+                </li>
+              ) : null}
+
             </ul>
             <div className="flex items-center gap-3 mt-4">
-              <a href="https://www.instagram.com/" target="_blank">
+              {
+                contactDetails.socialUrl.instagram ? (
+              <a href={contactDetails.socialUrl.instagram} target="_blank">
                 <i
                   className="text-gray-300 text-[20px] pointer hover:text-white fa-brands fa-instagram"
                   title="Instagram"
                 ></i>
               </a>
-              <a href="https://www.facebook.com/" target="_blank">
+
+                ) : null
+              }
+              {
+                contactDetails.socialUrl.facebook ? (
+              <a href={contactDetails.socialUrl.facebook} target="_blank">
                 <i
                   className="text-gray-300 text-[20px] pointer hover:text-white fa-brands fa-facebook"
                   title="Facebook"
                 ></i>
               </a>
+
+                ) : null
+              }
+
               <a href="https://www.linkedin.com/" target="_blank">
                 <i
                   className="text-gray-300 text-[20px] pointer hover:text-white fa-brands fa-linkedin"
@@ -107,8 +129,8 @@ const Footer = () => {
         </section>
 
         <p className="text-[#f2f3f3] font-light text-[12px] w-full  text-center">
-          Copyright ©2025 All rights reserved. BaazaarWale pvt Ltd. | Service is
-          made by <b>Anurag Kumar Singh</b>
+          Copyright ©{contactDetails.copyrightYear} All rights reserved. {contactDetails.brandName} pvt Ltd. | Website is
+          made by <b>{contactDetails.owner}</b>
         </p>
       </div>
     </div>

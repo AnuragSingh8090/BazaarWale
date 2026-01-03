@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import { ImSpinner8 } from "react-icons/im";
-import axios from "axios";
+import apiService from "../../services/apiService";
+import { useSelector } from "react-redux";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const contactDetails = useSelector(state => state.contact)
 
   const handleSubmit = async (e) => {
     try {
@@ -25,10 +27,7 @@ const Contact = () => {
         message: Contact.message,
       };
 
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/contact`,
-        message
-      );
+      const response = await apiService.contactUs(message)
       setLoading(false);
       sucessToast(
         `Thank You ${Contact.fullname} 👏, Your message sent Sucessfully !!`
@@ -72,12 +71,17 @@ const Contact = () => {
               <p className="text-gray-600 text-center text-xs">
                 Mon-Sat: 9:00 AM - 6:00 PM
               </p>
+              {
+                contactDetails.mobileNumber &&  (
               <a
-                href="tel:+918090674352"
+                href={"tel:+91"+ contactDetails.mobileNumber}
                 className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline"
               >
-                +91 8090674352
+                +91 {contactDetails.mobileNumber}
               </a>
+                ) 
+              }
+
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
@@ -88,12 +92,15 @@ const Contact = () => {
               <p className="text-gray-600 text-center text-xs">
                 We'll respond within 24 hours
               </p>
-              <a
-                href="mailto:support@bazaarwale.com"
-                className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline"
-              >
-                support@bazaarwale.com
-              </a>
+{contactDetails?.emailId && (
+  <a
+    href={`mailto:${contactDetails.emailId}`}
+    className="text-[var(--primary)] font-medium mt-1 text-sm hover:underline"
+  >
+    {contactDetails.emailId}
+  </a>
+)}
+
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
@@ -102,10 +109,10 @@ const Contact = () => {
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Visit Us</h3>
               <p className="text-gray-600 text-center text-xs">
-                BazaarWale Headquarters
+                {contactDetails.brandName}
               </p>
               <p className="text-[var(--primary)] font-medium mt-1 text-center text-xs">
-                123 E-Commerce Plaza, Digital Lane, Tech City - 560001
+                {`${contactDetails.address.houseNo}, ${contactDetails.address.street}, ${contactDetails.address.city}, ${contactDetails.address.state} - ${contactDetails.address.pincode}`}
               </p>
             </div>
           </div>
@@ -248,30 +255,42 @@ const Contact = () => {
                   Connect with us:
                 </p>
                 <div className="flex space-x-2 justify-center">
-                  <a
-                    href="#"
+                  {
+                    contactDetails.socialUrl.facebook && 
+                  <a target="_blank"
+                    href={contactDetails.socialUrl.facebook}
                     className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
                   >
                     <i className="fa-brands fa-facebook-f text-xs"></i>
                   </a>
-                  <a
-                    href="#"
+                  }
+                  {
+                    contactDetails.socialUrl.twitter && 
+                  <a target="_blank"
+                    href={contactDetails.socialUrl.twitter}
                     className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
                   >
                     <i className="fa-brands fa-twitter text-xs"></i>
                   </a>
-                  <a
-                    href="#"
+                  }
+                  {
+                    contactDetails.socialUrl.instagram && 
+                  <a target="_blank"
+                    href={contactDetails.socialUrl.instagram}
                     className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
                   >
                     <i className="fa-brands fa-instagram text-xs"></i>
                   </a>
-                  <a
-                    href="#"
+                  }
+                  {
+                    contactDetails.socialUrl.linkedin && 
+                  <a target="_blank"
+                    href={contactDetails.socialUrl.linkedin}
                     className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
                   >
                     <i className="fa-brands fa-linkedin-in text-xs"></i>
                   </a>
+                  }
                 </div>
               </div>
             </div>

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { errorToast, sucessToast } from "../Toasters/Toasters";
 import axios from "axios";
+import apiService from "../../services/apiService";
+import { Link } from "react-router-dom";
 
 export default function SubscribeEmail() {
   const [email, setEmail] = useState("");
@@ -28,11 +30,7 @@ export default function SubscribeEmail() {
         return;
       }
       setStatus("loading");
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/newsletter`,
-        { email }
-      );
+      const response = await apiService.newsletter({ email });
 
       if (response) {
         setStatus("success");
@@ -174,26 +172,24 @@ export default function SubscribeEmail() {
                 </div>
 
                 <div className="mt-6 text-center">
-                  <p className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 flex gap-2 justify-center items-center text-center">
                     By subscribing, you agree to our{" "}
-                    <a
-                      href="#"
-                      className="text-blue-600 hover:text-blue-500 underline"
-                    >
-                      Privacy Policy
-                    </a>{" "}
+                    <Link to="/privacy_policy">
+                      <p className="text-blue-600 hover:text-blue-500 underline cursor-pointer">
+                        Privacy Policy
+                      </p>
+                    </Link>{" "}
                     and{" "}
-                    <a
-                      href="#"
-                      className="text-blue-600 hover:text-blue-500 underline"
-                    >
-                      Terms of Service
-                    </a>
-                  </p>
+                    <Link to="/terms_conditions">
+                      <p className="text-blue-600 hover:text-blue-500 underline">
+                        Terms of Service
+                      </p>
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Trust indicators */}
-                <div className="mt-8 pt-6 border-t border-gray-100">
+                <div className="mt-8 hidden pt-6 border-t border-gray-100">
                   <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
                     <div className="flex items-center">
                       <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>

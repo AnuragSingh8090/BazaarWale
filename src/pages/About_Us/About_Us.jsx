@@ -1,7 +1,9 @@
 import "./About_Us.css";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { useSelector } from "react-redux";
 
 const About_Us = () => {
+  const isLoggedIn = useSelector(state => state.user.isLoggedIn)
   return (
     <div className="about-us-container py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto text-[15px]">
       <ScrollToTop />
@@ -272,6 +274,8 @@ const About_Us = () => {
       </div>
 
       {/* Call to Action */}
+      {
+       !isLoggedIn &&
       <div className="cta-section bg-gradient-to-r from-[var(--primary)] to-[#4a9eff] text-white p-8 md:p-12 rounded-xl text-center shadow-lg transform hover:scale-[1.005] transition-transform duration-300">
         <h2 className="text-xl md:text-2xl font-bold mb-4">
           Join the BaazaarWale Family
@@ -295,6 +299,7 @@ const About_Us = () => {
           </a>
         </div>
       </div>
+      }
     </div>
   );
 };

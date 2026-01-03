@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
-import axios from "axios";
+import apiService from "../../services/apiService";
 import { useDispatch } from "react-redux";
 import { loginUser, loginStart } from "../../store/slices/userSlice";
 
@@ -52,13 +52,11 @@ const Register = () => {
         gender: Register.gender,
         mobile: Register.mobile,
       };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`,
-        user,
-        { signal: abortControllerRef.current.signal }
-      );
-      const { token } = response.data;
-      const { name, email, cart, userId } = response.data.user;
+
+
+      const response = await apiService.registerUser(user, abortControllerRef.current.signal);
+      const token  = response;
+      const { name, email, cart, userId } = response.user;
       sucessToast("Account Created Successfully !!");
       dispatch(loginStart());
       setTimeout(() => {

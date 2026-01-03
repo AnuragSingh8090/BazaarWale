@@ -17,6 +17,7 @@ const handleError = (error) => {
     errMessage === "Unauthorized" ||
     errMessage === "Invalid Token" ||
     errMessage === "jwt expired" ||
+    errMessage === "jwt malformed" ||
     errMessage === "Token is required"
   ) {
     errorToast("Session Expired. Please login again.");
@@ -27,7 +28,7 @@ const handleError = (error) => {
 };
 
 const apiService = {
-  getBasicUserData: async (signal = null) => {
+  getBasicUserData: async (signal = false) => {
     try {
       const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
       const response = await axios.get(
@@ -39,7 +40,7 @@ const apiService = {
     }
   },
 
-  loginUser: async (data, signal = null) => {
+  loginUser: async (data, signal = false) => {
     try {
       const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
       const response = await axios.post(
@@ -51,7 +52,7 @@ const apiService = {
     }
   },
 
-  validateResetPasswordEmail: async (data, signal = null) => {
+  validateResetPasswordEmail: async (data, signal = false) => {
     try {
       const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
       const response = await axios.post(
@@ -63,7 +64,7 @@ const apiService = {
     }
   },
 
-  validateResetPasswordOtp: async (data, signal = null) => {
+  validateResetPasswordOtp: async (data, signal = false) => {
     try {
       const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
       const response = await axios.post(
@@ -74,11 +75,44 @@ const apiService = {
       handleError(error);
     }
   },
-  resetPassword: async (data, signal = null) => {
+  resetPassword: async (data, signal = false) => {
     try {
       const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`, data, headerData
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+  registerUser: async (data, signal = false) => {
+    try {
+      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, data, headerData
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+  newsletter: async (data, signal = false) => {
+    try {
+      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/newsletter`, data, headerData
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+  contactUs: async (data, signal = false) => {
+    try {
+      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/contact`, data, headerData
       );
       return response.data;
     } catch (error) {
