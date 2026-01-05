@@ -78,8 +78,8 @@ const Register = () => {
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
-      errorToast(error.response.data.message || "Something went wrong");
-      console.log(error);
+      errorToast(error.response?.data?.message || "Registration failed");
+      console.error("Registration error:", error);
     }
   };
 

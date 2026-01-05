@@ -1,11 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { logoutUser, updateUserData } from "../../store/slices/userSlice";
+import apiService from "../../services/apiService";
 
 const MyAccount = () => {
+  const dispatch = useDispatch();
+  const upiLogoPath = "/upi.svg";
+  const activeNavStyle = `
+    .section-transition {
+     transition: all 0.3s ease-in-out;
+    }
+    .section-active {
+      box-shadow: 0 0 10px rgba(0, 100, 255, 0.1);
+      transform: translateY(-2px);
+    }
+  `;
+  const sections = [
+    { id: "profile", title: "Profile Information", icon: "fa-user" },
+    { id: "security", title: "Security Settings", icon: "fa-shield-halved" },
+    { id: "addresses", title: "Address Book", icon: "fa-map-location-dot" },
+    // { id: "payments", title: "Payment Methods", icon: "fa-credit-card" },
+    { id: "orders", title: "My Orders", icon: "fa-box" },
+    { id: "wishlist", title: "My Wishlist", icon: "fa-heart" },
+  ];
+
   const [userLoading, setUserLoading] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -19,69 +39,6 @@ const MyAccount = () => {
     paymentMethod: [],
     gender: "",
   });
-
-  const fetchUserData = async () => {
-    const token = localStorage.getItem("userToken");
-    try {
-      setUserLoading(true);
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/userdata`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const user = response.data.user;
-      setUserData({
-        name: user.name,
-        email: user.email,
-        mobile: user.mobile,
-        isEmailVerified: user.isEmailVerified,
-        isMobileVerified: user.isMobileVerified,
-        twoFactorAuth: user.twoFactorAuth,
-        loginActivity: user.loginActivity,
-        gender: user.gender,
-      });
-      setUserLoading(false);
-      // console.log("response", response.data.user);
-    } catch (error) {
-      // setUserLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        errorToast(
-          error.response.data.message ||
-            "Something Went Wrong, Failed to get Data!!"
-        );
-        console.log(error);
-      }
-    }
-  };
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const dispatch = useDispatch();
-  // UPI Image path
-  const upiLogoPath = "/upi.svg";
-
-  // CSS for animations and transitions
-  const activeNavStyle = `
-    .section-transition {
-      transition: all 0.3s ease-in-out;
-    }
-    .section-active {
-      box-shadow: 0 0 10px rgba(0, 100, 255, 0.1);
-      transform: translateY(-2px);
-    }
-  `;
-
-  // User information state
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -93,21 +50,6 @@ const MyAccount = () => {
     newPassword: "",
     confirmNewPassword: "",
   });
-
-  useEffect(() => {
-    setUserInfo({
-      ...userInfo,
-      name: userData.name,
-      email: userData.email,
-      mobile: userData.mobile,
-      gender: userData.gender,
-      isEmailVerified: userData.isEmailVerified,
-      isMobileVerified: userData.isMobileVerified,
-      address: userData.address,
-    });
-  }, [userData]);
-
-  // Login activity
   const [loginActivity, setLoginActivity] = useState([
     {
       id: 1,
@@ -137,48 +79,133 @@ const MyAccount = () => {
       current: false,
     },
   ]);
-
-  const handleLogoutDevice = (id) => {
-    // In production this would make an API call to invalidate the session
-    setLoginActivity(loginActivity.filter((device) => device.id !== id));
-    sucessToast("Device logged out successfully!");
-  };
-
-  const handleLogoutAllDevices = () => {
-    // In production this would make an API call to invalidate all sessions except current
-    const currentDevice = loginActivity.find((device) => device.current);
-    setLoginActivity(currentDevice ? [currentDevice] : []);
-    sucessToast("Logged out from all other devices!");
-  };
-
-  // For edit mode toggle
   const [editMode, setEditMode] = useState({
     profile: false,
     password: false,
     address: false,
     payment: false,
   });
-
-  // Active section state for navigation
   const [activeSection, setActiveSection] = useState("profile");
+  const [userProfileUpdateLoading, setUserProfileUpdateLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showEmailVerify, setShowEmailVerify] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [emailOtpLoading, setEmailOtpLoading] = useState(false);
+  const [showMobileVerify, setShowMobileVerify] = useState(false);
+  const [mobileLoading, setMobileLoading] = useState(false);
+  const [mobileOtp, setMobileOtp] = useState("");
+  const [mobileOtpLoading, setMobileOtpLoading] = useState(false);
+  const [twoFactorAuthLoading, setTwoFactorAuthLoading] = useState(false);
+  const [loginActivityLoading, setLoginActivityLoading] = useState(false);
+  const [addresses, setAddresses] = useState([
+    {
+      id: 1,
+      name: "John Doe",
+      mobile: "9876543210",
+      street: "123 Main Street",
+      city: "Tech City",
+      state: "State",
+      pincode: "560001",
+      type: "home",
+      isDefault: true,
+    },
+  ]);
+  const [newAddress, setNewAddress] = useState({
+    id: null,
+    name: "",
+    mobile: "",
+    street: "",
+    city: "",
+    state: "",
+    pincode: "",
+    type: "home",
+    isDefault: false,
+  });
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState([
+    {
+      id: 1,
+      type: "credit",
+      cardNumber: "**** **** **** 1234",
+      name: "John Doe",
+      expiryDate: "12/25",
+      isDefault: true,
+    },
+  ]);
+  const [newPayment, setNewPayment] = useState({
+    id: null,
+    type: "credit",
+    cardNumber: "",
+    name: "",
+    expiryDate: "",
+    cvv: "",
+    isDefault: false,
+    upiId: "",
+  });
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentType, setPaymentType] = useState("card");
+  const [isEditingPayment, setIsEditingPayment] = useState(false);
 
-  // Sections for navigation
-  const sections = [
-    { id: "profile", title: "Profile Information", icon: "fa-user" },
-    { id: "security", title: "Security Settings", icon: "fa-shield-halved" },
-    { id: "addresses", title: "Address Book", icon: "fa-map-location-dot" },
-    { id: "payments", title: "Payment Methods", icon: "fa-credit-card" },
-    { id: "orders", title: "My Orders", icon: "fa-box" },
-    { id: "wishlist", title: "My Wishlist", icon: "fa-heart" },
-  ];
+  const abortControllerRef = useRef(null);
 
-  // Handle scroll to track active section
+
+  useEffect(() => {
+    abortControllerRef.current = new AbortController();
+
+    const fetchUserData = async () => {
+      try {
+        setUserLoading(true);
+        const response = await apiService.userData(abortControllerRef.current.signal);
+        const user = response.user;
+        setUserData({
+          name: user.name,
+          email: user.email,
+          mobile: user.mobile,
+          isEmailVerified: user.isEmailVerified,
+          isMobileVerified: user.isMobileVerified,
+          twoFactorAuth: user.twoFactorAuth,
+          loginActivity: user.loginActivity,
+          gender: user.gender,
+        });
+        setUserLoading(false);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error("Failed to load user data:", error);
+          errorToast("Failed to load profile");
+        }
+      }
+    };
+
+    fetchUserData();
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    setUserInfo({
+      ...userInfo,
+      name: userData.name,
+      email: userData.email,
+      mobile: userData.mobile,
+      gender: userData.gender,
+      isEmailVerified: userData.isEmailVerified,
+      isMobileVerified: userData.isMobileVerified,
+      address: userData.address,
+    });
+  }, [userData]);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100;
       let foundActive = false;
 
-      // Check sections in reverse order to prioritize the ones lower on the page
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
         const element = document.getElementById(`section-${section.id}`);
@@ -192,7 +219,6 @@ const MyAccount = () => {
         }
       }
 
-      // Special handling for delete account section
       if (!foundActive) {
         const deleteSection = document.getElementById("section-delete-account");
         if (deleteSection && deleteSection.offsetTop <= scrollPosition) {
@@ -202,17 +228,26 @@ const MyAccount = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [activeSection]);
 
-  // Function to scroll to a section
+  const handleLogoutDevice = (id) => {
+    setLoginActivity(loginActivity.filter((device) => device.id !== id));
+    sucessToast("Device logged out successfully!");
+  };
+
+  const handleLogoutAllDevices = () => {
+    const currentDevice = loginActivity.find((device) => device.current);
+    setLoginActivity(currentDevice ? [currentDevice] : []);
+    sucessToast("Logged out from all other devices!");
+  };
+
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(
       `section-${sectionId === "delete-account" ? "delete-account" : sectionId}`
     );
     if (section) {
-      // Set active before scrolling for immediate visual feedback
       setActiveSection(sectionId);
       window.scrollTo({
         top: section.offsetTop - 80,
@@ -221,9 +256,6 @@ const MyAccount = () => {
     }
   };
 
-  const [userProfileUpdateLoading, setUserProfileUpdateLoading] =
-    useState(false);
-  // Handle profile update
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
 
@@ -237,21 +269,7 @@ const MyAccount = () => {
     };
     try {
       setUserProfileUpdateLoading(true);
-      const token = localStorage.getItem("userToken");
-      if (!token) {
-        errorToast("Failed to update Profile");
-        dispatch(logoutUser());
-        return;
-      }
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/update-user-profile`,
-        userUpdatedDetails,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await apiService.updateUserProfile(userUpdatedDetails, abortControllerRef.current?.signal);
       dispatch(updateUserData({ name: userInfo.name, email: userInfo.email }));
       setUserData({
         ...userData,
@@ -267,27 +285,13 @@ const MyAccount = () => {
       setEditMode({ ...editMode, profile: false });
     } catch (error) {
       setUserProfileUpdateLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        errorToast(error.response.data.message ||"Failed to Update Profile!!");
-        console.log(error);
-      }
+      console.error("Profile update failed:", error);
+      errorToast("Failed to update profile");
     }
   };
 
-  const [passwordLoading, setPasswordLoading] = useState(false);
-  // Handle password update
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("userToken");
-    if (!token) {
-      return;
-    }
     if (
       !userData.currentPassword ||
       !userData.newPassword ||
@@ -316,18 +320,10 @@ const MyAccount = () => {
     }
     try {
       setPasswordLoading(true);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/change-password`,
-        {
-          currentPassword: userData.currentPassword,
-          newPassword: userData.newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService.changePassword({
+        currentPassword: userData.currentPassword,
+        newPassword: userData.newPassword,
+      }, abortControllerRef.current?.signal);
 
       console.log(response);
       setPasswordLoading(false);
@@ -341,41 +337,15 @@ const MyAccount = () => {
       });
     } catch (error) {
       setPasswordLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        errorToast(
-          error.response.data.message ||
-            "Something Went Wrong, Failed to update password!!"
-        );
-        console.log(error);
-      }
+      console.error("Password change failed:", error);
+      errorToast("Failed to change password");
     }
   };
 
-  // Handle account deletion confirmation
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const handleDeleteAccount = async () => {
-    const token = localStorage.getItem("userToken");
     try {
       setDeleteLoading(true);
-      if (!token) {
-        return;
-      }
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/delete-user`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await apiService.deleteUser(abortControllerRef.current?.signal);
       setShowDeleteConfirm(false);
       setDeleteLoading(false);
       dispatch(logoutUser());
@@ -383,55 +353,22 @@ const MyAccount = () => {
     } catch (error) {
       setDeleteLoading(false);
       setShowDeleteConfirm(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        console.log(error);
-        errorToast(error.response.data.message|| "Something Went wrong, Failed to Delete account");
-      }
+      console.error("Account deletion failed:", error);
+      errorToast("Failed to delete account");
     }
   };
-
-  // Email verification
-  const [showEmailVerify, setShowEmailVerify] = useState(false);
-  const [emailLoading, setEmailLoading] = useState(false);
-  const [emailOtp, setEmailOtp] = useState("");
-  const [emailOtpLoading, setEmailOtpLoading] = useState(false);
 
   const handleSendEmailOTP = async () => {
     try {
       setEmailLoading(true);
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/verify-user-email`,
-        { email: userInfo.email },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
+      const response = await apiService.verifyUserEmail({ email: userInfo.email }, abortControllerRef.current?.signal);
       sucessToast("Verification code sent to your email!");
       setShowEmailVerify(true);
       setEmailLoading(false);
     } catch (error) {
       setEmailLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        errorToast(
-          error.response.data.message ||
-            "Something Went Wrong, Failed to send OTP!!"
-        );
-        console.log(error);
-      }
+      console.error("Email verification request failed:", error);
+      errorToast("Failed to send verification code");
     }
   };
 
@@ -443,17 +380,7 @@ const MyAccount = () => {
 
     try {
       setEmailOtpLoading(true);
-      await axios.post(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/user/auth/verify-user-email-otp`,
-        { email: userInfo.email, otp: emailOtp },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
+      await apiService.verifyUserEmailOtp({ email: userInfo.email, otp: emailOtp }, abortControllerRef.current?.signal);
 
       setEmailOtpLoading(false);
       setUserData({ ...userData, isEmailVerified: true });
@@ -463,29 +390,13 @@ const MyAccount = () => {
       setEmailOtp("");
     } catch (error) {
       setEmailOtpLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        console.log(error);
-        errorToast(error.response.data.message || "Something went wrong, Failed to verify email");
-      }
+      console.error("Email OTP verification failed:", error);
+      errorToast("Invalid verification code");
     }
   };
 
-  // Mobile verification
-  const [showMobileVerify, setShowMobileVerify] = useState(false);
-  const [mobileLoading, setMobileLoading] = useState(false);
-  const [mobileOtp, setMobileOtp] = useState("");
-  const [mobileOtpLoading, setMobileOtpLoading] = useState(false);
-
   const handleSendMobileOTP = () => {
-    // sucessToast("Verification code sent to your mobile number!");
     errorToast("This Service is Not Enabled Yet!!");
-    // setShowMobileVerify(true);
   };
 
   const verifyMobile = () => {
@@ -499,125 +410,46 @@ const MyAccount = () => {
     }
   };
 
-  const [twoFactorAuthLoading, setTwoFactorAuthLoading] = useState(false);
-  // Update Two Factor Auth
   const updateTwoFactorAuth = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("userToken");
     try {
       setTwoFactorAuthLoading(true);
-      if (!token) {
-        return;
-      }
       setUserData({ ...userData, twoFactorAuth: e.target.checked });
       const stringTwoFactorAuth = userData.twoFactorAuth ? "false" : "true";
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/user/auth/manage-twofactor-auth `,
-        { twoFactorAuth: stringTwoFactorAuth },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService.manageTwoFactorAuth({ twoFactorAuth: stringTwoFactorAuth }, abortControllerRef.current?.signal);
       setTwoFactorAuthLoading(false);
-      sucessToast(response.data.message);
+      sucessToast(response.message);
     } catch (error) {
       setTwoFactorAuthLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        console.log(error);
-        errorToast(error.response.data.message||"Something went wrong, Failed to change 2FA");
-      }
+      console.error("2FA update failed:", error);
+      errorToast("Failed to update 2FA");
     }
   };
 
-  const [loginActivityLoading, setLoginActivityLoading] = useState(false);
-  // Update Login Activity
   const updateLoginActivity = async (e) => {  
     e.preventDefault();
-    const token = localStorage.getItem("userToken");
     try {
       setLoginActivityLoading(true);
-      if (!token) {
-        return;
-      }
       setUserData({ ...userData, loginActivity: e.target.checked });
       const stringLoginActivity = userData.loginActivity ? "false" : "true";
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/user/auth/manage-login-activity`,
-        { loginActivity: stringLoginActivity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService.manageLoginActivity({ loginActivity: stringLoginActivity }, abortControllerRef.current?.signal);
       setLoginActivityLoading(false);
-      sucessToast(response.data.message);
+      sucessToast(response.message);
     } catch (error) {
       setLoginActivityLoading(false);
-      if (
-        error.response.data.message === "jwt expired" ||
-        error.response.data.message === "invalid token"
-      ) {
-        errorToast("Session Expired!! Please Login again");
-        dispatch(logoutUser());
-      } else {
-        console.log(error);
-        errorToast(error.response.data.message || "Something went wrong, Failed to update login Activity");
-      }
+      console.error("Login activity update failed:", error);
+      errorToast("Failed to update login alerts");
     }
   };
-
-  // Address management
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      mobile: "9876543210",
-      street: "123 Main Street",
-      city: "Tech City",
-      state: "State",
-      pincode: "560001",
-      type: "home",
-      isDefault: true,
-    },
-  ]);
-
-  const [newAddress, setNewAddress] = useState({
-    id: null,
-    name: "",
-    mobile: "",
-    street: "",
-    city: "",
-    state: "",
-    pincode: "",
-    type: "home",
-    isDefault: false,
-  });
-
-  const [isEditingAddress, setIsEditingAddress] = useState(false);
 
   const handleAddAddress = (e) => {
     e.preventDefault();
 
     if (isEditingAddress) {
-      // Update existing address
       const updatedAddresses = addresses.map((addr) => {
         if (addr.id === newAddress.id) {
           return newAddress;
         }
-        // If the edited address is marked as default, update other addresses
         if (newAddress.isDefault && addr.isDefault) {
           return { ...addr, isDefault: false };
         }
@@ -627,11 +459,9 @@ const MyAccount = () => {
       setAddresses(updatedAddresses);
       sucessToast("Address updated successfully!");
     } else {
-      // Add new address
       const addressId =
         addresses.length > 0 ? Math.max(...addresses.map((a) => a.id)) + 1 : 1;
 
-      // If this is the first address or marked as default, make it default
       const updatedAddresses = newAddress.isDefault
         ? addresses.map((addr) => ({ ...addr, isDefault: false }))
         : [...addresses];
@@ -683,7 +513,6 @@ const MyAccount = () => {
     const addressToDelete = addresses.find((a) => a.id === id);
     const remainingAddresses = addresses.filter((a) => a.id !== id);
 
-    // If deleted address was default, make another one default
     if (addressToDelete.isDefault && remainingAddresses.length > 0) {
       remainingAddresses[0].isDefault = true;
     }
@@ -692,38 +521,10 @@ const MyAccount = () => {
     sucessToast("Address deleted successfully!");
   };
 
-  // Payment methods
-  const [paymentMethods, setPaymentMethods] = useState([
-    {
-      id: 1,
-      type: "credit",
-      cardNumber: "**** **** **** 1234",
-      name: "John Doe",
-      expiryDate: "12/25",
-      isDefault: true,
-    },
-  ]);
-
-  const [newPayment, setNewPayment] = useState({
-    id: null,
-    type: "credit",
-    cardNumber: "",
-    name: "",
-    expiryDate: "",
-    cvv: "",
-    isDefault: false,
-    upiId: "",
-  });
-
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [paymentType, setPaymentType] = useState("card"); // card, upi
-  const [isEditingPayment, setIsEditingPayment] = useState(false);
-
   const handleAddPayment = (e) => {
     e.preventDefault();
 
     if (isEditingPayment) {
-      // Update existing payment method
       let updatedPayments;
 
       if (paymentType === "card") {
@@ -1431,7 +1232,7 @@ const MyAccount = () => {
                         </div>
                       </div>
 
-                      <div className="mt-2 pt-2 border-t border-gray-100">
+                      {/* <div className="mt-2 pt-2 border-t border-gray-100">
                         <p className="text-xs text-gray-500 mb-2">
                           Additional Security Options
                         </p>
@@ -1481,10 +1282,10 @@ const MyAccount = () => {
                             </label>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
                       {/* Login Activity Section */}
-                      <div className="mt-4 pt-3 border-t border-gray-100">
+                      {/* <div className="mt-4 pt-3 border-t border-gray-100">
                         <div className="flex justify-between items-center mb-3">
                           <p className="text-sm font-medium text-gray-700">
                             Login Activity
@@ -1564,7 +1365,7 @@ const MyAccount = () => {
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   )}
                 </div>
@@ -1964,7 +1765,7 @@ const MyAccount = () => {
             </div>
 
             {/* Payment Methods */}
-            <div
+            {/* <div
               id="section-payments"
               className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
             >
@@ -2309,7 +2110,7 @@ const MyAccount = () => {
                   </div>
                 ) : null}
 
-                {/* Saved Payment Methods */}
+                {/* Saved Payment Methods * /}
                 <div
                   className={
                     showPaymentForm ? "pt-4 border-t border-gray-100" : ""
@@ -2446,7 +2247,7 @@ const MyAccount = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* My Orders and Wishlist Sections */}
             {userLoading ? (

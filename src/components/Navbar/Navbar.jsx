@@ -12,6 +12,7 @@ const Navbar = () => {
   const userName = useSelector((state) => state.user.user.name);
   const cartItems = useSelector((state) => state.user.user.cart);
   const isLoggedIn = useSelector((state) => state.user.isLoggedin);
+  const contactDetails = useSelector(state => state.contact)
 
   const navigate = useNavigate();
   const navbarReffrence = useRef(null);
@@ -88,6 +89,8 @@ const Navbar = () => {
             <div className="navLogo w-[43px] flex-shrink-0">
               <img src="/brand-logo.png" alt="Logo" />
             </div>
+            { 
+            contactDetails.brandName &&
             <span
               className="text-[22px] shrink-0"
               style={{
@@ -97,8 +100,9 @@ const Navbar = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              BazaarWale
+              {contactDetails.brandName}
             </span>
+            }
           </NavLink>
         </div>
 

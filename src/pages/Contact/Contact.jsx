@@ -41,9 +41,9 @@ const Contact = () => {
     } catch (error) {
       setLoading(false);
       errorToast(
-        error.response ? error.response.data.message : "Something went wrong"
+        error.response?.data?.message || "Failed to send message"
       );
-      console.log(error);
+      console.error("Contact form error:", error);
     }
   };
   return (

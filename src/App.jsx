@@ -23,7 +23,7 @@ import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import checkBackendConnection from "./services/checkBackendConnection";
-import loginInterceptor from "./services/loginIntercepter";
+import loginInterceptor from "./services/loginInterceptor";
 
 function App() {
   const location = useLocation();
@@ -33,11 +33,11 @@ function App() {
   const isAuthPage =location.pathname === "/login" || location.pathname === "/register";
 
 
-  loginInterceptor();
-
   useEffect(() => {
     checkBackendConnection();
   }, []);
+
+  loginInterceptor();
 
   useEffect(()=>{
     localStorage.setItem('Last Path',location.pathname)

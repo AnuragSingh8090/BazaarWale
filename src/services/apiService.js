@@ -1,127 +1,169 @@
 
 import axios from "axios";
-import { errorToast } from "../components/Toasters/Toasters";
-import store from "../store/Store";
-import { logoutUser } from "../store/slices/userSlice";
-
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("userToken");
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
-const handleError = (error) => {
-  const errMessage = error.response?.data?.message;
-
-  if (
-    errMessage === "Token Expired" ||
-    errMessage === "Unauthorized" ||
-    errMessage === "Invalid Token" ||
-    errMessage === "jwt expired" ||
-    errMessage === "jwt malformed" ||
-    errMessage === "Token is required"
-  ) {
-    errorToast("Session Expired. Please login again.");
-    store.dispatch(logoutUser()); 
-  }
-
-  throw error;
-};
 
 const apiService = {
-  getBasicUserData: async (signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/userdatabasic`,headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
+  // Authentication endpoints
+  getBasicUserData: async (signal) => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/userdatabasic`,
+      signal ? { signal } : {}
+    );
+    return response.data;
   },
 
-  loginUser: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
+  loginUser: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/login`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
   },
 
-  validateResetPasswordEmail: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordemail`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
+  registerUser: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/register`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
   },
 
-  validateResetPasswordOtp: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/validateresetpasswordotp`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
-  },
-  resetPassword: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/resetpassword`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
-  },
-  registerUser: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
-  },
-  newsletter: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/newsletter`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
-  },
-  contactUs: async (data, signal = false) => {
-    try {
-      const headerData = signal ? { headers: getAuthHeaders(), signal } : { headers: getAuthHeaders() };
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/contact`, data, headerData
-      );
-      return response.data;
-    } catch (error) {
-      handleError(error);
-    }
+  refreshToken: async (signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/refresh-token`,
+      {},
+      signal ? { signal } : {}
+    );
+    return response.data;
   },
 
+  validateResetPasswordEmail: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/validateresetpasswordemail`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
 
-  
+  validateResetPasswordOtp: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/validateresetpasswordotp`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  resetPassword: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/resetpassword`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  // User Profile endpoints
+  userData: async (signal) => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/userdata`,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  updateUserProfile: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/update-user-profile`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  changePassword: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/change-password`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  deleteUser: async (signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/delete-user`,
+      {},
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  verifyUserEmail: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/verify-user-email`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  verifyUserEmailOtp: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/verify-user-email-otp`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  manageTwoFactorAuth: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/manage-twofactor-auth`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  manageLoginActivity: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/manage-login-activity`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  addAddress: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/add-address`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  // Contact endpoints
+  newsletter: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/contact/newsletter`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
+  contactUs: async (data, signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/contact/contact`,
+      data,
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
 };
 
 export default apiService;

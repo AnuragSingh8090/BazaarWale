@@ -97,9 +97,9 @@ const Login = () => {
       setLoading(false);
       if (error.message === 'canceled') return;
       errorToast(
-        error.response ? error.response.data.message : "Something went wrong"
+        error.response ? error.response.data.message : "Login failed"
       );
-      console.log("Error",error);
+      console.error("Login error:", error);
     }
   };
 
@@ -196,7 +196,7 @@ const Login = () => {
       errorToast(
         error.response ? error.response.data.message : "Failed to send OTP"
       );
-      console.log(error);
+      console.error("Send OTP error:", error);
     }
   };
 
@@ -231,9 +231,9 @@ const Login = () => {
       errorToast(
         error.response
           ? error.response.data.message
-          : "Failed to Varify Please Try Again!!"
+          : "Invalid OTP"
       );
-      console.log(error);
+      console.error("OTP verification error:", error);
     }
   };
 
@@ -284,9 +284,9 @@ const Login = () => {
       errorToast(
         error.response
           ? error.response.data.message
-          : "Failed to Update Your Password !!"
+          : "Failed to reset password"
       );
-      console.log(error);
+      console.error("Password reset error:", error);
     }
   };
 
@@ -350,7 +350,7 @@ const Login = () => {
       errorToast(
         error.response ? error.response.data.message : "Failed to send OTP"
       );
-      console.log(error);
+      console.error("Resend OTP error:", error);
     }
   };
 
