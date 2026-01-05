@@ -6,7 +6,7 @@ import { errorToast } from "../components/Toasters/Toasters";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
-// Configure axios defaults
+
 axios.defaults.withCredentials = true;
 
 const useLoginInterceptor = () => {
@@ -38,23 +38,26 @@ const useLoginInterceptor = () => {
     }
   };
 
+
+
   useEffect(() => {
     const abortController = new AbortController();
     let refreshTimer = null;
 
-    // Request interceptor - automatically attach Authorization header
+
     requestInterceptorRef.current = axios.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem("userToken");
         if (token) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
+
         return config;
       },
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor - handle token refresh on 401
+
     responseInterceptorRef.current = axios.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -129,7 +132,10 @@ const useLoginInterceptor = () => {
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error("Token refresh failed:", error);
-          errorToast("Session expired. Please login again.");
+          // Only show toast if refresh token is actually invalid (401/403)
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            errorToast("Session expired. Please login again.");
+          }
           dispatch(logoutUser());
         }
         return { success: false, error };
@@ -170,31 +176,32 @@ const useLoginInterceptor = () => {
     const validateToken = async () => {
       const token = localStorage.getItem("userToken");
 
-      if (!token) {
-        dispatch(logoutUser());
-        return;
-      }
+      // If token exists in localStorage, validate and use it
+      if (token) {
+        const tokenExpiry = getTokenExpiry(token);
+        if (tokenExpiry) {
+          const currentTime = Math.floor(Date.now() / 1000);
+          const isExpired = tokenExpiry <= currentTime;
 
-      const tokenExpiry = getTokenExpiry(token);
-      if (!tokenExpiry) {
-        errorToast("Invalid token format.");
-        dispatch(logoutUser());
-        return;
-      }
+          if (!isExpired) {
 
-      const currentTime = Math.floor(Date.now() / 1000);
-      const isExpired = tokenExpiry <= currentTime;
-
-      if (isExpired) {
-        const result = await handleTokenRefresh(abortController.signal);
-        if (result.success) {
-          await fetchBasicUserData(abortController.signal, result.token, result.tokenExpiry);
+            await fetchBasicUserData(abortController.signal, token, tokenExpiry);
+            setupTokenRefreshTimer(token);
+            return;
+          }
         }
-        return;
-      }
 
-      await fetchBasicUserData(abortController.signal, token, tokenExpiry);
-      setupTokenRefreshTimer(token);
+      
+      }
+      
+      const result = await handleTokenRefresh(abortController.signal);
+      
+      if (result.success) {
+        await fetchBasicUserData(abortController.signal, result.token, result.tokenExpiry);
+      } else {
+
+         dispatch(logoutUser());
+      }
     };
 
     const fetchBasicUserData = async (signal, token, tokenExpiry) => {

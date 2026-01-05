@@ -40,9 +40,12 @@ function App() {
   loginInterceptor();
 
   useEffect(()=>{
-    localStorage.setItem('Last Path',location.pathname)
-    navigate(localStorage.getItem('Last Path'))
-    localStorage.removeItem('Last Path')
+    const token = localStorage.getItem('userToken')
+    if(token){      
+      localStorage.setItem('Last Path',location.pathname)
+      navigate(localStorage.getItem('Last Path'))
+      localStorage.removeItem('Last Path')
+    }
   },[])
 
 
