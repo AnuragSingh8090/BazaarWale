@@ -64,7 +64,7 @@ const Contact = () => {
           {/* Contact Information Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+              <div className="w-14 h-14 rounded-full bg-[var(--primary-light)] flex items-center justify-center mb-3">
                 <i className="fa-solid fa-phone text-[var(--primary)] text-xl"></i>
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Call Us</h3>
@@ -85,7 +85,7 @@ const Contact = () => {
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+              <div className="w-14 h-14 rounded-full bg-[var(--primary-light)] flex items-center justify-center mb-3">
                 <i className="fa-solid fa-envelope text-[var(--primary)] text-xl"></i>
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Email Us</h3>
@@ -104,7 +104,7 @@ const Contact = () => {
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+              <div className="w-14 h-14 rounded-full bg-[var(--primary-light)] flex items-center justify-center mb-3">
                 <i className="fa-solid fa-location-dot text-[var(--primary)] text-xl"></i>
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">Visit Us</h3>
@@ -127,7 +127,7 @@ const Contact = () => {
               />
             </div>
 
-            <div className="bg-blue-50/70 p-5 rounded-xl w-full lg:w-[40%] shadow-inner">
+            <div className="bg-[var(--primary-lighter)]/70 p-5 rounded-xl w-full lg:w-[40%] shadow-inner">
               <h2 className="text-lg font-bold text-[var(--primary)] mb-3 relative pb-2 before:content-[''] before:absolute before:w-16 before:h-1 before:bg-[var(--primary)] before:bottom-0 before:left-0">
                 Send Message
               </h2>
@@ -250,7 +250,7 @@ const Contact = () => {
               </form>
 
               {/* Social Media Links */}
-              <div className="mt-4 pt-3 border-t border-blue-100">
+              <div className="mt-4 pt-3 border-t border-[var(--primary-light)]">
                 <p className="text-xs text-[var(--primary)] mb-2 text-center">
                   Connect with us:
                 </p>

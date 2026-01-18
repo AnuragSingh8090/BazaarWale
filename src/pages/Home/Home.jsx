@@ -127,16 +127,16 @@ const Home = () => {
     }
   ];
 
-  const topElectronicBrands = [ 
+  const topElectronicBrands = [
     {
       id: 1,
       logo: "./brand-logo/apple-logo.svg",
       image: "./productImages/iphone16.png",
       name: "IPHONE",
-      discount:'10%',
-      bgcolor:'#d0d0d0',
-      bgdark:'#9d9d9d',
-      textcolor:'white',
+      discount: '10%',
+      bgcolor: '#d0d0d0',
+      bgdark: '#9d9d9d',
+      textcolor: 'white',
       link: "/products"
     },
     {
@@ -144,10 +144,10 @@ const Home = () => {
       logo: "./brand-logo/samsung-logo.svg",
       image: "./productImages/samsung-s25ultra.png",
       name: "SAMSUNG",
-      discount:'13%',
-      bgcolor:'#e2e6fd',
-      bgdark:'#b6c0fa',
-      textcolor:'black',
+      discount: '13%',
+      bgcolor: '#e2e6fd',
+      bgdark: '#b6c0fa',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -155,10 +155,10 @@ const Home = () => {
       logo: "./brand-logo/iqoo-logo.svg",
       image: "./productImages/iqoo.png",
       name: "IQOO",
-      discount:'22%',
-      bgcolor:'#fee7b0',
-      bgdark:'#fcd474',
-      textcolor:'black',
+      discount: '22%',
+      bgcolor: '#fee7b0',
+      bgdark: '#fcd474',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -166,10 +166,10 @@ const Home = () => {
       logo: "./brand-logo/motorola-logo.svg",
       image: "./productImages/motorola.png",
       name: "MOTOROLA",
-      discount:'18%',
-      bgcolor:'#c3ddfc',
-      bgdark:'#87bbf9',
-      textcolor:'black',
+      discount: '18%',
+      bgcolor: '#c3ddfc',
+      bgdark: '#87bbf9',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -177,10 +177,10 @@ const Home = () => {
       logo: "./brand-logo/oneplus-logo.svg",
       image: "./productImages/oneplus.png",
       name: "ONE PLUS",
-      discount:'14%',
-      bgcolor:'#ffcbcb',
-      bgdark:'#ffa9a9',
-      textcolor:'black',
+      discount: '14%',
+      bgcolor: '#ffcbcb',
+      bgdark: '#ffa9a9',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -188,10 +188,10 @@ const Home = () => {
       logo: "./brand-logo/oppo-logo.svg",
       image: "./productImages/oppo.png",
       name: "OPPO",
-      discount:'22%',
-      bgcolor:'#cfffe0',
-      bgdark:'#8bd0a4',
-      textcolor:'black',
+      discount: '22%',
+      bgcolor: '#cfffe0',
+      bgdark: '#8bd0a4',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -199,10 +199,10 @@ const Home = () => {
       logo: "./brand-logo/realme-logo.svg",
       image: "./productImages/realme.png",
       name: "REALME",
-      discount:'10%',
-      bgcolor:'#fef3cc',
-      bgdark:'#f6de8d',
-      textcolor:'black',
+      discount: '10%',
+      bgcolor: '#fef3cc',
+      bgdark: '#f6de8d',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -210,10 +210,10 @@ const Home = () => {
       logo: "./brand-logo/vivo-logo.svg",
       image: "./productImages/vivo.png",
       name: "VIVO",
-      discount:'16%',
-      bgcolor:'#e0daf8',
-      bgdark:'#c9bcff',
-      textcolor:'black',
+      discount: '16%',
+      bgcolor: '#e0daf8',
+      bgdark: '#c9bcff',
+      textcolor: 'black',
       link: "/products"
     },
     {
@@ -221,10 +221,10 @@ const Home = () => {
       logo: "./brand-logo/xiaomi-logo.svg",
       image: "./productImages/xiaomi.png",
       name: "XIAOMI",
-      discount:'19%',
-      bgcolor:'#feecde',
-      bgdark:'#fdcfaf',
-      textcolor:'black',
+      discount: '19%',
+      bgcolor: '#feecde',
+      bgdark: '#fdcfaf',
+      textcolor: 'black',
       link: "/products"
     },
 
@@ -239,7 +239,7 @@ const Home = () => {
       <ShopFromCategories products={grabBestDeals} />
       <TopElectronicBrands products={topElectronicBrands} />
       <HomeEssentials products={grabBestDeals} />
-      <SubscribeEmail/>
+      <SubscribeEmail />
     </div>
   );
 };

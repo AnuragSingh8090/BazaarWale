@@ -578,7 +578,7 @@ const Checkout = () => {
                                       address.addressType.slice(1)}
                                   </span>
                                   {address.isDefault && (
-                                    <span className="inline-block text-xs bg-blue-100 px-2 py-1 rounded-full text-blue-700">
+                                    <span className="inline-block text-xs bg-[var(--primary-light)] px-2 py-1 rounded-full text-[var(--primary)]">
                                       Default
                                     </span>
                                   )}
@@ -883,8 +883,8 @@ const Checkout = () => {
                   <div
                     className={`border rounded-lg p-3 cursor-pointer transition-all payment-method-option ${
                       paymentMethod === "cod"
-                        ? "border-[var(--primary)] bg-blue-50"
-                        : "border-gray-200 hover:border-blue-300"
+                        ? "border-[var(--primary)] bg-[var(--primary-lighter)]"
+                        : "border-gray-200 hover:border-[var(--primary-medium)]"
                     }`}
                     onClick={() => handlePaymentChange("cod")}
                   >
@@ -935,15 +935,15 @@ const Checkout = () => {
                     <div
                       className={`border rounded-lg p-3 cursor-pointer transition-all payment-method-option relative ${
                         paymentMethod === "saved-card"
-                          ? "border-[var(--primary)] bg-blue-50 selected"
-                          : "border-gray-200 hover:border-blue-300"
+                          ? "border-[var(--primary)] bg-[var(--primary-lighter)] selected"
+                          : "border-gray-200 hover:border-[var(--primary-medium)]"
                       }`}
                       onClick={() => handlePaymentChange("saved-card")}
                     >
                       {savedPaymentMethods.find(
                         (method) => method.type === "card"
                       )?.isDefault && (
-                        <span className="payment-type-badge bg-blue-100 text-blue-700">
+                        <span className="payment-type-badge bg-[var(--primary-light)] text-[var(--primary)]">
                           Default
                         </span>
                       )}
@@ -963,7 +963,7 @@ const Checkout = () => {
                           <span
                             className={`${
                               paymentMethod === "saved-card"
-                                ? "bg-blue-100 text-blue-800"
+                                ? "bg-[var(--primary-light)] text-[var(--primary)]"
                                 : "bg-gray-100 text-gray-600"
                             } p-1 rounded mr-3 transition-colors flex items-center justify-center w-8 h-8`}
                           >
@@ -1042,8 +1042,8 @@ const Checkout = () => {
                     <div
                       className={`border rounded-lg p-3 cursor-pointer transition-all payment-method-option relative ${
                         paymentMethod === "saved-upi"
-                          ? "border-[var(--primary)] bg-blue-50 selected"
-                          : "border-gray-200 hover:border-blue-300"
+                          ? "border-[var(--primary)] bg-[var(--primary-lighter)] selected"
+                          : "border-gray-200 hover:border-[var(--primary-medium)]"
                       }`}
                       onClick={() => handlePaymentChange("saved-upi")}
                     >

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import "./Error.css";
 const Error = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const Error = () => {
 
   return (
     <div className="errorPage flex items-center justify-center min-h-[90vh] bg-gray-100">
+      <ScrollToTop />
       <div className="text-center">
         <img
           src="/errorImage.png"

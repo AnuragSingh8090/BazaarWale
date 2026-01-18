@@ -96,11 +96,11 @@ const Register = () => {
           100% { transform: translateX(150%) skewX(-20deg); }
         }
       `}</style>
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 p-4 py-6">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-[var(--primary-lighter)] to-[var(--primary-light)] p-4 py-6">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-5xl flex flex-col md:flex-row animate-[fadeIn_0.6s_ease-out]">
           {/* Image Section - On the left for registration */}
-          <div className="md:w-2/5 bg-gradient-to-br from-indigo-500 to-blue-400 p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-blue-500 opacity-10 z-0"></div>
+          <div className="md:w-2/5 bg-gradient-to-br from-[var(--primary)] to-[var(--primary)] p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-[var(--primary)] opacity-10 z-0"></div>
             <div className="w-full max-w-md z-10 transform transition-all duration-500 animate-[floating_6s_ease-in-out_infinite]">
               <img
                 src="/registerImage.png"
@@ -115,14 +115,14 @@ const Register = () => {
             </div>
             <div className="mt-8 text-center z-10">
               <h2 className="text-2xl font-bold mb-2">Join Our Community!</h2>
-              <p className="text-blue-100">
+              <p className="text-white opacity-80">
                 Create an account to enjoy exclusive benefits and personalized
                 shopping.
               </p>
             </div>
 
             {/* Animated elements */}
-            <div className="absolute -bottom-16 -right-16 w-40 h-40 rounded-full bg-blue-300 opacity-20 animate-pulse"></div>
+            <div className="absolute -bottom-16 -right-16 w-40 h-40 rounded-full bg-[var(--primary-light)] opacity-20 animate-pulse"></div>
             <div className="absolute -top-20 -left-20 w-60 h-60 rounded-full bg-indigo-300 opacity-20 animate-pulse"></div>
           </div>
 
@@ -131,7 +131,7 @@ const Register = () => {
             <div className="mb-6 text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-2 relative inline-block">
                 Create Account
-                <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
               </h2>
               <p className="text-gray-600 text-sm">
                 Fill in your details to get started
@@ -146,7 +146,7 @@ const Register = () => {
                     htmlFor="fullName"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-user text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
+                    <i className="fa-solid fa-user text-[var(--primary)] mr-2 animate-[pulse_2s_infinite]"></i>
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -158,7 +158,7 @@ const Register = () => {
                     type="text"
                     id="fullName"
                     placeholder="Enter your full name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                   />
                 </div>
                 {/* Mobile */}
@@ -167,7 +167,7 @@ const Register = () => {
                     htmlFor="number"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-phone text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
+                    <i className="fa-solid fa-phone text-[var(--primary)] mr-2 animate-[pulse_2s_infinite]"></i>
                     Mobile Number <span className="text-red-500">*</span>
                   </label>
                   <div className="flex">
@@ -183,7 +183,7 @@ const Register = () => {
                       type="number"
                       id="number"
                       placeholder="Enter your mobile number"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:border-blue-500 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder-gray-300"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder-gray-300"
                     />
                   </div>
                 </div>
@@ -196,7 +196,7 @@ const Register = () => {
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-envelope text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
+                    <i className="fa-solid fa-envelope text-[var(--primary)] mr-2 animate-[pulse_2s_infinite]"></i>
                     Email <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -208,7 +208,7 @@ const Register = () => {
                     type="email"
                     id="email"
                     placeholder="Enter your email id"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                   />
                 </div>
                 {/* Password */}
@@ -217,7 +217,7 @@ const Register = () => {
                     htmlFor="password"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-lock text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
+                    <i className="fa-solid fa-lock text-[var(--primary)] mr-2 animate-[pulse_2s_infinite]"></i>
                     Password <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -230,11 +230,11 @@ const Register = () => {
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[var(--primary)] transition-colors focus:outline-none"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex="-1"
                     >
@@ -256,7 +256,7 @@ const Register = () => {
                     htmlFor="age"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-calendar text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
+                    <i className="fa-solid fa-calendar text-[var(--primary)] mr-2 animate-[pulse_2s_infinite]"></i>
                     Age
                   </label>
                   <input
@@ -272,13 +272,13 @@ const Register = () => {
                     min="14"
                     max="100"
                     placeholder="Your age"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder-gray-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder-gray-300"
                   />
                 </div>
                 {/* Gender */}
                 <div className="w-full">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <i className="fa-solid fa-venus-mars text-blue-500 mr-2 animate-[pulse_2s_infinite]"></i>
+                    <i className="fa-solid fa-venus-mars text-[var(--primary)] mr-2 animate-[pulse_2s_infinite]"></i>
                     Gender <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center gap-8">
@@ -298,12 +298,12 @@ const Register = () => {
                         <div
                           className={`w-5 h-5 rounded-full border ${
                             Register.gender === "male"
-                              ? "border-blue-500"
+                              ? "border-[var(--primary)]"
                               : "border-gray-300"
                           } flex items-center justify-center`}
                         >
                           {Register.gender === "male" && (
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-[var(--primary)]"></div>
                           )}
                         </div>
                       </div>
@@ -324,12 +324,12 @@ const Register = () => {
                         <div
                           className={`w-5 h-5 rounded-full border ${
                             Register.gender === "female"
-                              ? "border-blue-500"
+                              ? "border-[var(--primary)]"
                               : "border-gray-300"
                           } flex items-center justify-center`}
                         >
                           {Register.gender === "female" && (
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-[var(--primary)]"></div>
                           )}
                         </div>
                       </div>
@@ -354,7 +354,7 @@ const Register = () => {
                   Register.email &&
                   Register.password &&
                   Register.gender
-                    ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer"
+                    ? "bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] hover:from-[var(--primary)] hover:to-[var(--primary)]  cursor-pointer"
                     : "bg-gray-400 opacity-70"
                 }`}
               >
@@ -383,7 +383,7 @@ const Register = () => {
               <button
               type="button"
                 onClick={() => navigate("/")}
-                className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer`}
+                className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] hover:from-[var(--primary)] hover:to-[var(--primary)]  cursor-pointer`}
               >
                 <span>
                   <i className={`fa-solid fa-arrow-left mr-2 `}></i>
@@ -396,7 +396,7 @@ const Register = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-blue-600 hover:underline font-medium transition-colors duration-300"
+                className="text-[var(--primary)] hover:underline font-medium transition-colors duration-300"
               >
                 Login
               </Link>

@@ -8,16 +8,16 @@ export const GrabBestDeals = ({ products }) => {
     <>
       <div className="w-full lg:mt-6 mt-4">
         <div className=" w-full  flex items-center justify-between border-b border-gray-300 ">
-          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[#1d8fcc] w-max translate-y-[2px]">
+          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[var(--primary)] w-max translate-y-[2px]">
             Grab the best deals on{" "}
-            <span className=" text-[#1d8fcc]">Smartphones</span>
+            <span className=" text-[var(--primary)]">Smartphones</span>
           </p>
 
           <Link
             to="/products"
             className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg text-gray-600 flex items-center translate-y-[2px] gap-1 cursor-pointer hover:text-shadow-2xl hover:text-grey-800"
           >
-            View All <FiChevronRight className="text-[#1d8fcc] text-lg" />
+            View All <FiChevronRight className="text-[var(--primary)] text-lg" />
           </Link>
         </div>
 
@@ -26,9 +26,9 @@ export const GrabBestDeals = ({ products }) => {
             <Link
               to={element.link}
               key={index}
-              className="relative w-[130px]  h-[200px] sm:w-[170px]  sm:h-[240px] md:w-[180px]  md:h-[250px]  lg:w-[190px]  lg:h-[260px] shrink-0 rounded-xl border-2 border-[#f5f5f5] hover:border-[#1d8fcc] hover:scale-102 transition-all duration-300 card-shadow overflow-hidden cursor-pointer  flex flex-col items-center justify-center"
+              className="relative w-[130px]  h-[200px] sm:w-[170px]  sm:h-[240px] md:w-[180px]  md:h-[250px]  lg:w-[190px]  lg:h-[260px] shrink-0 rounded-xl border-2 border-[#f5f5f5] hover:border-[var(--primary)] hover:scale-102 transition-all duration-300 card-shadow overflow-hidden cursor-pointer  flex flex-col items-center justify-center"
             >
-              <div className="absolute top-0 right-0 w-[30px] h-[40px] md:w-[40px] md:h-[50px]  bg-[#1d8fcc] flex items-center flex-col rounded-bl-lg  justify-center">
+              <div className="absolute top-0 right-0 w-[30px] h-[40px] md:w-[40px] md:h-[50px]  bg-[var(--primary)] flex items-center flex-col rounded-bl-lg  justify-center">
                 <p className="text-white text-[10px] md:text-[12px] ">
                   {element.discount}
                 </p>
@@ -68,15 +68,15 @@ export const ShopFromCategories = ({ products }) => {
     <>
       <div className="w-full mt-2 lg:mt-3">
         <div className=" w-full  flex items-center justify-between border-b border-gray-300 ">
-          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[#1d8fcc] w-max translate-y-[2px]">
-            Shop from <span className=" text-[#1d8fcc]">Top Categories</span>
+          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[var(--primary)] w-max translate-y-[2px]">
+            Shop from <span className=" text-[var(--primary)]">Top Categories</span>
           </p>
 
           <Link
             to="/products"
             className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg text-gray-600 flex items-center translate-y-[2px] gap-1 cursor-pointer hover:text-shadow-2xl hover:text-grey-800"
           >
-            View All <FiChevronRight className="text-[#1d8fcc] text-lg" />
+            View All <FiChevronRight className="text-[var(--primary)] text-lg" />
           </Link>
         </div>
 
@@ -87,7 +87,7 @@ export const ShopFromCategories = ({ products }) => {
               key={index}
               className=" shrink-0   flex flex-col items-center gap-2 justify-center"
             >
-              <div className=" h-[120px] w-[120px] sm:h-[140px] sm:w-[140px] md:h-[160px] md:w-[160px] border-2 border-[transparent] cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-[#1d8fcc]  bg-[#f5f5f5] flex items-center p-3 overflow-hidden rounded-full justify-center ">
+              <div className=" h-[120px] w-[120px] sm:h-[140px] sm:w-[140px] md:h-[160px] md:w-[160px] border-2 border-[transparent] cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-[var(--primary)]  bg-[#f5f5f5] flex items-center p-3 overflow-hidden rounded-full justify-center ">
                 <img
                   src={element.image}
                   alt=""
@@ -112,15 +112,15 @@ export const TopElectronicBrands = ({ products }) => {
     <>
       <div className="w-full mt-2 lg:mt-3">
         <div className=" w-full  flex items-center justify-between border-b border-gray-300 ">
-          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[#1d8fcc] w-max translate-y-[2px]">
-            Top <span className=" text-[#1d8fcc]">Electronic Brands</span>
+          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[var(--primary)] w-max translate-y-[2px]">
+            Top <span className=" text-[var(--primary)]">Electronic Brands</span>
           </p>
 
           <Link
             to="/products"
             className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg text-gray-600 flex items-center translate-y-[2px] gap-1 cursor-pointer hover:text-shadow-2xl hover:text-grey-800"
           >
-            View All <FiChevronRight className="text-[#1d8fcc] text-lg" />
+            View All <FiChevronRight className="text-[var(--primary)] text-lg" />
           </Link>
         </div>
 
@@ -186,15 +186,15 @@ export const HomeEssentials = ({ products }) => {
     <>
       <div className="w-full mt-2 lg:mt-3">
         <div className=" w-full  flex items-center justify-between border-b border-gray-300 ">
-          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[#1d8fcc] w-max translate-y-[2px]">
-            Daily <span className=" text-[#1d8fcc]">Home Essentials</span>
+          <p className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg   md:py-2 py-1 border-b-3 font-[500] text-gray-600 border-[var(--primary)] w-max translate-y-[2px]">
+            Daily <span className=" text-[var(--primary)]">Home Essentials</span>
           </p>
 
           <Link
             to="/products"
             className="text-[12px] sm:text-sm lg:text-md 2xl:text-lg text-gray-600 flex items-center translate-y-[2px] gap-1 cursor-pointer hover:text-shadow-2xl hover:text-grey-800"
           >
-            View All <FiChevronRight className="text-[#1d8fcc] text-lg" />
+            View All <FiChevronRight className="text-[var(--primary)] text-lg" />
           </Link>
         </div>
 
@@ -205,7 +205,7 @@ export const HomeEssentials = ({ products }) => {
               key={index}
               className=" shrink-0   flex flex-col items-center gap-2 justify-center"
             >
-              <div className=" h-[100px] w-[100px] sm:h-[120px] sm:w-[120px] md:h-[140px] md:w-[140px] border-2 border-[transparent] cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-[#1d8fcc]  bg-[#f5f5f5] flex items-center p-3 overflow-hidden rounded-xl justify-center ">
+              <div className=" h-[100px] w-[100px] sm:h-[120px] sm:w-[120px] md:h-[140px] md:w-[140px] border-2 border-[transparent] cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-[var(--primary)]  bg-[#f5f5f5] flex items-center p-3 overflow-hidden rounded-xl justify-center ">
                 <img
                   src={element.image}
                   alt=""

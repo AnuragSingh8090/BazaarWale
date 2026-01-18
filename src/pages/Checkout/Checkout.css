@@ -14,9 +14,11 @@ input[type="radio"] {
   0% {
     box-shadow: 0 0 0 0 rgba(0, 100, 255, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(0, 100, 255, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(0, 100, 255, 0);
   }
@@ -107,13 +109,6 @@ input[type="radio"] {
   border: 1px solid #e5e7eb !important;
 }
 
-/* Form field focus animations */
-input:focus,
-select:focus,
-textarea:focus {
-  transition: all 0.2s ease-in-out;
-  transform: translateY(-2px);
-}
 
 /* Payment method hover effect */
 .payment-method-option:hover:not(.disabled) {
@@ -150,12 +145,10 @@ textarea:focus {
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%);
   animation: shimmer 1.5s infinite;
 }
 
@@ -163,6 +156,7 @@ textarea:focus {
   0% {
     transform: translateX(-150%);
   }
+
   100% {
     transform: translateX(150%);
   }
@@ -199,6 +193,7 @@ textarea:focus {
     opacity: 0;
     transform: translateY(-5px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

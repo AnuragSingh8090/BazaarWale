@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { loginUser, logoutUser, loginStart, updateToken } from "../store/slices/userSlice";
+import { loginUser, loginStart, updateToken, resetState } from "../store/slices/userSlice";
 import apiService from "./apiService";
 import { errorToast } from "../components/Toasters/Toasters";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-
 
 axios.defaults.withCredentials = true;
 
@@ -17,7 +16,7 @@ const useLoginInterceptor = () => {
   const failedQueue = useRef([]);
 
   const processQueue = (error, token = null) => {
-    failedQueue.current.forEach(prom => {
+    failedQueue.current.forEach((prom) => {
       if (error) {
         prom.reject(error);
       } else {
@@ -38,12 +37,9 @@ const useLoginInterceptor = () => {
     }
   };
 
-
-
   useEffect(() => {
     const abortController = new AbortController();
     let refreshTimer = null;
-
 
     requestInterceptorRef.current = axios.interceptors.request.use(
       (config) => {
@@ -51,12 +47,10 @@ const useLoginInterceptor = () => {
         if (token) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
-
         return config;
       },
       (error) => Promise.reject(error)
     );
-
 
     responseInterceptorRef.current = axios.interceptors.response.use(
       (response) => response,
@@ -65,25 +59,22 @@ const useLoginInterceptor = () => {
         const errMessage = error.response?.data?.message;
         const statusCode = error.response?.status;
 
-        const isTokenError = 
-          statusCode === 401 ||
-          errMessage === "Token Expired" ||
-          errMessage === "Unauthorized" ||
-          errMessage === "Invalid Token" ||
-          errMessage === "jwt expired" ||
-          errMessage === "jwt malformed" ||
-          errMessage === "Token is required";
+        const isTokenError =
+          statusCode === 401 &&
+          (errMessage === "Token Expired" || errMessage === "Invalid Token");
 
         if (isTokenError && !originalRequest._retry) {
           if (isRefreshing.current) {
             return new Promise((resolve, reject) => {
               failedQueue.current.push({ resolve, reject });
-            }).then(token => {
-              originalRequest.headers['Authorization'] = 'Bearer ' + token;
-              return axios(originalRequest);
-            }).catch(err => {
-              return Promise.reject(err);
-            });
+            })
+              .then((token) => {
+                originalRequest.headers["Authorization"] = "Bearer " + token;
+                return axios(originalRequest);
+              })
+              .catch((err) => {
+                return Promise.reject(err);
+              });
           }
 
           originalRequest._retry = true;
@@ -93,18 +84,21 @@ const useLoginInterceptor = () => {
             const result = await handleTokenRefresh();
 
             if (result.success) {
-              originalRequest.headers['Authorization'] = 'Bearer ' + result.token;
+              originalRequest.headers["Authorization"] =
+                "Bearer " + result.token;
               processQueue(null, result.token);
               isRefreshing.current = false;
               return axios(originalRequest);
             } else {
               processQueue(result.error, null);
               isRefreshing.current = false;
+              clearUserState();
               return Promise.reject(result.error);
             }
           } catch (refreshError) {
             processQueue(refreshError, null);
             isRefreshing.current = false;
+            clearUserState();
             return Promise.reject(refreshError);
           }
         }
@@ -116,27 +110,35 @@ const useLoginInterceptor = () => {
     const handleTokenRefresh = async (signal = null) => {
       try {
         const response = await apiService.refreshToken(signal);
-        
+        if (response?.success === false) {
+          return { success: false, error: new Error(response.message), silent: true };
+        }
+
         if (response?.token) {
           const newToken = response.token;
           const newTokenExpiry = getTokenExpiry(newToken);
-          
           localStorage.setItem("userToken", newToken);
-          dispatch(updateToken({ token: newToken, tokenExpiry: newTokenExpiry }));
+          dispatch(
+            updateToken({ token: newToken, tokenExpiry: newTokenExpiry })
+          );
           setupTokenRefreshTimer(newToken);
-          
-          return { success: true, token: newToken, tokenExpiry: newTokenExpiry };
+          return {
+            success: true,
+            token: newToken,
+            tokenExpiry: newTokenExpiry,
+          };
         } else {
+
           throw new Error("No token in refresh response");
         }
       } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.error("Token refresh failed:", error);
-          // Only show toast if refresh token is actually invalid (401/403)
-          if (error.response?.status === 401 || error.response?.status === 403) {
+        if (error.name !== "AbortError") {
+          if (
+            error.response?.status === 401 ||
+            error.response?.status === 403
+          ) {
             errorToast("Session expired. Please login again.");
           }
-          dispatch(logoutUser());
         }
         return { success: false, error };
       }
@@ -149,13 +151,11 @@ const useLoginInterceptor = () => {
       }
 
       const tokenExpiry = getTokenExpiry(token);
-      if (!tokenExpiry) {
-        return;
-      }
+      if (!tokenExpiry) return;
 
       const currentTime = Math.floor(Date.now() / 1000);
       const timeUntilExpiry = tokenExpiry - currentTime;
-      
+
       const refreshBuffer = 60;
       const timeUntilRefresh = timeUntilExpiry - refreshBuffer;
 
@@ -172,62 +172,72 @@ const useLoginInterceptor = () => {
       await handleTokenRefresh(abortController.signal);
     };
 
-
     const validateToken = async () => {
       const token = localStorage.getItem("userToken");
 
-      // If token exists in localStorage, validate and use it
       if (token) {
         const tokenExpiry = getTokenExpiry(token);
+
         if (tokenExpiry) {
           const currentTime = Math.floor(Date.now() / 1000);
           const isExpired = tokenExpiry <= currentTime;
 
           if (!isExpired) {
-
-            await fetchBasicUserData(abortController.signal, token, tokenExpiry);
+            await fetchBasicUserData();
             setupTokenRefreshTimer(token);
             return;
           }
         }
 
-      
-      }
-      
-      const result = await handleTokenRefresh(abortController.signal);
-      
-      if (result.success) {
-        await fetchBasicUserData(abortController.signal, result.token, result.tokenExpiry);
-      } else {
+        const result = await handleTokenRefresh(abortController.signal);
 
-         dispatch(logoutUser());
+        if (result.success) {
+          localStorage.setItem("userToken", result.token);
+          await fetchBasicUserData();
+        } else {
+          clearUserState();
+        }
+      } else {
+        const result = await handleTokenRefresh(abortController.signal);
+
+        if (result.success) {
+          localStorage.setItem("userToken", result.token);
+          await fetchBasicUserData();
+
+        }
       }
     };
 
-    const fetchBasicUserData = async (signal, token, tokenExpiry) => {
+    const fetchBasicUserData = async () => {
       try {
         dispatch(loginStart());
-        const response = await apiService.getBasicUserData(signal);
-        
+        const response = await apiService.getBasicUserData(abortController.signal);
         if (response?.user) {
           const { name, email, userId, cart } = response.user;
-          dispatch(loginUser({ 
-            name, 
-            email, 
-            userId, 
-            cart, 
-            token,
-            tokenExpiry 
-          }));
+          dispatch(
+            loginUser({
+              name,
+              email,
+              userId,
+              cart,
+              token,
+              tokenExpiry,
+            })
+          );
         } else {
           errorToast("Failed to get user data.");
-          dispatch(logoutUser());
+          clearUserState();
         }
       } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.error("Fetch user data failed:", error);
+        if (error.name !== "AbortError") {
+          clearUserState();
         }
       }
+    };
+
+    const clearUserState = () => {
+      localStorage.removeItem("userToken");
+      dispatch(resetState());
     };
 
     validateToken();
@@ -244,7 +254,7 @@ const useLoginInterceptor = () => {
         axios.interceptors.response.eject(responseInterceptorRef.current);
       }
     };
-  }, [dispatch]);
+  }, []);
 };
 
 export default useLoginInterceptor;

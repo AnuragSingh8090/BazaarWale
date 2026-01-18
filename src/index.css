@@ -6,6 +6,7 @@
   outline: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  transition: background-color 500ms ease, color 500ms ease, border-color 500ms ease;
 }
 
 *::-webkit-scrollbar {
@@ -13,11 +14,94 @@
 }
 
 :root {
+  /* Primary Theme Colors */
+  /* --primary: #008ecc; */
+  --primary: #d50dbe;
+  --primary-light: #e6f4f9;
+  --primary-medium: #b3dff0;
+  --primary-lighter: #f3f9fb;
+
+  /* Text Colors */
+  --text-primary: #333333;
+  --text-secondary: #777777;
+  --text-muted: #9ca3af;
+  --text-white: #ffffff;
+
+  /* Background Colors */
+  --bg-body: #f6f3f4;
+  --bg-light: #f3f4f6;
+  --bg-white: #ffffff;
+  --bg-gradient-start: #f0f9ff;
+  --bg-gradient-end: #e0f2fe;
+
+  /* Border Colors */
+  --border-light: #ebebeb;
+  --border-default: #e5e7eb;
+  --border-dark: #d8d8d8;
+
+  /* Status Colors */
+  --success: #4caf50;
+  --error: #ef4444;
+  --error-light: #fff5f5;
+  --warning: #fbc02d;
+  --info: #1565c0;
+
+  /* Accent Colors */
+  --accent: #ff6b6b;
+  --accent-light: #fff5f5;
+
+  /* Shadows */
   --boxShadow-light: rgba(0, 0, 0, 0.35) 0px 0px 5px;
-  --primary: #008ecc;
-  --primary-light: #f3f9fb;
-  --border-light: #d8d8d8;
+
+  /* Fonts */
   --custom-font: "Pacifico", cursive;
+}
+
+/* Dark mode color overrides */
+.dark {
+  /* Primary Theme Colors - slightly lighter for dark mode */
+  --primary: #33a3dc;
+  --primary-light: #e7f9ff;
+  --primary-medium: #bfefff;
+  --primary-lighter: #f4fcfe;
+
+  /* Text Colors */
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-white: #ffffff;
+
+  /* Background Colors */
+  --bg-body: #111827;
+  --bg-light: #1f2937;
+  --bg-white: #1f2937;
+  --bg-gradient-start: #1f2937;
+  --bg-gradient-end: #374151;
+
+  /* Border Colors */
+  --border-light: #ebebeb;
+  --border-default: #ebebeb;
+  --border-dark: #ebebeb;
+
+  /* Category Card Colors - adjusted for dark mode */
+  --card-gray: #374151;
+  --card-gray-dark: #4b5563;
+  --card-blue: #1e3a8a;
+  --card-blue-dark: #1e40af;
+  --card-yellow: #92400e;
+  --card-yellow-dark: #b45309;
+  --card-sky: #075985;
+  --card-sky-dark: #0369a1;
+  --card-pink: #9f1239;
+  --card-pink-dark: #be123c;
+  --card-green: #065f46;
+  --card-green-dark: #047857;
+  --card-cream: #78350f;
+  --card-cream-dark: #92400e;
+  --card-purple: #5b21b6;
+  --card-purple-dark: #6d28d9;
+  --card-peach: #9a3412;
+  --card-peach-dark: #c2410c;
 }
 
 .centerFlex {
@@ -32,23 +116,34 @@
   border-radius: 8px;
   padding: 10px;
 }
+
 .boxShadow-light {
   box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 5px;
 }
 
 body {
-  background-color: #f6f3f4;
+  background-color: var(--bg-body);
 }
 
+/* Global disabled attribute - applies to all disabled elements */
+[disabled],
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
 
-.disabled{
+.disabled {
   filter: brightness(0.5) !important;
   pointer-events: none !important;
-  color: #777777;
+  color: var(--text-secondary);
   user-select: none;
 }
 
-.disabled-light{
+.disabled-light {
   filter: brightness(0.6);
   pointer-events: none;
 }
@@ -56,6 +151,7 @@ body {
 .animate-shimmer {
   animation: shimmer 1.5s infinite;
 }
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);

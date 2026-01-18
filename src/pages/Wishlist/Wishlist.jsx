@@ -103,7 +103,7 @@ const Wishlist = () => {
             <p className="text-gray-500 mb-4">Save items you love for future shopping.</p>
             <Link 
               to="/" 
-              className="inline-block bg-[var(--primary)] text-white px-4 py-2 rounded-md hover:bg-[#007ab3] transition-colors cursor-pointer"
+              className="inline-block bg-[var(--primary)] text-white px-4 py-2 rounded-md hover:bg-[var(--primary)] hover:opacity-90 transition-colors cursor-pointer"
             >
               Start Shopping
             </Link>
@@ -183,7 +183,7 @@ const Wishlist = () => {
                     disabled={!item.inStock}
                     className={`px-3 py-1 rounded text-xs flex items-center gap-1 ${
                       item.inStock 
-                        ? 'bg-[var(--primary)] text-white hover:bg-[#007ab3] cursor-pointer' 
+                        ? 'bg-[var(--primary)] text-white hover:bg-[var(--primary)] hover:opacity-90 cursor-pointer' 
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >

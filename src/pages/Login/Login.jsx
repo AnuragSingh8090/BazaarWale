@@ -367,10 +367,10 @@ const Login = () => {
           100% { transform: translateX(150%) skewX(-20deg); }
         }
       `}</style>
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 p-4 py-6">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-[var(--primary-lighter)] to-[var(--primary-light)] p-4 py-6">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-4xl flex flex-col md:flex-row animate-[fadeIn_0.5s_ease-out]">
-          <div className="md:w-1/2 bg-gradient-to-tr from-blue-400 to-indigo-500 p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-blue-500 opacity-20 z-0"></div>
+          <div className="md:w-1/2 bg-gradient-to-tr from-[var(--primary)] to-[var(--primary)] p-8 hidden md:flex flex-col justify-center items-center text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-[var(--primary)] opacity-20 z-0"></div>
             <div className="w-full max-w-md z-10 transform transition-all duration-500 animate-[floating_6s_ease-in-out_infinite]">
               <img
                 src="/loginImage.png"
@@ -385,13 +385,13 @@ const Login = () => {
             </div>
             <div className="mt-8 text-center z-10">
               <h2 className="text-2xl font-bold mb-2">Welcome Back!</h2>
-              <p className="text-blue-100">
+              <p className="text-white opacity-80">
                 Log in to access your account and continue your shopping
                 journey.
               </p>
             </div>
 
-            <div className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-blue-300 opacity-20 animate-pulse"></div>
+            <div className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-[var(--primary-light)] opacity-20 animate-pulse"></div>
             <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-indigo-300 opacity-20 animate-pulse"></div>
           </div>
 
@@ -399,7 +399,7 @@ const Login = () => {
             <div className="mb-6 text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-2 relative inline-block">
                 {showForgotPassword ? "Reset Password" : "Login"}
-                <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
               </h2>
               <p className="text-gray-600 text-sm">
                 {showForgotPassword
@@ -415,7 +415,7 @@ const Login = () => {
                     htmlFor="emailOrMobile"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-envelope text-blue-500 mr-2"></i>
+                    <i className="fa-solid fa-envelope text-[var(--primary)] mr-2"></i>
                     Email or Mobile <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -427,7 +427,7 @@ const Login = () => {
                     type="text"
                     id="emailOrMobile"
                     placeholder="Enter your email or mobile"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                   />
                 </div>
 
@@ -436,7 +436,7 @@ const Login = () => {
                     htmlFor="password"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    <i className="fa-solid fa-lock text-blue-500 mr-2"></i>
+                    <i className="fa-solid fa-lock text-[var(--primary)] mr-2"></i>
                     Password <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -449,11 +449,11 @@ const Login = () => {
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Enter your password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[var(--primary)] transition-colors focus:outline-none"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex="-1"
                     >
@@ -470,7 +470,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={toggleForgotPassword}
-                    className="text-sm text-blue-600  hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                    className="text-sm text-[var(--primary)]  hover:text-[var(--primary)] hover:underline transition-colors cursor-pointer"
                   >
                     Forgot Password?
                   </button>
@@ -480,7 +480,7 @@ const Login = () => {
                   disabled={!Login.email || !Login.password || loading}
                   className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden ${
                     Login.email && Login.password
-                      ? "bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer"
+                      ? "bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] hover:from-[var(--primary)] hover:to-[var(--primary)]  cursor-pointer"
                       : "bg-gray-400 opacity-70"
                   }`}
                 >
@@ -505,7 +505,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/")}
-                  className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600  cursor-pointer`}
+                  className={`w-full text-white py-2 flex items-center justify-center rounded-lg font-medium text-sm transition duration-300 shadow-md relative overflow-hidden mt-2 bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] hover:from-[var(--primary)] hover:to-[var(--primary)]  cursor-pointer`}
                 >
                   <span>
                     <i className={`fa-solid fa-arrow-left mr-2 `}></i>
@@ -522,7 +522,7 @@ const Login = () => {
                   >
                     <div className="mb-4">
                       <h3 className="text-sm font-semibold text-gray-700 flex items-center">
-                        <span className="bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
+                        <span className="bg-[var(--primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
                           1
                         </span>
                         Enter your Email or Phone Number
@@ -530,7 +530,7 @@ const Login = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        <i className="fa-solid fa-envelope text-blue-500 mr-2"></i>
+                        <i className="fa-solid fa-envelope text-[var(--primary)] mr-2"></i>
                         Email or Phone Number{" "}
                         <span className="text-red-500">*</span>
                       </label>
@@ -539,7 +539,7 @@ const Login = () => {
                         value={resetEmail}
                         onChange={(e) => setResetEmail(e.target.value)}
                         placeholder="Enter your registered email or phone"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                         required
                         autoFocus
                       />
@@ -548,7 +548,7 @@ const Login = () => {
                     <button
                       type="submit"
                       disabled={loading ? true : false}
-                      className="w-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
+                      className="w-full flex items-center justify-center bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] text-white py-2 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] transition duration-300 cursor-pointer"
                     >
                       {loading ? (
                         <span className="flex gap-2 items-center event-none pointer-none ">
@@ -566,7 +566,7 @@ const Login = () => {
                       <button
                         type="button"
                         onClick={toggleForgotPassword}
-                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                        className="text-sm text-[var(--primary)] hover:text-[var(--primary)] hover:underline transition-colors cursor-pointer"
                       >
                         <i className="fa-solid fa-arrow-left mr-1"></i>
                         Back to Login
@@ -579,7 +579,7 @@ const Login = () => {
                   <form onSubmit={handleOTPVerification} className="space-y-4">
                     <div className="mb-4">
                       <h3 className="text-sm font-semibold text-gray-700 flex items-center">
-                        <span className="bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
+                        <span className="bg-[var(--primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
                           2
                         </span>
                         Verify OTP
@@ -591,7 +591,7 @@ const Login = () => {
                     </p>
 
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <i className="fa-solid fa-key text-blue-500 mr-2"></i>
+                      <i className="fa-solid fa-key text-[var(--primary)] mr-2"></i>
                       Enter 6-digit OTP <span className="text-red-500">*</span>
                     </label>
 
@@ -613,7 +613,7 @@ const Login = () => {
                               ? "border-green-500 bg-green-50 focus:border-green-500"
                               : otpStatus === "error"
                               ? "border-red-500 bg-red-50 focus:border-red-500"
-                              : "border-gray-300 focus:border-blue-500"
+                              : "border-gray-300 focus:border-[var(--primary)]"
                           }`}
                           maxLength={1}
                           required
@@ -625,7 +625,7 @@ const Login = () => {
                     <button
                       type="submit"
                       disabled={loading ? true : false}
-                      className="w-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
+                      className="w-full flex items-center justify-center bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] text-white py-2 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] transition duration-300 cursor-pointer"
                     >
                       {loading ? (
                         <span className="flex gap-2 items-center pointer-none ">
@@ -649,7 +649,7 @@ const Login = () => {
                       ) : (
                         <button
                           type="button"
-                          className="text-blue-600 hover:underline ml-1 cursor-pointer"
+                          className="text-[var(--primary)] hover:underline ml-1 cursor-pointer"
                           onClick={handleResendOTP}
                         >
                           Resend OTP
@@ -664,7 +664,7 @@ const Login = () => {
                           setForgotPasswordStep(1);
                           setOtp(["", "", "", "", "", ""]);
                         }}
-                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                        className="text-sm text-[var(--primary)] hover:text-[var(--primary)] hover:underline transition-colors cursor-pointer"
                       >
                         <i className="fa-solid fa-arrow-left mr-1"></i>
                         Change Email/Phone
@@ -677,7 +677,7 @@ const Login = () => {
                   <form onSubmit={handlePasswordReset} className="space-y-4">
                     <div className="mb-4">
                       <h3 className="text-sm font-semibold text-gray-700 flex items-center">
-                        <span className="bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
+                        <span className="bg-[var(--primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
                           3
                         </span>
                         Create New Password
@@ -685,7 +685,7 @@ const Login = () => {
                     </div>
                     <div className="relative">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        <i className="fa-solid fa-lock text-blue-500 mr-2"></i>
+                        <i className="fa-solid fa-lock text-[var(--primary)] mr-2"></i>
                         New Password <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
@@ -694,14 +694,14 @@ const Login = () => {
                           value={newPassword}
                           onChange={handlePasswordChange}
                           placeholder="Enter new password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                           minLength={6}
                           required
                           autoFocus
                         />
                         <button
                           type="button"
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none cursor-pointer"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[var(--primary)] transition-colors focus:outline-none cursor-pointer"
                           onClick={() => setShowNewPassword(!showNewPassword)}
                           tabIndex="-1"
                         >
@@ -784,7 +784,7 @@ const Login = () => {
 
                     <div className="relative">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        <i className="fa-solid fa-lock text-blue-500 mr-2"></i>
+                        <i className="fa-solid fa-lock text-[var(--primary)] mr-2"></i>
                         Confirm Password <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
@@ -793,13 +793,13 @@ const Login = () => {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm new password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300 placeholder-gray-300"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[var(--primary)] transition-all duration-300 placeholder-gray-300"
                           minLength={6}
                           required
                         />
                         <button
                           type="button"
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors focus:outline-none cursor-pointer"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[var(--primary)] transition-colors focus:outline-none cursor-pointer"
                           onClick={() =>
                             setShowConfirmPassword(!showConfirmPassword)
                           }
@@ -817,7 +817,7 @@ const Login = () => {
                     <button
                       type="submit"
                       disabled={loading ? true : false}
-                      className="w-full flex items-center gap-2 justify-center bg-gradient-to-r from-blue-400 to-indigo-500 text-white py-2 rounded-lg font-medium text-sm hover:from-blue-500 hover:to-indigo-600 transition duration-300 cursor-pointer"
+                      className="w-full flex items-center gap-2 justify-center bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] text-white py-2 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] transition duration-300 cursor-pointer"
                     >
                       {loading ? (
                         <span className="flex gap-2 items-center pointer-none ">
@@ -837,7 +837,7 @@ const Login = () => {
                         cancelForgotPassword();
                         navigate("/login");
                       }}
-                      className="text-sm w-full flex items-center justify-center text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer"
+                      className="text-sm w-full flex items-center justify-center text-[var(--primary)] hover:text-[var(--primary)] hover:underline transition-colors cursor-pointer"
                     >
                       <i className="fa-solid fa-arrow-left mr-1"></i>
                       Back to Login
@@ -851,7 +851,7 @@ const Login = () => {
               Don&apos;t have an account?{" "}
               <Link
                 to="/register"
-                className="text-blue-600 hover:underline font-medium transition-colors duration-300"
+                className="text-[var(--primary)] hover:underline font-medium transition-colors duration-300"
               >
                 Create an account
               </Link>

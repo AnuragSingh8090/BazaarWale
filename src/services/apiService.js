@@ -38,6 +38,15 @@ const apiService = {
     return response.data;
   },
 
+  logoutUser: async (signal) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/logout`,
+      {},
+      signal ? { signal } : {}
+    );
+    return response.data;
+  },
+
   validateResetPasswordEmail: async (data, signal) => {
     const response = await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/validateresetpasswordemail`,

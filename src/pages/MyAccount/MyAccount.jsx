@@ -426,7 +426,7 @@ const MyAccount = () => {
     }
   };
 
-  const updateLoginActivity = async (e) => {  
+  const updateLoginActivity = async (e) => {
     e.preventDefault();
     try {
       setLoginActivityLoading(true);
@@ -679,7 +679,7 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-50 to-gray-100 min-h-screen py-12 px-4">
+    <div className="bg-gradient-to-b from-[var(--bg-gradient-start)] to-[var(--bg-light)] min-h-screen py-12 px-4">
       <ScrollToTop />
       <style>{activeNavStyle}</style>
       <div className="max-w-[1200px] mx-auto">
@@ -702,7 +702,7 @@ const MyAccount = () => {
                 {userLoading ? (
                   <div className="h-[152px] w-full rounded-md bg-gray-300 animate-pulse"></div>
                 ) : (
-                  <div className=" bg-gradient-to-r from-blue-500 to-indigo-600 p-5 text-white">
+                  <div className=" bg-gradient-to-r from-[var(--primary)] to-[var(--primary)] p-5 text-white">
                     <div className="flex flex-col items-center">
                       <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 border-4 border-white shadow-lg cursor-pointer">
                         <span className="text-2xl text-blue-500 font-bold">
@@ -715,7 +715,7 @@ const MyAccount = () => {
                       <h2 className="text-base font-bold">
                         {userData.name.split(" ").slice(0, 2).join(" ")}
                       </h2>
-                      <p className="text-blue-100 text-xs">{userData.email}</p>
+                      <p className="text-white opacity-80 text-xs">{userData.email}</p>
                     </div>
                   </div>
                 )}
@@ -737,27 +737,23 @@ const MyAccount = () => {
                         <li key={section.id}>
                           <button
                             onClick={() => scrollToSection(section.id)}
-                            className={`w-full flex items-center text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 cursor-pointer ${
-                              activeSection === section.id
-                                ? "bg-blue-50 text-[var(--primary)] font-medium translate-x-1"
+                            className={`w-full flex items-center text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 cursor-pointer ${activeSection === section.id
+                                ? "bg-[var(--primary-lighter)] text-[var(--primary)] font-medium translate-x-1"
                                 : "text-gray-700 hover:bg-gray-50"
-                            }`}
+                              }`}
                           >
                             <i
-                              className={`fa-solid ${
-                                section.icon
-                              } w-5 text-center mr-2 transition-all duration-300 ${
-                                activeSection === section.id
+                              className={`fa-solid ${section.icon
+                                } w-5 text-center mr-2 transition-all duration-300 ${activeSection === section.id
                                   ? "text-[var(--primary)] scale-110"
                                   : "text-gray-400"
-                              }`}
+                                }`}
                             ></i>
                             <span
-                              className={`transition-all duration-300 ${
-                                activeSection === section.id
+                              className={`transition-all duration-300 ${activeSection === section.id
                                   ? "translate-x-0.5"
                                   : ""
-                              }`}
+                                }`}
                             >
                               {section.title}
                             </span>
@@ -807,9 +803,8 @@ const MyAccount = () => {
                     className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
                   >
                     <i
-                      className={`fa-solid ${
-                        editMode.profile ? "fa-times" : "fa-pen"
-                      } mr-1`}
+                      className={`fa-solid ${editMode.profile ? "fa-times" : "fa-pen"
+                        } mr-1`}
                     ></i>
                     {editMode.profile ? "Cancel" : "Edit"}
                   </button>
@@ -899,7 +894,7 @@ const MyAccount = () => {
                               <button
                                 type="button"
                                 onClick={handleSendMobileOTP}
-                                className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
+                                className="bg-[var(--primary-lighter)] text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-[var(--primary-light)] cursor-pointer"
                               >
                                 Verify
                               </button>
@@ -964,7 +959,7 @@ const MyAccount = () => {
                                 type="button"
                                 disabled={emailLoading}
                                 onClick={handleSendEmailOTP}
-                                className="bg-blue-50 text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-blue-100 cursor-pointer"
+                                className="bg-[var(--primary-lighter)] text-[var(--primary)] px-3 py-2 text-xs rounded-r-lg border border-l-0 border-gray-300 hover:bg-[var(--primary-light)] cursor-pointer"
                               >
                                 {emailLoading ? (
                                   <div className="flex items-center justify-center h-full w-full">
@@ -1017,7 +1012,7 @@ const MyAccount = () => {
                         <button
                           type="submit"
                           disabled={userProfileUpdateLoading}
-                          className="bg-gradient-to-r from-blue-300 w-[161.26px] to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                          className="bg-gradient-to-r from-blue-300 w-[161.26px] to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                         >
                           {userProfileUpdateLoading ? (
                             <div className="flex items-center justify-center h-full w-full">
@@ -1118,9 +1113,8 @@ const MyAccount = () => {
                     className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
                   >
                     <i
-                      className={`fa-solid ${
-                        editMode.password ? "fa-times" : "fa-pen"
-                      } mr-1`}
+                      className={`fa-solid ${editMode.password ? "fa-times" : "fa-pen"
+                        } mr-1`}
                     ></i>
                     {editMode.password ? "Cancel" : "Change"}
                   </button>
@@ -1204,7 +1198,7 @@ const MyAccount = () => {
                         <button
                           disabled={passwordLoading}
                           type="submit"
-                          className="bg-gradient-to-r w-[179px] from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                          className="bg-gradient-to-r w-[179px] from-[var(--primary-light)] to-[var(--primary-lighter)] text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                         >
                           {passwordLoading ? (
                             <div className="flex items-center justify-center h-full">
@@ -1408,9 +1402,8 @@ const MyAccount = () => {
                   className="text-[var(--primary)] text-sm font-medium hover:underline flex items-center cursor-pointer"
                 >
                   <i
-                    className={`fa-solid ${
-                      editMode.address ? "fa-times" : "fa-plus"
-                    } mr-1`}
+                    className={`fa-solid ${editMode.address ? "fa-times" : "fa-plus"
+                      } mr-1`}
                   ></i>
                   {editMode.address
                     ? isEditingAddress
@@ -1647,12 +1640,11 @@ const MyAccount = () => {
                     <div className="flex justify-end">
                       <button
                         type="submit"
-                        className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                        className="bg-gradient-to-r from-[var(--primary-light)] to-[var(--primary-lighter)] text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                       >
                         <i
-                          className={`fa-solid ${
-                            isEditingAddress ? "fa-edit" : "fa-save"
-                          } mr-1`}
+                          className={`fa-solid ${isEditingAddress ? "fa-edit" : "fa-save"
+                            } mr-1`}
                         ></i>
                         {isEditingAddress ? "Update Address" : "Save Address"}
                       </button>
@@ -1662,7 +1654,7 @@ const MyAccount = () => {
                   <div>
                     {addresses.length === 0 ? (
                       <div className="text-center py-8">
-                        <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                        <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-[var(--primary-light)] rounded-full">
                           <i className="fa-solid fa-map-marker-alt text-[var(--primary)] text-xl"></i>
                         </div>
                         <p className="text-gray-600 mb-3">
@@ -1683,15 +1675,14 @@ const MyAccount = () => {
                         {addresses.map((address) => (
                           <div
                             key={address.id}
-                            className={`p-4 border rounded-lg relative hover:shadow-md transition-shadow duration-300 ${
-                              address.isDefault
-                                ? "border-blue-300 bg-blue-50"
+                            className={`p-4 border rounded-lg relative hover:shadow-md transition-shadow duration-300 ${address.isDefault
+                                ? "border-[var(--primary-medium)] bg-[var(--primary-lighter)]"
                                 : "border-gray-200"
-                            }`}
+                              }`}
                           >
                             {address.isDefault && (
                               <div className="absolute top-2 left-2">
-                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-[var(--primary-light)] text-[var(--primary)] px-2 py-0.5 rounded-full">
                                   Default
                                 </span>
                               </div>
@@ -1715,13 +1706,12 @@ const MyAccount = () => {
                             <div className="flex items-start mb-1 mt-4">
                               <div className="mr-2 text-[var(--primary)]">
                                 <i
-                                  className={`fa-solid ${
-                                    address.type === "home"
+                                  className={`fa-solid ${address.type === "home"
                                       ? "fa-home"
                                       : address.type === "work"
-                                      ? "fa-briefcase"
-                                      : "fa-location-dot"
-                                  }`}
+                                        ? "fa-briefcase"
+                                        : "fa-location-dot"
+                                    }`}
                                 ></i>
                               </div>
                               <div className="flex-grow">
@@ -2026,7 +2016,7 @@ const MyAccount = () => {
                         <div className="flex justify-end">
                           <button
                             type="submit"
-                            className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                            className="bg-gradient-to-r from-[var(--primary-light)] to-[var(--primary-lighter)] text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                           >
                             <i
                               className={`fa-solid ${
@@ -2095,7 +2085,7 @@ const MyAccount = () => {
                         <div className="flex justify-end">
                           <button
                             type="submit"
-                            className="bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                            className="bg-gradient-to-r from-[var(--primary-light)] to-[var(--primary-lighter)] text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                           >
                             <i
                               className={`fa-solid ${
@@ -2118,7 +2108,7 @@ const MyAccount = () => {
                 >
                   {paymentMethods.length === 0 ? (
                     <div className="text-center py-8">
-                      <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                      <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-[var(--primary-light)] rounded-full">
                         <i className="fa-solid fa-credit-card text-[var(--primary)] text-xl"></i>
                       </div>
                       <p className="text-gray-600 mb-3">
@@ -2146,13 +2136,13 @@ const MyAccount = () => {
                             key={method.id}
                             className={`p-4 border rounded-lg relative ${
                               method.isDefault
-                                ? "border-blue-300 bg-blue-50"
+                                ? "border-[var(--primary-medium)] bg-[var(--primary-lighter)]"
                                 : "border-gray-200"
                             } hover:shadow-md transition-shadow duration-300`}
                           >
                             {method.isDefault && (
                               <div className="absolute top-2 left-2">
-                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-[var(--primary-light)] text-[var(--primary)] px-2 py-0.5 rounded-full">
                                   Default
                                 </span>
                               </div>
@@ -2184,8 +2174,8 @@ const MyAccount = () => {
                                   />
                                 </div>
                               ) : method.type === "credit" ? (
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                  <i className="fa-solid fa-credit-card text-blue-700"></i>
+                                <div className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center mr-3">
+                                  <i className="fa-solid fa-credit-card text-[var(--primary)]"></i>
                                 </div>
                               ) : (
                                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
@@ -2258,7 +2248,7 @@ const MyAccount = () => {
                 className="bg-white rounded-xl shadow-md overflow-hidden scroll-mt-24"
               >
                 <div className="p-6 text-center">
-                  <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                  <div className="mb-3 inline-flex items-center justify-center w-12 h-12 bg-[var(--primary-light)] rounded-full">
                     <i className="fa-solid fa-box text-[var(--primary)] text-xl"></i>
                   </div>
                   <h2 className="text-lg font-bold text-gray-800 mb-2">
@@ -2269,7 +2259,7 @@ const MyAccount = () => {
                   </p>
                   <a
                     href="/orders"
-                    className="inline-block bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                    className="inline-block bg-gradient-to-r from-[var(--primary-light)] to-[var(--primary-lighter)] text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                   >
                     View All Orders
                   </a>
@@ -2296,7 +2286,7 @@ const MyAccount = () => {
                   </p>
                   <a
                     href="/wishlist"
-                    className="inline-block bg-gradient-to-r from-blue-300 to-blue-200 text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-blue-400 hover:to-blue-300 hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
+                    className="inline-block bg-gradient-to-r from-[var(--primary-light)] to-[var(--primary-lighter)] text-[var(--primary)] py-2 px-6 rounded-lg font-medium text-sm hover:from-[var(--primary)] hover:to-[var(--primary)] hover:text-white transition duration-300 shadow-md active:scale-[0.98] cursor-pointer"
                   >
                     View Wishlist
                   </a>

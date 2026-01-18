@@ -1,9 +1,9 @@
 import "./Navbar.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { sucessToast } from "../Toasters/Toasters";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/slices/userSlice";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState("");
@@ -12,7 +12,8 @@ const Navbar = () => {
   const userName = useSelector((state) => state.user.user.name);
   const cartItems = useSelector((state) => state.user.user.cart);
   const isLoggedIn = useSelector((state) => state.user.isLoggedin);
-  const contactDetails = useSelector(state => state.contact)
+  const contactDetails = useSelector(state => state.contact);
+  const { theme, toggleTheme } = useTheme();
 
   const navigate = useNavigate();
   const navbarReffrence = useRef(null);
@@ -26,7 +27,6 @@ const Navbar = () => {
     setLoginPopup(false);
     setShowDrop(false);
     dispatch(logoutUser());
-    sucessToast("Logout Successfull!!");
     navigate("/");
   };
   const showAccountMenu = () => {
@@ -89,19 +89,19 @@ const Navbar = () => {
             <div className="navLogo w-[43px] flex-shrink-0">
               <img src="/brand-logo.png" alt="Logo" />
             </div>
-            { 
-            contactDetails.brandName &&
-            <span
-              className="text-[22px] shrink-0"
-              style={{
-                fontFamily: "var(--custom-font)",
-                background: "linear-gradient(to right, #008ecc, #d26c1e)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              {contactDetails.brandName}
-            </span>
+            {
+              contactDetails.brandName &&
+              <span
+                className="text-[22px] shrink-0"
+                style={{
+                  fontFamily: "var(--custom-font)",
+                  background: "linear-gradient(to right, #008ecc, #d26c1e)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {contactDetails.brandName}
+              </span>
             }
           </NavLink>
         </div>
@@ -142,9 +142,13 @@ const Navbar = () => {
           </div>
 
           <div className="userSection shrink-0 flex justify-center items-center gap-[30px]">
-            {/* <div className="theme_container active:scale-[0.95] text-[20px] cursor-pointer text-[#333232]">
-            <i className="fa-solid fa-moon" title="Dark Mode"></i>
-          </div> */}
+            <div
+              className="theme_container active:scale-[0.95] text-[20px] cursor-pointer text-[#333232] transition-transform duration-300 hover:scale-[1.05]"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'} text-[var(--primary)] transition-all duration-500 ease-in-out hover:rotate-[20deg]`}></i>
+            </div>
 
             {isLoggedIn ? (
               <div
@@ -159,7 +163,7 @@ const Navbar = () => {
                     title="Account"
                   ></i>
                   <span className="text-[16px]">
-                    {userName.split(" ").slice(0, 2).join(" ") || "User Name"}
+                    {userName?.split(" ").slice(0, 2).join(" ") || "User Name"}
                   </span>
                 </div>
                 {showDrop && isLoggedIn ? (

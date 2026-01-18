@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { errorToast, sucessToast } from "../Toasters/Toasters";
-import axios from "axios";
 import apiService from "../../services/apiService";
 import { Link } from "react-router-dom";
 
 export default function SubscribeEmail() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
 
   const validateEmail = (email) => {
@@ -57,7 +56,7 @@ export default function SubscribeEmail() {
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Left side - Content */}
-            <div className="bg-gradient-to-br from-blue-500 to-sky-600 p-8 sm:p-12 text-white">
+            <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--primary)] p-8 sm:p-12 text-white">
               <div className="flex items-center mb-6">
                 <Mail className="h-8 w-8 mr-3" />
                 <h2 className="text-2xl sm:text-3xl font-bold">Stay Updated</h2>
@@ -67,7 +66,7 @@ export default function SubscribeEmail() {
                 Never Miss Out on Amazing Deals!
               </h3>
 
-              <div className="space-y-3 text-blue-100">
+              <div className="space-y-3 text-white opacity-80">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-2 h-2 bg-white rounded-full mt-2 mr-3"></div>
                   <p>
@@ -91,13 +90,13 @@ export default function SubscribeEmail() {
                 </div>
               </div>
 
-              <div className="mt-8 text-sm text-blue-200">
+              <div className="mt-8 text-sm text-white opacity-70">
                 <p>🔒 Your privacy is protected. Unsubscribe anytime.</p>
               </div>
             </div>
 
             {/* Right side - Form */}
-            <div className="p-8 sm:p-12 bg-[#f3f9fb]">
+            <div className="p-8 sm:p-12 bg-[var(--primary-lighter)]">
               <div className="max-w-md mx-auto">
                 <h4 className="text-2xl font-bold text-gray-900 mb-2">
                   Subscribe Now
@@ -122,11 +121,10 @@ export default function SubscribeEmail() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email address"
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 placeholder:text-[#a7a5a5] focus:border-blue-500 transition-colors ${
-                          status === "error"
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[var(--primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] transition-colors ${status === "error"
+                          ? "border-red-300"
+                          : "border-gray-300"
+                          }`}
                         disabled={status === "loading"}
                         onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
                       />
@@ -136,11 +134,10 @@ export default function SubscribeEmail() {
 
                   {message && (
                     <div
-                      className={`flex items-center p-3 rounded-lg text-sm ${
-                        status === "success"
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-red-50 text-red-700 border border-red-200"
-                      }`}
+                      className={`flex items-center p-3 rounded-lg text-sm ${status === "success"
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-red-50 text-red-700 border border-red-200"
+                        }`}
                     >
                       {status === "success" ? (
                         <Check className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -154,11 +151,10 @@ export default function SubscribeEmail() {
                   <button
                     onClick={handleSubmit}
                     disabled={status === "loading"}
-                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${
-                      status === "loading"
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-500 hover:bg-blue-600 active:transform active:scale-95"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${status === "loading"
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[var(--primary)] hover:bg-[var(--primary)] hover:opacity-90 active:transform active:scale-95"
+                      } focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2`}
                   >
                     {status === "loading" ? (
                       <div className="flex items-center justify-center">
@@ -175,13 +171,13 @@ export default function SubscribeEmail() {
                   <div className="text-xs text-gray-500 flex gap-2 justify-center items-center text-center">
                     By subscribing, you agree to our{" "}
                     <Link to="/privacy_policy">
-                      <p className="text-blue-600 hover:text-blue-500 underline cursor-pointer">
+                      <p className="text-[var(--primary)] hover:text-[var(--primary)] hover:opacity-80 underline cursor-pointer">
                         Privacy Policy
                       </p>
                     </Link>{" "}
                     and{" "}
                     <Link to="/terms_conditions">
-                      <p className="text-blue-600 hover:text-blue-500 underline">
+                      <p className="text-[var(--primary)] hover:text-[var(--primary)] hover:opacity-80 underline">
                         Terms of Service
                       </p>
                     </Link>
@@ -196,7 +192,7 @@ export default function SubscribeEmail() {
                       2M+ Subscribers
                     </div>
                     <div className="flex items-center">
-                      <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                      <span className="w-2 h-2 bg-[var(--primary)] rounded-full mr-2"></span>
                       Spam-Free
                     </div>
                   </div>

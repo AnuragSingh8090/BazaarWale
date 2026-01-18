@@ -1,4 +1,7 @@
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -18,20 +21,22 @@ import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
 import Products from "./pages/Products/Products";
 import LoadingPage from "./components/loadinPage/LoadingPage";
-import { Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import checkBackendConnection from "./services/checkBackendConnection";
 import loginInterceptor from "./services/loginInterceptor";
+import { useNavigate } from "react-router-dom";
+
+const ProtectedRoute = ({ children }) => {
+  const isLoggedin = useSelector((state) => state.user.isLoggedin);
+  return isLoggedin ? children : <Navigate to="/login" replace />;
+};
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoading = useSelector((state) => state.user.loading);
   const isLoggedin = useSelector((state) => state.user.isLoggedin);
-  const isAuthPage =location.pathname === "/login" || location.pathname === "/register";
-
+  const isAuthPage = ["/login", "/register"].includes(location.pathname);
 
   useEffect(() => {
     checkBackendConnection();
@@ -39,56 +44,54 @@ function App() {
 
   loginInterceptor();
 
-  useEffect(()=>{
+
+  useEffect(() => {
     const token = localStorage.getItem('userToken')
-    if(token){      
-      localStorage.setItem('Last Path',location.pathname)
+    if (isLoggedin) {
+      localStorage.setItem('Last Path', location.pathname)
       navigate(localStorage.getItem('Last Path'))
       localStorage.removeItem('Last Path')
     }
-  },[])
-
-
-
+  }, [])
 
   if (isLoading) {
     return <LoadingPage />;
   }
 
   return (
-    <>
-      {!isAuthPage && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route
-          path="/login"
-          element={isLoggedin ? <Navigate to="/"  /> : <Login />} 
-        />
-        <Route
-          path="/register"
-          element={isLoggedin ? <Navigate to="/"  /> : <Register />}
-        />
-        <Route path="/electronics" element={<Products />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/about_us" element={<About_Us />} />
-        <Route path="/terms_conditions" element={<Terms_Conditions />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/wishlist" element={  isLoggedin ? <Wishlist /> : <Navigate to="/login"  />} />
-        <Route path="/privacy_policy" element={<Privacy_Policy />} />
-        <Route
-          path="/cancellation_return_policy"
-          element={<Cancellation_Return_Policy />}
-        />
-        <Route path="/account" element={  isLoggedin ? <MyAccount /> : <Navigate to="/login"  />} />
-        <Route path="/orders" element={  isLoggedin ? <Orders /> : <Navigate to="/login"  />} />
-        <Route path="*" element={<Error />} />
-      </Routes>
-      <ToastContainer />
-      {!isAuthPage && <Footer />}
-    </>
+    <ThemeProvider>
+      <>
+        {!isAuthPage && <Navbar />}
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+
+          <Route path="/login" element={isLoggedin ? <Navigate to="/" replace /> : <Login />} />
+          <Route path="/register" element={isLoggedin ? <Navigate to="/" replace /> : <Register />} />
+
+          <Route path="/electronics" element={<Products />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/about_us" element={<About_Us />} />
+          <Route path="/terms_conditions" element={<Terms_Conditions />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/privacy_policy" element={<Privacy_Policy />} />
+          <Route path="/cancellation_return_policy" element={<Cancellation_Return_Policy />} />
+
+          {/* Protected Routes */}
+          <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+          <Route path="/account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+
+          <Route path="*" element={<Error />} />
+        </Routes>
+
+        <ToastContainer />
+        {!isAuthPage && <Footer />}
+      </>
+    </ThemeProvider>
   );
 }
 
