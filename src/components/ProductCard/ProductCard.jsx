@@ -1,5 +1,6 @@
 import { FiHeart, FiShoppingCart, FiPlus, FiMinus, FiTrash2 } from "react-icons/fi";
 import { AiFillStar, AiOutlineStar, AiFillHeart } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
 
 const ProductCard = ({
@@ -11,12 +12,19 @@ const ProductCard = ({
     onRemoveFromCart,
     onDeleteFromCart,
 }) => {
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+        navigate(`/product-details/${product.id}`);
+    };
+
     return (
         <div
-            className="product-card-main bg-white flex flex-col justify-between rounded-lg  shadow-sm hover:shadow-md transition-all overflow-hidden animate-fadeIn"
+            className="product-card-main bg-white flex flex-col justify-between rounded-lg shadow-sm hover:shadow-md transition-all overflow-hidden animate-fadeIn cursor-pointer"
             style={{
                 animation: "cardFadeIn 0.5s ease-out forwards",
             }}
+            onClick={handleCardClick}
         >
             <div className="relative flex items-center justify-center h-[50%] sm:shrink-0 w-full overflow-hidden">
                 <img
@@ -25,7 +33,7 @@ const ProductCard = ({
                     className="w-full h-100 object-contain"
                 />
                 <button
-                    onClick={() => onToggleFavorite(product.id)}
+                    onClick={(e) => { e.stopPropagation(); onToggleFavorite(product.id); }}
                     className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:bg-red-50 transition-colors group/heart"
                 >
                     {isFavorite ? (
@@ -65,14 +73,14 @@ const ProductCard = ({
 
                 {cartQuantity === 0 ? (
                     <button
-                        onClick={() => onAddToCart(product.id)}
+                        onClick={(e) => { e.stopPropagation(); onAddToCart(product.id); }}
                         className="w-full bg-[var(--primary)] text-white py-[4px] rounded-md text-[13px] font-medium hover:bg-opacity-90 flex items-center justify-center gap-2 mt-auto"
                     >
                         <FiShoppingCart size={14} />
                         Add to Cart
                     </button>
                 ) : (
-                    <div className="flex items-center gap-2 mt-auto">
+                    <div className="flex items-center gap-2 mt-auto" onClick={(e) => e.stopPropagation()}>
                         <button
                             onClick={() => onRemoveFromCart(product.id)}
                             className="w-7 aspect-square bg-gray-100 hover:bg-gray-200 rounded-md flex items-center justify-center transition-colors"

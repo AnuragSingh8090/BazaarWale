@@ -20,6 +20,7 @@ import MyAccount from "./pages/MyAccount/MyAccount";
 import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
 import Products from "./pages/Products/Products";
+import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { ToastContainer } from "react-toastify";
 import checkBackendConnection from "./services/checkBackendConnection";
@@ -71,6 +72,7 @@ function App() {
           <Route path="/register" element={isLoggedin ? <Navigate to="/" replace /> : <Register />} />
 
           <Route path="/electronics" element={<Products />} />
+          <Route path="/product-details/:productId" element={<ProductDetails />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
