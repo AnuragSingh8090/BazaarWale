@@ -1,6 +1,4 @@
-import { Routes, Route, useLocation, Navigate, lazy, Suspense } from "react-router-dom";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -22,53 +20,21 @@ import Products from "./pages/Products/Products";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { ToastContainer } from "react-toastify";
-import checkBackendConnection from "./services/checkBackendConnection";
-import loginInterceptor from "./services/loginInterceptor";
-import { useNavigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
-  const isLoggedin = useSelector((state) => state.user.isLoggedin);
-  return isLoggedin ? children : <Navigate to="/login" replace />;
-};
+
 
 function App() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isLoading = useSelector((state) => state.user.loading);
-  const isLoggedin = useSelector((state) => state.user.isLoggedin);
-  const isAuthPage = ["/login", "/register"].includes(location.pathname);
-
-  useEffect(() => {
-    checkBackendConnection();
-  }, []);
-
-  loginInterceptor();
-
-
-  useEffect(() => {
-    const token = localStorage.getItem('userToken')
-    if (isLoggedin) {
-      localStorage.setItem('Last Path', location.pathname)
-      navigate(localStorage.getItem('Last Path'))
-      localStorage.removeItem('Last Path')
-    }
-  }, [])
-
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
+  const isAuthPage = false
   return (
     <>
       {!isAuthPage && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/loading" element={<LoadingPage />} />
         <Route path="/home" element={<Home />} />
-
-        <Route path="/login" element={isLoggedin ? <Navigate to="/" replace /> : <Login />} />
-        <Route path="/register" element={isLoggedin ? <Navigate to="/" replace /> : <Register />} />
-
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/electronics" element={<Products />} />
         <Route path="/product-details/:productId" element={<ProductDetails />} />
         <Route path="/contact" element={<Contact />} />
@@ -79,12 +45,9 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/privacy_policy" element={<Privacy_Policy />} />
         <Route path="/cancellation_return_policy" element={<Cancellation_Return_Policy />} />
-
-        {/* Protected Routes */}
-        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-        <Route path="/account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
-        <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/account" element={<MyAccount />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="*" element={<Error />} />
       </Routes>
 

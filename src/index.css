@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-xs: 370px;
+}
+
 * {
   box-sizing: border-box;
   font-family: "IBM Plex Sans", sans-serif;
@@ -143,4 +147,11 @@ textarea:disabled {
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+
+section:hover {
+  border-radius: 0;
+  background-color: unset;
+
 }
