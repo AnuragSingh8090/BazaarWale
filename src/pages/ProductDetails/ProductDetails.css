@@ -4,11 +4,6 @@
     min-height: 100vh;
 }
 
-/* Smooth transitions */
-* {
-    transition: all 0.2s ease;
-}
-
 /* Zoom effect on hover */
 .cursor-crosshair {
     cursor: crosshair;

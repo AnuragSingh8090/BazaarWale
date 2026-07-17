@@ -143,30 +143,4 @@
     opacity: 1;
   }
 }
-
-/* Theme toggle icon animations */
-.theme_container i {
-  display: inline-block;
-  animation: iconRotate 0.5s ease-in-out;
-}
-
-@keyframes iconRotate {
-  0% {
-    transform: rotate(0deg) scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: rotate(180deg) scale(0.8);
-    opacity: 0.5;
-  }
-
-  100% {
-    transform: rotate(360deg) scale(1);
-    opacity: 1;
-  }
-}
-
-.theme_container:hover i {
-  transform: rotate(20deg) scale(1.1);
-}
+

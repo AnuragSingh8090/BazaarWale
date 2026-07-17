@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/slices/userSlice";
-import { useTheme } from "../../contexts/ThemeContext";
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState("");
@@ -13,7 +12,6 @@ const Navbar = () => {
   const cartItems = useSelector((state) => state.user.user.cart);
   const isLoggedIn = useSelector((state) => state.user.isLoggedin);
   const contactDetails = useSelector(state => state.contact);
-  const { theme, toggleTheme } = useTheme();
 
   const navigate = useNavigate();
   const navbarReffrence = useRef(null);
@@ -142,14 +140,6 @@ const Navbar = () => {
           </div>
 
           <div className="userSection shrink-0 flex justify-center items-center gap-[30px]">
-            {/* <div
-              className="theme_container active:scale-[0.95] text-[20px] cursor-pointer text-[#333232] transition-transform duration-300 hover:scale-[1.05]"
-              onClick={toggleTheme}
-              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'} text-[var(--primary)] transition-all duration-500 ease-in-out hover:rotate-[20deg]`}></i>
-            </div> */}
-
             {isLoggedIn ? (
               <div
                 className="user_container relative text-[17px] text-[#333232]"

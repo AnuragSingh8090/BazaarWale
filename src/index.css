@@ -6,7 +6,6 @@
   outline: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  transition: background-color 500ms ease, color 500ms ease, border-color 500ms ease;
 }
 
 *::-webkit-scrollbar {
@@ -15,8 +14,7 @@
 
 :root {
   /* Primary Theme Colors */
-  /* --primary: #008ecc; */
-  --primary: #d50dbe;
+  --primary: #008ecc;
   --primary-light: #e6f4f9;
   --primary-medium: #b3dff0;
   --primary-lighter: #f3f9fb;
@@ -57,52 +55,6 @@
   --custom-font: "Pacifico", cursive;
 }
 
-/* Dark mode color overrides */
-.dark {
-  /* Primary Theme Colors - slightly lighter for dark mode */
-  --primary: #33a3dc;
-  --primary-light: #e7f9ff;
-  --primary-medium: #bfefff;
-  --primary-lighter: #f4fcfe;
-
-  /* Text Colors */
-  --text-primary: #f3f4f6;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-white: #ffffff;
-
-  /* Background Colors */
-  --bg-body: #111827;
-  --bg-light: #1f2937;
-  --bg-white: #1f2937;
-  --bg-gradient-start: #1f2937;
-  --bg-gradient-end: #374151;
-
-  /* Border Colors */
-  --border-light: #ebebeb;
-  --border-default: #ebebeb;
-  --border-dark: #ebebeb;
-
-  /* Category Card Colors - adjusted for dark mode */
-  --card-gray: #374151;
-  --card-gray-dark: #4b5563;
-  --card-blue: #1e3a8a;
-  --card-blue-dark: #1e40af;
-  --card-yellow: #92400e;
-  --card-yellow-dark: #b45309;
-  --card-sky: #075985;
-  --card-sky-dark: #0369a1;
-  --card-pink: #9f1239;
-  --card-pink-dark: #be123c;
-  --card-green: #065f46;
-  --card-green-dark: #047857;
-  --card-cream: #78350f;
-  --card-cream-dark: #92400e;
-  --card-purple: #5b21b6;
-  --card-purple-dark: #6d28d9;
-  --card-peach: #9a3412;
-  --card-peach-dark: #c2410c;
-}
 
 .centerFlex {
   display: flex;
@@ -156,4 +108,39 @@ textarea:disabled {
   100% {
     transform: translateX(100%);
   }
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

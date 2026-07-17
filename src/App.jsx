@@ -1,7 +1,6 @@
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate, lazy, Suspense } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ThemeProvider } from "./contexts/ThemeContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -60,40 +59,38 @@ function App() {
   }
 
   return (
-    <ThemeProvider>
-      <>
-        {!isAuthPage && <Navbar />}
+    <>
+      {!isAuthPage && <Navbar />}
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
 
-          <Route path="/login" element={isLoggedin ? <Navigate to="/" replace /> : <Login />} />
-          <Route path="/register" element={isLoggedin ? <Navigate to="/" replace /> : <Register />} />
+        <Route path="/login" element={isLoggedin ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/register" element={isLoggedin ? <Navigate to="/" replace /> : <Register />} />
 
-          <Route path="/electronics" element={<Products />} />
-          <Route path="/product-details/:productId" element={<ProductDetails />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/about_us" element={<About_Us />} />
-          <Route path="/terms_conditions" element={<Terms_Conditions />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/privacy_policy" element={<Privacy_Policy />} />
-          <Route path="/cancellation_return_policy" element={<Cancellation_Return_Policy />} />
+        <Route path="/electronics" element={<Products />} />
+        <Route path="/product-details/:productId" element={<ProductDetails />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/about_us" element={<About_Us />} />
+        <Route path="/terms_conditions" element={<Terms_Conditions />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/privacy_policy" element={<Privacy_Policy />} />
+        <Route path="/cancellation_return_policy" element={<Cancellation_Return_Policy />} />
 
-          {/* Protected Routes */}
-          <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-          <Route path="/account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
-          <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        {/* Protected Routes */}
+        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+        <Route path="/account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
 
-          <Route path="*" element={<Error />} />
-        </Routes>
+        <Route path="*" element={<Error />} />
+      </Routes>
 
-        <ToastContainer />
-        {!isAuthPage && <Footer />}
-      </>
-    </ThemeProvider>
+      <ToastContainer />
+      {!isAuthPage && <Footer />}
+    </>
   );
 }
 
