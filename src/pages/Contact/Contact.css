@@ -115,3 +115,20 @@ button:hover::after {
     width: 96%;
   }
 }
+
+.faq-answer-container {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out, opacity 0.2s ease-out, margin 0.2s ease-out;
+  opacity: 0;
+}
+
+.faq-answer-container.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 8px;
+}
+
+.faq-answer-inner {
+  overflow: hidden;
+}

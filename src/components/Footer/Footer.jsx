@@ -5,8 +5,8 @@ import { companyDetails } from "../../constants/companyDetails";
 const Footer = () => {
   const contactDetails = useSelector((state) => state.contact);
   return (
-    <footer className="footer bg-[var(--primary)]  w-full text-[white] px-[15px] py-[10px] flex flex-col items-center md:px-[30px] md:py-[20px] lg:py-[10px]">
-      <div className="w-full lg:w-[90%] xl:w-[80%]">
+    <footer className="global-padding footer bg-[var(--primary)]  w-full text-[white] py-[10px] flex flex-col items-center  md:py-[20px] lg:py-[10px]">
+      <div className="w-full global-width ">
         <section className="flex hover:rounded-[unset] gap-2 flex-wrap align-center justify-between  mb-3 pb-3 w-full border-b-1 border-[#54bef7] md:flex-nowrap md:justify-around md:gap-18 lg:justify-between lg:gap-2 ">
 
           {/* Brand Section - visible only on lg+ */}
@@ -21,11 +21,11 @@ const Footer = () => {
                 {companyDetails.companyName}
               </span>
             </Link>
-            <p className="text-[13px] text-[#ececec] leading-relaxed font-light">
+            <p className="text-[13px] text-[var(--text-light-grey)] leading-relaxed font-light">
               Your one-stop destination for the best deals on electronics, fashion, home appliances & more.
             </p>
             {companyDetails.fullAddress && (
-              <div className="flex items-start gap-2 text-[12px] text-[#ececec] font-light pt-2 border-t border-white/10">
+              <div className="flex items-start gap-2 text-[12px] text-[var(--text-light-grey)] font-light pt-2 border-t border-white/10">
                 <i className="fa-solid fa-location-dot mt-[3px] text-[11px] shrink-0"></i>
                 <span>{companyDetails.fullAddress}</span>
               </div>
@@ -77,9 +77,6 @@ const Footer = () => {
               </Link>
               <Link to="/terms_conditions">
                 <li className="hover:text-white transition-colors duration-150">Terms & Conditions</li>
-              </Link>
-              <Link to="/faq">
-                <li className="hover:text-white transition-colors duration-150">FAQ</li>
               </Link>
               <Link to="/privacy_policy">
                 <li className="hover:text-white transition-colors duration-150">Privace Policy</li>
