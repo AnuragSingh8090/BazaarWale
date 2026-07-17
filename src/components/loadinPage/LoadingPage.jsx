@@ -258,14 +258,14 @@ const LoadingPage = () => {
 
         <div className="text-center mb-6 sm:mb-8 px-4">
           <h2
-            className="text-2xl sm:text-3xl md:text-4xl font-light mb-2 sm:mb-3 tracking-wide animate-fade-in-out"
-            style={{ color: "#008ecc" }}
+            className="text-2xl sm:text-3xl md:text-4xl font-medium mb-2 sm:mb-3 tracking-wide animate-fade-in-out"
+            style={{ color: "#008ecc", fontFamily: "var(--custom-font)" }}
           >
             Preparing Your Store
           </h2>
           <p className="text-gray-400 text-xs sm:text-sm font-light tracking-wider animate-typing">
             <span className="animate-pulse">
-              Loading products, deals & more...
+              Setting up the best deals just for you...
             </span>
           </p>
         </div>
@@ -277,15 +277,15 @@ const LoadingPage = () => {
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 md:space-x-8 text-xs font-mono px-4">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 md:space-x-8 text-sm sm:text-base font-mono px-4">
           <span className="animate-count-up text-center sm:text-left">
-            Products: <span style={{ color: "#008ecc" }}>∞</span>
+            Products: <span style={{ color: "#008ecc" }}>1000+</span>
           </span>
           <span
             className="animate-count-up text-center sm:text-left"
             style={{ animationDelay: "0.5s" }}
           >
-            Deals: <span style={{ color: "#008ecc" }}>Loading...</span>
+            Deals: <span style={{ color: "#008ecc" }}>Fetching</span>
           </span>
           <span
             className="animate-count-up text-center sm:text-left"
