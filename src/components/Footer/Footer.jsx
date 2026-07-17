@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="footer bg-[var(--primary)]  w-full text-[white] px-[15px] py-[10px] flex flex-col items-center md:px-[30px] md:py-[20px] lg:py-[10px]">
       <div className="w-full lg:w-[90%] xl:w-[80%]">
-        <section className="flex hover:rounded-[unset] gap-2 flex-wrap align-center justify-between  mb-3 pb-3 w-full border-b-1 border-[#54bef7] md:flex-nowrap md:justify-center md:gap-18 lg:justify-between lg:gap-2 ">
+        <section className="flex hover:rounded-[unset] gap-2 flex-wrap align-center justify-between  mb-3 pb-3 w-full border-b-1 border-[#54bef7] md:flex-nowrap md:justify-around md:gap-18 lg:justify-between lg:gap-2 ">
 
           {/* Brand Section - visible only on lg+ */}
           <div className="hidden lg:flex flex-col gap-3 max-w-[260px] min-w-[220px]">
