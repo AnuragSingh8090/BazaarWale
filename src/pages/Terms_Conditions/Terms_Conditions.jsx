@@ -1,488 +1,208 @@
 import React, { useState, useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { Link } from "react-router-dom";
+import { termsConditionsDetails } from "../../constants/companyDetails";
+import { FaChevronRight } from "react-icons/fa";
+import { MdHeadsetMic, MdShoppingBag } from "react-icons/md";
 import "./Terms_Conditions.css";
 
 const Terms_Conditions = () => {
-  const [expandedSections, setExpandedSections] = useState({
-    1: true,
-    2: true,
-    3: true,
-    4: true,
-    5: true,
-    6: true,
-    7: true,
-    8: true,
-    9: true,
-    10: true,
+  const { title, lastUpdated, policyHighlights, sections } = termsConditionsDetails;
+
+  const [expandedSections, setExpandedSections] = useState(() => {
+    const initial = {};
+    sections.forEach((sec) => {
+      initial[sec.id] = true;
+    });
+    return initial;
   });
+
   const [activeSection, setActiveSection] = useState(1);
   const [showTOC, setShowTOC] = useState(false);
 
-  const toggleSection = (sectionNumber) => {
+  const toggleSection = (id) => {
     setExpandedSections((prev) => ({
       ...prev,
-      [sectionNumber]: !prev[sectionNumber],
+      [id]: !prev[id],
     }));
   };
 
-  // Handle scroll to track active section
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100;
-
-      // Find the current section in view
-      for (let i = 10; i >= 1; i--) {
+      const scrollPosition = window.scrollY + 120;
+      for (let i = sections.length; i >= 1; i--) {
         const section = document.getElementById(`section-${i}`);
         if (section && section.offsetTop <= scrollPosition) {
           setActiveSection(i);
           break;
         }
       }
-
-      // Show/hide TOC based on scroll position
-      if (scrollPosition > 300) {
-        setShowTOC(true);
-      } else {
-        setShowTOC(false);
-      }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [sections]);
 
-  const scrollToSection = (sectionNumber) => {
-    const section = document.getElementById(`section-${sectionNumber}`);
+  const scrollToSection = (id) => {
+    const section = document.getElementById(`section-${id}`);
     if (section) {
       window.scrollTo({
         top: section.offsetTop - 80,
         behavior: "smooth",
       });
-
-      // Ensure section is expanded when scrolled to
-      if (!expandedSections[sectionNumber]) {
-        setExpandedSections((prev) => ({
-          ...prev,
-          [sectionNumber]: true,
-        }));
-      }
+      setExpandedSections((prev) => ({ ...prev, [id]: true }));
     }
   };
 
-  const sections = [
-    { id: 1, title: "Introduction" },
-    { id: 2, title: "Definitions" },
-    { id: 3, title: "Account Registration" },
-    { id: 4, title: "Products and Services" },
-    { id: 5, title: "Pricing and Payment" },
-    { id: 6, title: "Shipping and Delivery" },
-    { id: 7, title: "Intellectual Property" },
-    { id: 8, title: "User Conduct" },
-    { id: 9, title: "Limitation of Liability" },
-    { id: 10, title: "Changes to Terms" },
-  ];
-
   return (
-    <div className="max-w-[1000px] mx-auto my-10 px-5 font-['IBM_Plex_Sans'] text-[#333] relative">
+    <div className="global-padding py-5 xs:py-8 md:py-10 bg-[var(--bg-body)]">
       <ScrollToTop />
-      <div className="text-center mb-6 pb-3 border-b border-[var(--border-light)]">
-        <h1 className="text-[var(--primary)] text-2xl md:text-3xl mb-1">
-          Terms and Conditions
-        </h1>
-      </div>
-
-      {/* Table of Contents - Mobile Dropdown */}
-      <div className="md:hidden mb-4">
-        <button
-          onClick={() => setShowTOC(!showTOC)}
-          className="w-full flex items-center justify-between bg-[var(--primary-light)] text-[var(--primary)] font-medium py-3 px-4 rounded-lg"
-        >
-          <span className="text-sm">Table of Contents</span>
-          <i
-            className={`fa-solid ${
-              showTOC ? "fa-chevron-up" : "fa-chevron-down"
-            }`}
-          ></i>
-        </button>
-
-        {showTOC && (
-          <div className="mt-2 p-4 bg-white rounded-lg shadow-md border border-[var(--border-light)]">
-            <ul className="space-y-2">
-              {sections.map((section) => (
-                <li key={section.id}>
-                  <button
-                    onClick={() => scrollToSection(section.id)}
-                    className={`w-full text-left py-2 px-3 rounded-md text-xs hover:bg-gray-100 transition-colors ${
-                      activeSection === section.id
-                        ? "bg-[var(--primary-light)] text-[var(--primary)] font-medium"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {section.id}. {section.title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {/* Desktop - Layout with TOC sidebar and content */}
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* TOC Sidebar - Desktop */}
-        <div className="hidden md:block md:w-1/4 h-fit sticky top-30">
-          <div className="bg-white rounded-lg p-4 shadow-md border border-[var(--border-light)]">
-            <h3 className="text-xs font-medium text-[var(--primary)] mb-3 pb-1 border-b border-[var(--primary-light)]">
-              Contents
-            </h3>
-            <ul className="space-y-2">
-              {sections.map((section) => (
-                <li key={section.id}>
-                  <button
-                    onClick={() => scrollToSection(section.id)}
-                    className={`w-full text-left py-2 px-3 rounded-md text-xs hover:bg-gray-100 transition-colors ${
-                      activeSection === section.id
-                        ? "bg-[var(--primary-light)] text-[var(--primary)] font-medium"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {section.id}. {section.title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="w-full global-width">
+        <div className="text-center mb-4 xs:mb-6 md:mb-8">
+          <h1 className="heading">{title}</h1>
+          <p className="sub-heading">Last Updated: {lastUpdated}</p>
         </div>
 
-        {/* Main Content */}
-        <div className="md:w-3/4 bg-white rounded-lg p-6 md:p-8 shadow-md">
-          <section id="section-1" className="mb-6 scroll-mt-24">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3.5 md:gap-4 mb-6 xs:mb-8">
+          {policyHighlights.map((item) => (
             <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(1)}
+              key={item.id}
+              className="bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl p-2.5 xs:p-3.5 flex items-start gap-2 xs:gap-3 shadow-xs hover:shadow-md transition-all duration-300"
             >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                1. Introduction
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[1] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[1] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  Welcome to BazaarWale. These Terms and Conditions govern your
-                  use of our website and services. By accessing or using our
-                  platform, you agree to be bound by these Terms. Please read
-                  them carefully.
+              <div className="w-8 h-8 xs:w-10 xs:h-10 bg-[var(--primary-light)] text-[var(--primary)] rounded-lg flex items-center justify-center text-xs xs:text-base shrink-0 mt-0.5">
+                <i className={`fa-solid ${item.icon}`}></i>
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-xs xs:text-sm font-bold text-[var(--text-dark)] mb-0.5 truncate">
+                  {item.title}
+                </h2>
+                <p className="text-[9px] xs:text-[11px] text-[var(--text-secondary)] leading-tight line-clamp-2">
+                  {item.description}
                 </p>
               </div>
-            )}
-          </section>
+            </div>
+          ))}
+        </div>
 
-          <section id="section-2" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(2)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                2. Definitions
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[2] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[2] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-sm">
-                  <strong className="text-gray-800">"Website"</strong> refers to
-                  BazaarWale, accessible from www.bazaarwale.com
-                  <br />
-                  <strong className="text-gray-800">
-                    "We", "Us", "Our"
-                  </strong>{" "}
-                  refers to BazaarWale
-                  <br />
-                  <strong className="text-gray-800">
-                    "User", "You", "Your"
-                  </strong>{" "}
-                  refers to the individual accessing or using our Website
-                  <br />
-                  <strong className="text-gray-800">"Goods"</strong> refers to
-                  the items available for purchase on our Website
-                </p>
-              </div>
-            )}
-          </section>
+        <div className="md:hidden mb-4">
+          <button
+            onClick={() => setShowTOC(!showTOC)}
+            className="w-full flex items-center justify-between bg-[var(--primary-light)] text-[var(--primary)] font-semibold py-2.5 px-3.5 rounded-lg border border-[var(--primary-medium)]/30 text-xs xs:text-sm"
+          >
+            <span>Table of Contents</span>
+            <FaChevronRight
+              className={`transition-transform duration-300 ${
+                showTOC ? "rotate-90" : "rotate-0"
+              }`}
+            />
+          </button>
 
-          <section id="section-3" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(3)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                3. Account Registration
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[3] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
+          {showTOC && (
+            <div className="mt-2 p-3 bg-[var(--bg-white)] rounded-lg shadow-md border border-[var(--border-default)]">
+              <ul className="space-y-1">
+                {sections.map((sec) => (
+                  <li key={sec.id}>
+                    <button
+                      onClick={() => {
+                        scrollToSection(sec.id);
+                        setShowTOC(false);
+                      }}
+                      className={`w-full text-left py-1.5 px-2.5 rounded-md text-[11px] xs:text-xs transition-colors flex items-center gap-2 ${
+                        activeSection === sec.id
+                          ? "bg-[var(--primary-light)] text-[var(--primary)] font-bold"
+                          : "text-[var(--text-primary)] hover:bg-[var(--bg-light)]"
+                      }`}
+                    >
+                      <span className="font-semibold text-[var(--primary)] text-[10px]">
+                        {sec.id < 10 ? `0${sec.id}` : sec.id}.
+                      </span>
+                      <span className="truncate">{sec.title}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-            {expandedSections[3] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  To access certain features of our Website, you may be required
-                  to register for an account. You agree to provide accurate,
-                  current, and complete information during the registration
-                  process and to update such information to keep it accurate,
-                  current, and complete.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  You are responsible for safeguarding the password that you use
-                  to access our Website and for any activities or actions under
-                  your password. We encourage you to use a strong password (a
-                  combination of upper and lower case letters, numbers, and
-                  symbols) for your account.
-                </p>
-              </div>
-            )}
-          </section>
+          )}
+        </div>
 
-          <section id="section-4" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(4)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                4. Products and Services
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+          <div className="hidden md:block md:w-1/4 sticky top-33 shrink-0 w-full">
+            <div className="bg-[var(--bg-white)] rounded-xl p-4 shadow-sm border border-[var(--border-default)]">
+              <h2 className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider mb-3 pb-2 border-b border-[var(--border-light)]">
+                Contents
               </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[4] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
+              <ul className="space-y-1">
+                {sections.map((sec) => (
+                  <li key={sec.id}>
+                    <button
+                      onClick={() => scrollToSection(sec.id)}
+                      className={`w-full text-left py-1.5 px-2.5 rounded-md text-xs transition-colors flex items-center gap-2 cursor-pointer ${
+                        activeSection === sec.id
+                          ? "bg-[var(--primary-light)] text-[var(--primary)] font-bold"
+                          : "text-[var(--text-primary)] hover:bg-[var(--bg-light)]"
+                      }`}
+                    >
+                      <span className="font-semibold text-[var(--primary)] text-[11px]">
+                        {sec.id < 10 ? `0${sec.id}` : sec.id}.
+                      </span>
+                      <span className="truncate">{sec.title}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-            {expandedSections[4] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  All products and services displayed on our Website are subject
-                  to availability. We reserve the right to discontinue any
-                  product or service at any time.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  The images of the products on our Website are for illustrative
-                  purposes only. The actual product may vary slightly from the
-                  image displayed.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  We have made every effort to display as accurately as possible
-                  the colors of our products. However, we cannot guarantee that
-                  your computer's display of the colors will be accurate.
-                </p>
-              </div>
-            )}
-          </section>
+          </div>
 
-          <section id="section-5" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(5)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                5. Pricing and Payment
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[5] ? "fa-chevron-up" : "fa-chevron-down"
+          <div className="w-full md:w-3/4 space-y-2.5 xs:space-y-3">
+            {sections.map((sec) => {
+              const isExpanded = expandedSections[sec.id];
+              return (
+                <div
+                  key={sec.id}
+                  id={`section-${sec.id}`}
+                  className={`bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl shadow-xs transition-all duration-200 scroll-mt-24 ${
+                    isExpanded
+                      ? "p-3.5 xs:p-5 md:p-6"
+                      : "px-3.5 py-2.5 xs:px-5 xs:py-3 md:px-6 md:py-3.5"
                   }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[5] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  All prices are displayed in Indian Rupees (INR) and are
-                  inclusive of applicable taxes unless stated otherwise.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  We reserve the right to change the prices of our products at
-                  any time without prior notice.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  Payment can be made through various methods as displayed on
-                  our Website. We use secure payment processing services to
-                  ensure the safety of your transaction.
-                </p>
-              </div>
-            )}
-          </section>
+                >
+                  <button
+                    onClick={() => toggleSection(sec.id)}
+                    className="w-full flex items-center justify-between text-left focus:outline-none active:scale-100 cursor-pointer group select-none"
+                  >
+                    <div className="flex items-center gap-2.5 xs:gap-3">
+                      <span className="text-xs xs:text-sm md:text-base font-bold text-[var(--primary)]">
+                        {sec.id < 10 ? `0${sec.id}.` : `${sec.id}.`}
+                      </span>
+                      <h2 className="text-xs xs:text-sm md:text-base font-bold text-[var(--text-dark)] group-hover:text-[var(--primary)] transition-colors">
+                        {sec.title}
+                      </h2>
+                    </div>
+                    <div className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-[var(--bg-light)] group-hover:bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary)] shrink-0 transition-colors">
+                      <FaChevronRight
+                        className={`text-[10px] xs:text-xs transition-transform duration-300 ${
+                          isExpanded ? "rotate-90" : "rotate-0"
+                        }`}
+                      />
+                    </div>
+                  </button>
 
-          <section id="section-6" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(6)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                6. Shipping and Delivery
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[6] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[6] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  We aim to deliver all products within the timeframe specified
-                  at the time of purchase. However, delivery times may vary
-                  based on your location and the availability of the product.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  We are not responsible for any delays caused by customs,
-                  postal services, or other third-party shipping providers.
-                </p>
-              </div>
-            )}
-          </section>
-
-          <section id="section-7" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(7)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                7. Intellectual Property
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[7] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[7] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  All content on our Website, including text, graphics, logos,
-                  images, and software, is the property of BazaarWale and is
-                  protected by copyright, trademark, and other intellectual
-                  property laws.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  You may not use, reproduce, distribute, or create derivative
-                  works from our content without our explicit written
-                  permission.
-                </p>
-              </div>
-            )}
-          </section>
-
-          <section id="section-8" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(8)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                8. User Conduct
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[8] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[8] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  You agree not to use our Website for any unlawful purpose or
-                  in any way that could damage, disable, overburden, or impair
-                  our services.
-                </p>
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  You also agree not to access or attempt to access any
-                  information or data on our Website through any automated
-                  means, including the use of scripts, bots, or web crawlers.
-                </p>
-              </div>
-            )}
-          </section>
-
-          <section id="section-9" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(9)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                9. Limitation of Liability
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[9] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[9] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  In no event shall BazaarWale be liable for any indirect,
-                  incidental, special, consequential, or punitive damages,
-                  including loss of profits, data, or use, arising out of or in
-                  connection with these Terms or the use or inability to use our
-                  Website or services.
-                </p>
-              </div>
-            )}
-          </section>
-
-          <section id="section-10" className="mb-6 scroll-mt-24">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleSection(10)}
-            >
-              <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-                10. Changes to Terms
-              </h2>
-              <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-                <i
-                  className={`fa-solid ${
-                    expandedSections[10] ? "fa-chevron-up" : "fa-chevron-down"
-                  }`}
-                ></i>
-              </span>
-            </div>
-            {expandedSections[10] && (
-              <div className="animate-fadeIn">
-                <p className="mb-4 leading-relaxed text-justify text-sm">
-                  We reserve the right to modify these Terms at any time. Any
-                  changes will be effective immediately upon posting the revised
-                  Terms on our Website. Your continued use of our Website after
-                  any changes indicates your acceptance of the new Terms.
-                </p>
-              </div>
-            )}
-          </section>
+                  <div className={`faq-answer-container ${isExpanded ? "open" : ""}`}>
+                    <div className="faq-answer-inner pt-2 xs:pt-3 border-t border-[var(--border-light)] space-y-2 xs:space-y-2.5 mt-2">
+                      {sec.content.map((paragraph, idx) => (
+                        <p
+                          key={idx}
+                          className="text-[11px] xs:text-xs md:text-sm text-[var(--text-primary)] leading-relaxed text-justify"
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

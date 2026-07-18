@@ -467,3 +467,117 @@ export const aboutUsDetails = {
         }
     ]
 };
+
+export const termsConditionsDetails = {
+    title: "Terms and Conditions",
+    lastUpdated: "January 15, 2025",
+    policyHighlights: [
+        {
+            id: 1,
+            title: "User Agreement",
+            description: "By accessing BazaarWale, you agree to comply with all our terms and policies.",
+            icon: "fa-file-contract"
+        },
+        {
+            id: 2,
+            title: "Secure Payments",
+            description: "All transactions are processed securely in INR with complete encryption.",
+            icon: "fa-shield-halved"
+        },
+        {
+            id: 3,
+            title: "Authentic Products",
+            description: "All products listed are authentic and subject to availability.",
+            icon: "fa-box-open"
+        },
+        {
+            id: 4,
+            title: "Fair Business",
+            description: "Transparent pricing, clear shipping terms, and fair resolution practices.",
+            icon: "fa-scale-balanced"
+        }
+    ],
+    sections: [
+        {
+            id: 1,
+            title: "Introduction",
+            content: [
+                "Welcome to BazaarWale. These Terms and Conditions govern your use of our website and services. By accessing or using our platform, you agree to be bound by these Terms. Please read them carefully."
+            ]
+        },
+        {
+            id: 2,
+            title: "Definitions",
+            content: [
+                "\"Website\" refers to BazaarWale, accessible from www.bazaarwale.com.",
+                "\"We\", \"Us\", \"Our\" refers to BazaarWale.",
+                "\"User\", \"You\", \"Your\" refers to the individual accessing or using our Website.",
+                "\"Goods\" refers to the items available for purchase on our Website."
+            ]
+        },
+        {
+            id: 3,
+            title: "Account Registration",
+            content: [
+                "To access certain features of our Website, you may be required to register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete.",
+                "You are responsible for safeguarding the password that you use to access our Website and for any activities or actions under your password. We encourage you to use a strong password (a combination of upper and lower case letters, numbers, and symbols) for your account."
+            ]
+        },
+        {
+            id: 4,
+            title: "Products and Services",
+            content: [
+                "All products and services displayed on our Website are subject to availability. We reserve the right to discontinue any product or service at any time.",
+                "The images of the products on our Website are for illustrative purposes only. The actual product may vary slightly from the image displayed.",
+                "We have made every effort to display as accurately as possible the colors of our products. However, we cannot guarantee that your computer's display of the colors will be accurate."
+            ]
+        },
+        {
+            id: 5,
+            title: "Pricing and Payment",
+            content: [
+                "All prices are displayed in Indian Rupees (INR) and are inclusive of applicable taxes unless stated otherwise.",
+                "We reserve the right to change the prices of our products at any time without prior notice.",
+                "Payment can be made through various methods as displayed on our Website. We use secure payment processing services to ensure the safety of your transaction."
+            ]
+        },
+        {
+            id: 6,
+            title: "Shipping and Delivery",
+            content: [
+                "We aim to deliver all products within the timeframe specified at the time of purchase. However, delivery times may vary based on your location and the availability of the product.",
+                "We are not responsible for any delays caused by customs, postal services, or other third-party shipping providers."
+            ]
+        },
+        {
+            id: 7,
+            title: "Intellectual Property",
+            content: [
+                "All content on our Website, including text, graphics, logos, images, and software, is the property of BazaarWale and is protected by copyright, trademark, and other intellectual property laws.",
+                "You may not use, reproduce, distribute, or create derivative works from our content without our explicit written permission."
+            ]
+        },
+        {
+            id: 8,
+            title: "User Conduct",
+            content: [
+                "You agree not to use our Website for any unlawful purpose or in any way that could damage, disable, overburden, or impair our services.",
+                "You also agree not to access or attempt to access any information or data on our Website through any automated means, including the use of scripts, bots, or web crawlers."
+            ]
+        },
+        {
+            id: 9,
+            title: "Limitation of Liability",
+            content: [
+                "In no event shall BazaarWale be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or use, arising out of or in connection with these Terms or the use or inability to use our Website or services."
+            ]
+        },
+        {
+            id: 10,
+            title: "Changes to Terms",
+            content: [
+                "We reserve the right to modify these Terms at any time. Any changes will be effective immediately upon posting the revised Terms on our Website. Your continued use of our Website after any changes indicates your acceptance of the new Terms."
+            ]
+        }
+    ]
+};
