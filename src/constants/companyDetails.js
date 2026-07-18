@@ -581,3 +581,67 @@ export const termsConditionsDetails = {
         }
     ]
 };
+
+// Temporary data for search bar dropdown suggestions
+export const searchProductsData = [
+  {
+    id: 1,
+    name: "iPhone 16 Pro Max",
+    category: "Electronics",
+    price: "₹1,00,000",
+    originalPrice: "₹1,20,000",
+    discount: "17% OFF",
+    image: "/productImages/iphone16.png",
+    link: "/products"
+  },
+  {
+    id: 2,
+    name: "MacBook Pro M3",
+    category: "Electronics",
+    price: "₹1,50,000",
+    originalPrice: "₹1,80,000",
+    discount: "17% OFF",
+    image: "/productImages/earbuds.png",
+    link: "/products"
+  },
+  {
+    id: 3,
+    name: "AirPods Pro 2",
+    category: "Electronics",
+    price: "₹18,000",
+    originalPrice: "₹24,000",
+    discount: "25% OFF",
+    image: "/productImages/game-controller.png",
+    link: "/products"
+  },
+  {
+    id: 4,
+    name: "Samsung Galaxy S24 Ultra",
+    category: "Electronics",
+    price: "₹90,000",
+    originalPrice: "₹1,10,000",
+    discount: "18% OFF",
+    image: "/productImages/gaming-headphones.png",
+    link: "/products"
+  },
+  {
+    id: 5,
+    name: "iPad Pro 13-inch",
+    category: "Electronics",
+    price: "₹80,000",
+    originalPrice: "₹1,05,000",
+    discount: "24% OFF",
+    image: "/productImages/smart-watch.png",
+    link: "/products"
+  },
+  {
+    id: 6,
+    name: "Apple Watch Series 9",
+    category: "Electronics",
+    price: "₹35,000",
+    originalPrice: "₹50,000",
+    discount: "30% OFF",
+    image: "/productImages/iphone16.png",
+    link: "/products"
+  }
+];
