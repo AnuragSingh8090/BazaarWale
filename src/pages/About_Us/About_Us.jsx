@@ -1,305 +1,249 @@
-import "./About_Us.css";
+import React from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
-import { useSelector } from "react-redux";
+import { companyDetails, aboutUsDetails } from "../../constants/companyDetails";
+import { FaLinkedinIn, FaTwitter, FaGithub, FaInstagram, FaFacebookF, FaGlobe } from "react-icons/fa";
+import "./About_Us.css";
 
 const About_Us = () => {
-  const isLoggedIn = useSelector(state => state.user.isLoggedIn)
+  const { hero, mission, values } = aboutUsDetails;
+
+  const stats = [
+    {
+      id: 1,
+      value: companyDetails.businessStats?.totalCustomers || "10M+",
+      label: "Happy Customers",
+      icon: "fa-users",
+    },
+    {
+      id: 2,
+      value: companyDetails.businessStats?.totalOrders || "5M+",
+      label: "Orders Delivered",
+      icon: "fa-truck-fast",
+    },
+    {
+      id: 3,
+      value: companyDetails.businessStats?.totalCitiesCovered || "50+",
+      label: "Cities Covered",
+      icon: "fa-store",
+    },
+  ];
+
+  const team = companyDetails.companyMembers || companyDetails.companyMembers || [];
+
   return (
-    <div className="about-us-container py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto text-[15px]">
+    <div className="global-padding py-4 xs:py-8 md:py-10 bg-[var(--bg-body)]">
       <ScrollToTop />
-      <div className="hero-section flex flex-col md:flex-row items-center justify-between gap-8 mb-16 bg-gradient-to-r from-[#f0f9ff] to-[#e0f2fe] p-8 rounded-2xl shadow-lg">
-        <div className="content-area md:w-1/2">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--primary)] mb-4 animate-fadeIn">
-            About <span className="text-[#ff6b6b]">Baazaar</span>
-            <span className="text-[var(--primary)]">Wale</span>
-          </h1>
-          <p className="text-gray-600 mb-6 text-base italic">
-            Your trusted partner for all your shopping needs since 2020
-          </p>
-          <p className="text-gray-700 mb-6 leading-relaxed text-[15px]">
-            At BaazaarWale, we believe in providing exceptional products with
-            unmatched customer service. Our journey began with a simple mission:
-            to make quality products accessible to everyone at affordable
-            prices.
-          </p>
-          <div className="stats grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
-            <div className="stat p-3 sm:p-4 bg-white rounded-lg text-center shadow-md hover:shadow-xl transition-all transform hover:-translate-y-0.5 duration-300">
-              <i className="fa-solid fa-users text-[var(--primary)] text-xl sm:text-2xl mb-1 sm:mb-2"></i>
-              <p className="text-xl sm:text-2xl font-bold text-[var(--primary)]">
-                10M+
-              </p>
-              <p className="text-gray-600 text-[13px] sm:text-[15px]">
-                Happy Customers
-              </p>
-            </div>
-            <div className="stat p-3 sm:p-4 bg-white rounded-lg text-center shadow-md hover:shadow-xl transition-all transform hover:-translate-y-0.5 duration-300">
-              <i className="fa-solid fa-truck-fast text-[var(--primary)] text-xl sm:text-2xl mb-1 sm:mb-2"></i>
-              <p className="text-xl sm:text-2xl font-bold text-[var(--primary)]">
-                5M+
-              </p>
-              <p className="text-gray-600 text-[13px] sm:text-[15px]">
-                Orders Delivered
-              </p>
-            </div>
-            <div className="stat p-3 sm:p-4 bg-white rounded-lg text-center shadow-md hover:shadow-xl transition-all transform hover:-translate-y-0.5 duration-300 sm:col-span-2 md:col-span-1">
-              <i className="fa-solid fa-store text-[var(--primary)] text-xl sm:text-2xl mb-1 sm:mb-2"></i>
-              <p className="text-xl sm:text-2xl font-bold text-[var(--primary)]">
-                50+
-              </p>
-              <p className="text-gray-600 text-[13px] sm:text-[15px]">
-                Cities Covered
-              </p>
+      <div className="w-full global-width">
+        <div className="text-center mb-3 xs:mb-6 md:mb-8">
+          <h1 className="heading">{hero.title}</h1>
+          <p className="sub-heading">{hero.subtitle}</p>
+        </div>
+
+        <div className="bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl shadow-md p-3 xs:p-6 md:p-8 flex flex-col md:flex-row items-center gap-4 md:gap-8 mb-4 xs:mb-8">
+          <div className="md:w-1/2 space-y-2 xs:space-y-4">
+            <h2 className="text-sm xs:text-lg md:text-xl font-bold text-[var(--text-dark)]">
+              Welcome to <span className="text-[var(--primary)]">BazaarWale</span>
+            </h2>
+            <p className="text-[10px] xs:text-xs md:text-sm text-[var(--text-primary)] leading-relaxed">
+              {hero.description}
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 xs:gap-3.5 pt-1 xs:pt-2">
+              {stats.map((stat) => (
+                <div
+                  key={stat.id}
+                  className="bg-[var(--bg-light)] border border-[var(--border-light)] rounded-lg p-2 xs:p-3 text-center shadow-xs"
+                >
+                  <div className="text-[var(--primary)] text-xs xs:text-base mb-0.5 xs:mb-1">
+                    <i className={`fa-solid ${stat.icon}`}></i>
+                  </div>
+                  <p className="text-xs xs:text-sm md:text-base font-bold text-[var(--primary)]">
+                    {stat.value}
+                  </p>
+                  <p className="text-[9px] xs:text-[11px] text-[var(--text-secondary)]">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-        <div className="image-area md:w-1/2">
-          <img
-            src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            alt="BaazaarWale Team"
-            className="rounded-lg shadow-lg w-full h-auto object-cover transform hover:scale-[1.01] transition-transform duration-500 border-4 border-white"
-          />
-        </div>
-      </div>
-
-      {/* Our Mission */}
-      <div className="mission-section bg-gradient-to-br from-white to-[#f0f9ff] p-8 rounded-xl mb-16 shadow-lg border border-[#e0f2fe]">
-        <div className="section-header text-center mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-[var(--primary)] mb-2 relative inline-block">
-            Our Mission
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-[#ff6b6b] rounded-full"></span>
-          </h2>
-        </div>
-        <div className="mission-content flex flex-col md:flex-row items-center gap-8">
-          <div className="md:w-1/2 transform hover:rotate-0.5 transition-transform duration-500">
+          <div className="md:w-1/2 w-full">
             <img
-              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-              alt="Our Mission"
-              className="rounded-lg shadow-md w-full h-auto object-cover border-4 border-white"
+              src={hero.image}
+              alt="BazaarWale Team"
+              className="rounded-lg shadow-sm w-full h-40 xs:h-64 md:h-72 object-cover border-2 border-[var(--border-light)]"
             />
           </div>
-          <div className="md:w-1/2">
-            <p className="text-gray-700 mb-4 leading-relaxed text-base">
-              Our mission is to revolutionize the online shopping experience by
-              offering a wide range of high-quality products at competitive
-              prices while ensuring exceptional customer service.
-            </p>
-            <ul className="list-none space-y-4">
-              <li className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <i className="fa-solid fa-circle-check text-[#ff6b6b] text-lg mt-1"></i>
-                <span className="font-medium text-[15px]">
-                  Providing authentic products from trusted brands
-                </span>
-              </li>
-              <li className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <i className="fa-solid fa-circle-check text-[#ff6b6b] text-lg mt-1"></i>
-                <span className="font-medium text-[15px]">
-                  Ensuring timely delivery across the country
-                </span>
-              </li>
-              <li className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <i className="fa-solid fa-circle-check text-[#ff6b6b] text-lg mt-1"></i>
-                <span className="font-medium text-[15px]">
-                  Offering hassle-free returns and exchanges
-                </span>
-              </li>
-              <li className="flex items-start gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <i className="fa-solid fa-circle-check text-[#ff6b6b] text-lg mt-1"></i>
-                <span className="font-medium text-[15px]">
-                  Maintaining transparent pricing with no hidden costs
-                </span>
-              </li>
-            </ul>
-          </div>
         </div>
-      </div>
 
-      {/* Our Values */}
-      <div className="values-section mb-16">
-        <div className="section-header text-center mb-10">
-          <h2 className="text-xl md:text-2xl font-bold text-[var(--primary)] mb-2 relative inline-block">
-            Our Core Values
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-[#ff6b6b] rounded-full"></span>
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mt-4 text-base">
-            The principles that guide everything we do at BaazaarWale
-          </p>
-        </div>
-        <div className="values-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="value-card p-6 border border-gray-200 rounded-lg bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:border-[var(--primary)]">
-            <div className="icon-container w-16 h-16 bg-[var(--primary-light)] rounded-full flex items-center justify-center mb-4 mx-auto">
-              <i className="fa-solid fa-handshake text-[var(--primary)] text-xl"></i>
-            </div>
-            <h3 className="text-lg font-semibold mb-2 text-center">Trust</h3>
-            <p className="text-gray-600 text-center text-[15px]">
-              Building lasting relationships with our customers through honesty
-              and transparency.
-            </p>
+        <div className="bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl shadow-md p-3 xs:p-6 md:p-8 mb-4 xs:mb-8">
+          <div className="text-center mb-3 xs:mb-6">
+            <h2 className="text-sm xs:text-lg md:text-xl font-bold text-[var(--text-dark)] inline-block border-b-2 border-[var(--primary)] pb-1">
+              {mission.title}
+            </h2>
           </div>
-          <div className="value-card p-6 border border-gray-200 rounded-lg bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:border-[var(--primary)]">
-            <div className="icon-container w-16 h-16 bg-[var(--primary-light)] rounded-full flex items-center justify-center mb-4 mx-auto">
-              <i className="fa-solid fa-gem text-[var(--primary)] text-xl"></i>
-            </div>
-            <h3 className="text-lg font-semibold mb-2 text-center">Quality</h3>
-            <p className="text-gray-600 text-center text-[15px]">
-              Offering only the best products that meet our stringent quality
-              standards.
-            </p>
-          </div>
-          <div className="value-card p-6 border border-gray-200 rounded-lg bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:border-[var(--primary)]">
-            <div className="icon-container w-16 h-16 bg-[var(--primary-light)] rounded-full flex items-center justify-center mb-4 mx-auto">
-              <i className="fa-solid fa-headset text-[var(--primary)] text-xl"></i>
-            </div>
-            <h3 className="text-lg font-semibold mb-2 text-center">Service</h3>
-            <p className="text-gray-600 text-center text-[15px]">
-              Providing exceptional customer service at every touchpoint.
-            </p>
-          </div>
-          <div className="value-card p-6 border border-gray-200 rounded-lg bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:border-[var(--primary)]">
-            <div className="icon-container w-16 h-16 bg-[var(--primary-light)] rounded-full flex items-center justify-center mb-4 mx-auto">
-              <i className="fa-solid fa-leaf text-[var(--primary)] text-xl"></i>
-            </div>
-            <h3 className="text-lg font-semibold mb-2 text-center">
-              Sustainability
-            </h3>
-            <p className="text-gray-600 text-center text-[15px]">
-              Committed to environmentally responsible business practices.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Our Team */}
-      <div className="team-section bg-gradient-to-br from-[#f0f9ff] to-white p-8 rounded-xl mb-16 shadow-lg">
-        <div className="section-header text-center mb-10">
-          <h2 className="text-xl md:text-2xl font-bold text-[var(--primary)] mb-2 relative inline-block">
-            Meet Our Leadership
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-[#ff6b6b] rounded-full"></span>
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mt-4 text-base">
-            The talented individuals behind BaazaarWale's success
-          </p>
-        </div>
-        <div className="team-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="team-member text-center bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-            <div className="image-container mb-4 relative mx-auto w-40 h-40 rounded-full overflow-hidden border-4 border-[var(--primary-light)]">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <div className="md:w-1/2 w-full">
               <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
-                alt="CEO"
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                src={mission.image}
+                alt="Our Mission"
+                className="rounded-lg shadow-sm w-full h-36 xs:h-56 md:h-64 object-cover border-2 border-[var(--border-light)]"
               />
             </div>
-            <h3 className="text-lg font-semibold mb-1">Rajesh Kumar</h3>
-            <p className="text-[#ff6b6b] mb-2 font-medium text-[15px]">
-              Founder & CEO
-            </p>
-            <p className="text-gray-600 mb-3 text-[15px]">
-              Visionary leader with 15+ years of retail experience
-            </p>
-            <div className="social-icons flex justify-center gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
-              >
-                <i className="fa-brands fa-linkedin-in"></i>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
-              >
-                <i className="fa-brands fa-twitter"></i>
-              </a>
-            </div>
-          </div>
-          <div className="team-member text-center bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-            <div className="image-container mb-4 relative mx-auto w-40 h-40 rounded-full overflow-hidden border-4 border-[var(--primary-light)]">
-              <img
-                src="https://randomuser.me/api/portraits/women/44.jpg"
-                alt="COO"
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              />
-            </div>
-            <h3 className="text-lg font-semibold mb-1">Priya Sharma</h3>
-            <p className="text-[#ff6b6b] mb-2 font-medium text-[15px]">
-              Chief Operations Officer
-            </p>
-            <p className="text-gray-600 mb-3 text-[15px]">
-              Operations expert with a focus on customer satisfaction
-            </p>
-            <div className="social-icons flex justify-center gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
-              >
-                <i className="fa-brands fa-linkedin-in"></i>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
-              >
-                <i className="fa-brands fa-twitter"></i>
-              </a>
-            </div>
-          </div>
-          <div className="team-member text-center bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-            <div className="image-container mb-4 relative mx-auto w-40 h-40 rounded-full overflow-hidden border-4 border-[var(--primary-light)]">
-              <img
-                src="https://randomuser.me/api/portraits/men/67.jpg"
-                alt="CTO"
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              />
-            </div>
-            <h3 className="text-lg font-semibold mb-1">Vikram Singh</h3>
-            <p className="text-[#ff6b6b] mb-2 font-medium text-[15px]">
-              Chief Technology Officer
-            </p>
-            <p className="text-gray-600 mb-3 text-[15px]">
-              Tech innovator driving our digital transformation
-            </p>
-            <div className="social-icons flex justify-center gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
-              >
-                <i className="fa-brands fa-linkedin-in"></i>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-[var(--primary-light)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors"
-              >
-                <i className="fa-brands fa-twitter"></i>
-              </a>
+            <div className="md:w-1/2 space-y-2.5 xs:space-y-3">
+              <p className="text-[10px] xs:text-xs md:text-sm text-[var(--text-primary)] leading-relaxed">
+                {mission.description}
+              </p>
+              <ul className="space-y-1.5 xs:space-y-2">
+                {mission.points.map((point, index) => (
+                  <li key={index} className="flex items-start gap-2 bg-[var(--bg-light)] p-2 xs:p-2.5 rounded-md border border-[var(--border-light)] text-[10px] xs:text-xs md:text-sm text-[var(--text-primary)]">
+                    <i className="fa-solid fa-circle-check text-[var(--primary)] text-xs xs:text-sm mt-0.5 shrink-0"></i>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Call to Action */}
-      {
-       !isLoggedIn &&
-      <div className="cta-section bg-gradient-to-r from-[var(--primary)] to-[#4a9eff] text-white p-8 md:p-12 rounded-xl text-center shadow-lg transform hover:scale-[1.005] transition-transform duration-300">
-        <h2 className="text-xl md:text-2xl font-bold mb-4">
-          Join the BaazaarWale Family
-        </h2>
-        <p className="text-base mb-6 max-w-2xl mx-auto">
-          Experience the best online shopping with us. From electronics to
-          fashion, we've got everything you need.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/register"
-            className="bg-white text-[var(--primary)] py-3 px-8 rounded-lg font-medium hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-transform duration-300 text-[15px]"
-          >
-            Create an Account
-          </a>
-          <a
-            href="/contact"
-            className="bg-transparent border-2 border-white py-3 px-8 rounded-lg font-medium hover:bg-white hover:text-[var(--primary)] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-transform duration-300 text-[15px]"
-          >
-            Contact Us
-          </a>
+        <div className="mb-4 xs:mb-8">
+          <div className="text-center mb-3 xs:mb-6">
+            <h2 className="text-sm xs:text-lg md:text-xl font-bold text-[var(--text-dark)] inline-block border-b-2 border-[var(--primary)] pb-1">
+              Our Core Values
+            </h2>
+            <p className="text-[10px] xs:text-xs text-[var(--text-secondary)] mt-1">
+              The principles that guide everything we do at BazaarWale
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3.5 md:gap-4">
+            {values.map((val) => (
+              <div
+                key={val.id}
+                className="bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl p-2.5 xs:p-4 text-center hover:border-[var(--primary)] shadow-xs hover:shadow-md transition-all"
+              >
+                <div className="w-8 h-8 xs:w-11 xs:h-11 bg-[var(--primary-light)] text-[var(--primary)] rounded-full flex items-center justify-center text-xs xs:text-base mb-1.5 xs:mb-2.5 mx-auto">
+                  <i className={`fa-solid ${val.icon}`}></i>
+                </div>
+                <h3 className="text-xs xs:text-sm font-semibold text-[var(--text-dark)] mb-0.5 xs:mb-1">
+                  {val.title}
+                </h3>
+                <p className="text-[9px] xs:text-[11px] text-[var(--text-secondary)] leading-tight">
+                  {val.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl shadow-md p-3 xs:p-6 md:p-8">
+          <div className="text-center mb-3 xs:mb-6">
+            <h2 className="text-sm xs:text-lg md:text-xl font-bold text-[var(--text-dark)] inline-block border-b-2 border-[var(--primary)] pb-1">
+              Meet Our Leadership
+            </h2>
+            <p className="text-[10px] xs:text-xs text-[var(--text-secondary)] mt-1">
+              The talented individuals behind BazaarWale's success
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 xs:gap-6">
+            {team.map((member, index) => (
+              <div
+                key={index}
+                className="bg-[var(--bg-light)] border border-[var(--border-light)] rounded-lg xs:rounded-xl p-2.5 xs:p-4 text-left sm:text-center shadow-xs hover:shadow-md transition-all flex flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-0 justify-between"
+              >
+                <div className="shrink-0 mb-0 sm:mb-3 w-14 h-14 xs:w-20 xs:h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-[var(--primary-light)] mx-0 sm:mx-auto">
+                  <img
+                    src={member.profileUrl || member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="min-w-0 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xs xs:text-sm font-semibold text-[var(--text-dark)] mb-0.5 truncate">
+                      {member.name}
+                    </h3>
+                    <p className="text-[10px] xs:text-xs text-[var(--primary)] font-medium mb-1 truncate">
+                      {member.role}
+                    </p>
+                    <p className="text-[9px] xs:text-[11px] text-[var(--text-secondary)] mb-2 leading-tight line-clamp-2">
+                      {member.description || member.bio}
+                    </p>
+                  </div>
+                  {member.socialUrl && (
+                    <div className="flex flex-wrap justify-start sm:justify-center gap-1.5 pt-0.5">
+                      {member.socialUrl.linkedin && (
+                        <a
+                          href={member.socialUrl.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="LinkedIn"
+                          className="w-6 h-6 xs:w-7 xs:h-7 bg-[var(--bg-white)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--text-white)] transition-colors border border-[var(--border-light)] text-[10px] xs:text-xs"
+                        >
+                          <FaLinkedinIn />
+                        </a>
+                      )}
+                      {member.socialUrl.github && (
+                        <a
+                          href={member.socialUrl.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="GitHub"
+                          className="w-6 h-6 xs:w-7 xs:h-7 bg-[var(--bg-white)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--text-white)] transition-colors border border-[var(--border-light)] text-[10px] xs:text-xs"
+                        >
+                          <FaGithub />
+                        </a>
+                      )}
+                      {member.socialUrl.twitter && (
+                        <a
+                          href={member.socialUrl.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Twitter"
+                          className="w-6 h-6 xs:w-7 xs:h-7 bg-[var(--bg-white)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--text-white)] transition-colors border border-[var(--border-light)] text-[10px] xs:text-xs"
+                        >
+                          <FaTwitter />
+                        </a>
+                      )}
+                      {member.socialUrl.instagram && (
+                        <a
+                          href={member.socialUrl.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Instagram"
+                          className="w-6 h-6 xs:w-7 xs:h-7 bg-[var(--bg-white)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--text-white)] transition-colors border border-[var(--border-light)] text-[10px] xs:text-xs"
+                        >
+                          <FaInstagram />
+                        </a>
+                      )}
+                      {member.socialUrl.facebook && (
+                        <a
+                          href={member.socialUrl.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Facebook"
+                          className="w-6 h-6 xs:w-7 xs:h-7 bg-[var(--bg-white)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--text-white)] transition-colors border border-[var(--border-light)] text-[10px] xs:text-xs"
+                        >
+                          <FaFacebookF />
+                        </a>
+                      )}
+                      {member.socialUrl.portfolio && (
+                        <a
+                          href={member.socialUrl.portfolio}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Portfolio"
+                          className="w-6 h-6 xs:w-7 xs:h-7 bg-[var(--bg-white)] rounded-full flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--text-white)] transition-colors border border-[var(--border-light)] text-[10px] xs:text-xs"
+                        >
+                          <FaGlobe />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      }
     </div>
   );
 };

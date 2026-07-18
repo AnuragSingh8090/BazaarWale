@@ -33,15 +33,46 @@ export const companyDetails = {
     businessStats: {
         totalCustomers: '10M+',
         totalProducts: '10M+',
-        totalOrders: '10M+',
-        totalCitiesCovered: '10+',
+        totalOrders: '5M+',
+        totalCitiesCovered: '50+',
     },
-    copanyMembers: [
+    companyMembers: [
         {
             name: 'Anurag Kumar Singh',
             emailId: 'anuragkumarsingh154@gmail.com',
             role: 'Founder and CEO',
             description: 'Frontend Developer with 1.5 Years of professional Experience',
+            profileUrl: 'https://myportfolioanurag.netlify.app/profile-image.webp',
+            socialUrl: {
+                instagram: 'https://www.instagram.com/01_anurag_10/',
+                facebook: 'https://www.facebook.com/profile.php?id=100077091671124',
+                linkedin: 'https://www.linkedin.com/in/anurag-singh-lucknow/?skipRedirect=true',
+                github: 'https://github.com/AnuragSingh8090',
+                portfolio: 'https://myportfolioanurag.netlify.app/',
+                twitter: 'https://x.com/?lang=en'
+            }
+        },
+        {
+            name: 'Anurag Kumar Singh',
+            emailId: 'anuragkumarsingh154@gmail.com',
+            role: 'Chief Operations Officer',
+            description: 'Frontend Developer with 1.5 Years of professional Experience',
+            profileUrl: 'https://myportfolioanurag.netlify.app/profile-image.webp',
+            socialUrl: {
+                instagram: 'https://www.instagram.com/01_anurag_10/',
+                facebook: 'https://www.facebook.com/profile.php?id=100077091671124',
+                linkedin: 'https://www.linkedin.com/in/anurag-singh-lucknow/?skipRedirect=true',
+                github: 'https://github.com/AnuragSingh8090',
+                portfolio: 'https://myportfolioanurag.netlify.app/',
+                twitter: 'https://x.com/?lang=en'
+            }
+        },
+        {
+            name: 'Anurag Kumar Singh',
+            emailId: 'anuragkumarsingh154@gmail.com',
+            role: 'Chief Technology Officer',
+            description: 'Frontend Developer with 1.5 Years of professional Experience',
+            profileUrl: 'https://myportfolioanurag.netlify.app/profile-image.webp',
             socialUrl: {
                 instagram: 'https://www.instagram.com/01_anurag_10/',
                 facebook: 'https://www.facebook.com/profile.php?id=100077091671124',
@@ -51,12 +82,9 @@ export const companyDetails = {
                 twitter: 'https://x.com/?lang=en'
             }
         }
-    ]
+    ],
 
 }
-
-
-
 
 export const faqs = [
     {
@@ -390,6 +418,52 @@ export const privacyPolicyDetails = {
             content: [
                 "We may update our Privacy Policy from time to time. Any changes will be posted on this page with a revised \"Last Updated\" date. We encourage you to review this Privacy Policy periodically to stay informed about how we are protecting your information."
             ]
+        }
+    ]
+};
+
+export const aboutUsDetails = {
+    hero: {
+        title: "About BazaarWale",
+        subtitle: "Your trusted partner for all your shopping needs since 2020",
+        description: "At BazaarWale, we believe in providing exceptional products with unmatched customer service. Our journey began with a simple mission: to make quality products accessible to everyone at affordable prices.",
+        image: "/images/About_us_poster.webp"
+    },
+    mission: {
+        title: "Our Mission",
+        description: "Our mission is to revolutionize the online shopping experience by offering a wide range of high-quality products at competitive prices while ensuring exceptional customer service.",
+        image: "/images/About_us_poster-2.webp",
+        points: [
+            "Providing authentic products from trusted brands",
+            "Ensuring timely delivery across the country",
+            "Offering hassle-free returns and exchanges",
+            "Maintaining transparent pricing with no hidden costs"
+        ]
+    },
+    values: [
+        {
+            id: 1,
+            title: "Trust",
+            description: "Building lasting relationships with our customers through honesty and transparency.",
+            icon: "fa-handshake"
+        },
+        {
+            id: 2,
+            title: "Quality",
+            description: "Offering only the best products that meet our stringent quality standards.",
+            icon: "fa-gem"
+        },
+        {
+            id: 3,
+            title: "Service",
+            description: "Providing exceptional customer service at every single touchpoint.",
+            icon: "fa-headset"
+        },
+        {
+            id: 4,
+            title: "Sustainability",
+            description: "Committed to environmentally responsible business practices.",
+            icon: "fa-leaf"
         }
     ]
 };
