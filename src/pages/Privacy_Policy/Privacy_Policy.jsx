@@ -1,378 +1,155 @@
 import React, { useState } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { Link } from "react-router-dom";
+import { privacyPolicies, privacyHighlights } from "../../constants/companyDetails";
+import { MdHeadsetMic, MdShoppingBag } from "react-icons/md";
 import "./Privacy_Policy.css";
 
 const Privacy_Policy = () => {
-  const [expandedSections, setExpandedSections] = useState({
-    1: true, 2: true, 3: true, 4: true, 5: true,
-    6: true, 7: true, 8: true, 9: true, 10: true
-  });
+  const [expandedSections, setExpandedSections] = useState(
+    privacyPolicies.reduce((acc, policy) => ({ ...acc, [policy.id]: true }), {})
+  );
 
-  const toggleSection = (sectionNumber) => {
+  const toggleSection = (id) => {
     setExpandedSections((prev) => ({
       ...prev,
-      [sectionNumber]: !prev[sectionNumber],
+      [id]: !prev[id],
     }));
   };
 
+  const toggleAll = (expand) => {
+    const newState = privacyPolicies.reduce(
+      (acc, policy) => ({ ...acc, [policy.id]: expand }),
+      {}
+    );
+    setExpandedSections(newState);
+  };
+
+  const isAllExpanded = Object.values(expandedSections).every(Boolean);
+
   return (
-    <div className="max-w-[1000px] mx-auto my-10 px-5 font-['IBM_Plex_Sans'] text-[#333]">
+    <div className="global-padding py-5 xs:py-8 md:py-10 bg-[var(--bg-body)]">
       <ScrollToTop />
-      <div className="text-center mb-6 pb-3 border-b border-[var(--border-light)]">
-        <h1 className="text-[var(--primary)] text-2xl md:text-3xl mb-1">Privacy Policy</h1>
-      </div>
+      <div className="w-full global-width">
+        <div className="text-center mb-4 xs:mb-6 md:mb-8">
+          <h1 className="heading">Privacy Policy</h1>
+          <p className="sub-heading">
+            At BazaarWale, we respect your privacy and are committed to protecting your personal data.
+          </p>
+        </div>
 
-      <div className="bg-white rounded-lg p-6 md:p-8 shadow-md">
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(1)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              1. Introduction
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[1] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[1] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">
-                At BazaarWale, we respect your privacy and are committed to
-                protecting your personal data. This Privacy Policy explains how we
-                collect, use, disclose, and safeguard your information when you
-                visit our website or make a purchase.
-              </p>
-              <p className="mb-4 leading-relaxed text-sm">
-                Please read this Privacy Policy carefully. If you do not agree with
-                the terms of this Privacy Policy, please do not access our website
-                or use our services.
-              </p>
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 md:gap-4 mb-5 xs:mb-8">
+          {privacyHighlights.map((highlight) => (
+            <div
+              key={highlight.id}
+              className="bg-[var(--bg-white)] border border-[var(--border-default)] rounded-lg xs:rounded-xl p-2.5 xs:p-3.5 md:p-4 flex items-center gap-2 xs:gap-3.5 shadow-sm hover:shadow-md transition-all"
+            >
+              <div className="w-8 h-8 xs:w-10 xs:h-11 rounded-md xs:rounded-lg bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center text-xs xs:text-base md:text-lg shrink-0">
+                <i className={`fa-solid ${highlight.icon}`}></i>
+              </div>
+              <div className="min-w-0">
+                <h4 className="text-[var(--text-dark)] font-semibold text-[11px] xs:text-xs md:text-sm truncate">{highlight.title}</h4>
+                <p className="text-[var(--text-secondary)] text-[9px] xs:text-[11px] md:text-xs leading-tight line-clamp-2">{highlight.description}</p>
+              </div>
             </div>
-          )}
-        </section>
+          ))}
+        </div>
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(2)}
+        <div className="flex justify-between items-center mb-3 xs:mb-4 px-1">
+          <span className="text-[var(--text-secondary)] text-[11px] xs:text-xs md:text-sm font-medium">
+            Policy Guidelines ({privacyPolicies.length} Sections)
+          </span>
+          <button
+            onClick={() => toggleAll(!isAllExpanded)}
+            className="text-[var(--primary)] hover:text-[var(--primary-medium)] text-[11px] xs:text-xs md:text-sm font-medium flex items-center gap-1 xs:gap-1.5 transition-colors cursor-pointer"
           >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              2. Information We Collect
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[2] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[2] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">
-                We collect several types of information from and about users of our
-                website, including:
-              </p>
-              <ul className="mb-4 pl-5 space-y-2.5 text-sm">
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Personal Information:</strong> This includes your name,
-                  email address, postal address, phone number, and payment
-                  information.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Account Information:</strong> Details such as your
-                  username, password, purchase history, and items in your wishlist.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Transaction Information:</strong> Data about purchases and
-                  other transactions made through our website, including credit card
-                  details.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Technical Information:</strong> IP addresses, browser
-                  types, device types, ISP, referring/exit pages, operating system,
-                  date/time stamps, and clickstream data.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">User Content:</strong> Reviews, ratings, feedback,
-                  testimonials, and other content you provide on our platform.
-                </li>
-              </ul>
-            </div>
-          )}
-        </section>
+            <i className={`fa-solid ${isAllExpanded ? "fa-compress" : "fa-expand"} text-[10px] xs:text-xs`}></i>
+            {isAllExpanded ? "Collapse All" : "Expand All"}
+          </button>
+        </div>
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(3)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              3. How We Collect Information
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[3] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[3] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">We collect information in the following ways:</p>
-              <ul className="mb-4 pl-5 space-y-2.5 text-sm">
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Direct Interactions:</strong> When you create an account,
-                  make a purchase, subscribe to newsletters, participate in surveys,
-                  or communicate with us.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Automated Technologies:</strong> As you navigate through
-                  our website, we may use cookies, web beacons, and other tracking
-                  technologies to collect data about your equipment, browsing
-                  actions, and patterns.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Third Parties:</strong> We may receive information about
-                  you from third parties such as business partners, subcontractors,
-                  advertising networks, analytics providers, and search information
-                  providers.
-                </li>
-              </ul>
-            </div>
-          )}
-        </section>
+        <div className="bg-[var(--bg-white)] rounded-lg xs:rounded-xl shadow-md p-3.5 xs:p-5 md:p-8">
+          <div className="space-y-2.5 xs:space-y-4 w-full">
+            {privacyPolicies.map((section, index) => (
+              <div
+                key={section.id}
+                className="border-b border-[var(--border-light)] pb-2.5 xs:pb-3 last:border-0 last:pb-0"
+              >
+                <div
+                  role="button"
+                  onClick={() => toggleSection(section.id)}
+                  className="w-full flex justify-between items-center text-left font-medium text-[var(--text-primary)] text-[11px] xs:text-sm md:text-base py-1.5 xs:py-2 hover:text-[var(--primary)] transition-colors duration-150 cursor-pointer select-none"
+                >
+                  <div className="flex items-center gap-2 xs:gap-2.5">
+                    <span className="shrink-0 font-bold text-[var(--primary)] text-[10px] xs:text-xs md:text-sm">
+                      {String(index + 1).padStart(2, "0")}.
+                    </span>
+                    <span>{section.title}</span>
+                  </div>
+                  <span className="text-[var(--primary)] shrink-0 ml-2 xs:ml-4">
+                    <i className={`fa-solid ${expandedSections[section.id] ? "fa-chevron-up" : "fa-chevron-down"} text-[10px] xs:text-xs md:text-sm`}></i>
+                  </span>
+                </div>
+                <div className={`faq-answer-container ${expandedSections[section.id] ? "open" : ""}`}>
+                  <div className="faq-answer-inner">
+                    <div className="pb-2.5 xs:pb-3 pl-3.5 xs:pl-6 text-[10px] xs:text-xs md:text-sm text-[var(--text-primary)] leading-relaxed space-y-2 xs:space-y-2.5">
+                      {section.content && section.content.map((paragraph, pIndex) => (
+                        <p key={pIndex}>{paragraph}</p>
+                      ))}
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(4)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              4. How We Use Your Information
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[4] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[4] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">We use the information we collect about you to:</p>
-              <ul className="mb-4 pl-5 space-y-2.5 text-sm">
-                <li className="leading-relaxed">Process and fulfill your orders</li>
-                <li className="leading-relaxed">Manage your account and provide customer support</li>
-                <li className="leading-relaxed">Communicate with you about products, services, and promotions</li>
-                <li className="leading-relaxed">Improve our website, products, and services</li>
-                <li className="leading-relaxed">Personalize your shopping experience</li>
-                <li className="leading-relaxed">Protect against fraud and unauthorized transactions</li>
-                <li className="leading-relaxed">Comply with legal obligations</li>
-                <li className="leading-relaxed">
-                  Analyze usage patterns to enhance user experience and website
-                  functionality
-                </li>
-              </ul>
-            </div>
-          )}
-        </section>
+                      {section.intro && <p className="font-medium text-[var(--text-dark)] mb-1">{section.intro}</p>}
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(5)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              5. Disclosure of Your Information
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[5] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[5] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">We may disclose your personal information to:</p>
-              <ul className="mb-4 pl-5 space-y-2.5 text-sm">
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Service Providers:</strong> Third parties who perform
-                  services on our behalf, such as payment processing, shipping,
-                  customer service, and marketing.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Business Partners:</strong> Companies we collaborate with
-                  to offer joint promotions or products.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Legal Authorities:</strong> When required by law or if we
-                  believe disclosure is necessary to protect our rights, property,
-                  or safety.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Business Transfers:</strong> In connection with a merger,
-                  acquisition, or sale of all or a portion of our business.
-                </li>
-              </ul>
-              <p className="mb-4 leading-relaxed text-sm">
-                We do not sell your personal information to third parties for their
-                marketing purposes without your consent.
-              </p>
-            </div>
-          )}
-        </section>
+                      {section.items && section.items.length > 0 && (
+                        <ul className="space-y-1.5 pl-3.5 xs:pl-5 list-disc">
+                          {section.items.map((item, itemIndex) => (
+                            <li key={itemIndex}>
+                              <strong className="text-[var(--text-dark)]">{item.label}:</strong> {item.text}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(6)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              6. Data Security
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[6] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[6] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">
-                We implement appropriate security measures to protect your personal
-                information from accidental loss, unauthorized access, use,
-                alteration, or disclosure. These measures include encryption,
-                firewalls, and secure server protocols.
-              </p>
-              <p className="mb-4 leading-relaxed text-sm">
-                However, no method of transmission over the Internet or electronic
-                storage is 100% secure. While we strive to use commercially
-                acceptable means to protect your personal information, we cannot
-                guarantee its absolute security.
-              </p>
-            </div>
-          )}
-        </section>
+                      {section.points && section.points.length > 0 && (
+                        <ul className="space-y-1.5 pl-3.5 xs:pl-5 list-disc">
+                          {section.points.map((point, pointIndex) => (
+                            <li key={pointIndex}>{point}</li>
+                          ))}
+                        </ul>
+                      )}
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(7)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              7. Your Rights
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[7] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
+                      {section.outro && <p className="mt-1 font-medium text-[var(--text-dark)]">{section.outro}</p>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          {expandedSections[7] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">Depending on your location, you may have certain rights regarding your personal information, including the right to:</p>
-              <ul className="mb-4 pl-5 space-y-2.5 text-sm">
-                <li className="leading-relaxed">Access your personal information</li>
-                <li className="leading-relaxed">Correct inaccurate or incomplete information</li>
-                <li className="leading-relaxed">Request deletion of your personal information</li>
-                <li className="leading-relaxed">Withdraw consent where processing is based on consent</li>
-                <li className="leading-relaxed">Object to processing of your personal information</li>
-                <li className="leading-relaxed">Request restriction of processing your personal information</li>
-                <li className="leading-relaxed">Request transfer of your personal information</li>
-              </ul>
-              <p className="mb-4 leading-relaxed text-sm">
-                To exercise any of these rights, please contact us at
-                privacy@bazaarwale.com.
-              </p>
-            </div>
-          )}
-        </section>
+        </div>
 
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(8)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              8. Cookies Policy
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[8] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
+        <div className="mt-5 xs:mt-8 bg-[var(--primary)] text-[var(--text-white)] rounded-lg xs:rounded-xl p-4 xs:p-5 md:p-7 flex flex-col md:flex-row items-center justify-between gap-3.5 xs:gap-5 shadow-md">
+          <div className="text-center md:text-left space-y-1">
+            <h3 className="text-sm xs:text-base md:text-lg font-bold tracking-wide">Have Questions About Your Privacy?</h3>
+            <p className="text-[10px] xs:text-xs md:text-sm text-[var(--primary-light)] max-w-lg leading-snug">
+              Our support team is dedicated to protecting your data and answering any privacy or policy concerns.
+            </p>
           </div>
-          {expandedSections[8] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">
-                Our website uses cookies to enhance your experience. Cookies are
-                small text files that are stored on your computer when you visit
-                websites. We use both session cookies (which expire once you close
-                your web browser) and persistent cookies (which stay on your device
-                until you delete them).
-              </p>
-              <p className="mb-4 leading-relaxed text-sm">Types of cookies we use:</p>
-              <ul className="mb-4 pl-5 space-y-2.5 text-sm">
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Essential Cookies:</strong> Required for the website to
-                  function properly.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Analytical/Performance Cookies:</strong> Allow us to
-                  recognize and count visitors and analyze website usage.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Functionality Cookies:</strong> Remember your preferences
-                  and choices.
-                </li>
-                <li className="leading-relaxed">
-                  <strong className="text-gray-800">Targeting Cookies:</strong> Record your visit to our
-                  website, pages visited, and links followed to deliver relevant
-                  advertisements.
-                </li>
-              </ul>
-              <p className="mb-4 leading-relaxed text-sm">
-                You can set your browser to refuse all or some browser cookies, or
-                to alert you when websites set or access cookies. If you disable or
-                refuse cookies, some parts of our website may become inaccessible or
-                not function properly.
-              </p>
-            </div>
-          )}
-        </section>
-
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(9)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              9. Children's Privacy
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[9] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
+          <div className="flex flex-wrap items-center justify-center gap-2 xs:gap-3 shrink-0">
+            <Link
+              to="/contact"
+              className="bg-[var(--bg-white)] text-[var(--primary)] px-3.5 xs:px-4.5 py-1.5 xs:py-2 rounded-md xs:rounded-lg font-semibold text-[10px] xs:text-xs md:text-sm hover:bg-[var(--primary-lighter)] transition-all shadow-sm active:scale-[0.98] flex items-center gap-1.5"
+            >
+              <MdHeadsetMic className="text-xs xs:text-sm md:text-base" />
+              Contact Support
+            </Link>
+            <Link
+              to="/orders"
+              className="bg-transparent border border-[var(--text-white)] text-[var(--text-white)] px-3.5 xs:px-4.5 py-1.5 xs:py-2 rounded-md xs:rounded-lg font-semibold text-[10px] xs:text-xs md:text-sm hover:bg-[var(--text-white)]/10 transition-all active:scale-[0.98] flex items-center gap-1.5"
+            >
+              <MdShoppingBag className="text-xs xs:text-sm md:text-base" />
+              My Orders
+            </Link>
           </div>
-          {expandedSections[9] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">
-                Our website is not intended for children under 13 years of age. We
-                do not knowingly collect personal information from children under 13.
-                If you are a parent or guardian and believe your child has provided
-                us with personal information, please contact us, and we will delete
-                such information from our systems.
-              </p>
-            </div>
-          )}
-        </section>
-
-        <section className="mb-6">
-          <div 
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection(10)}
-          >
-            <h2 className="text-[var(--primary)] text-sm font-medium mb-3 pb-1 border-b border-[var(--primary-light)] flex-grow">
-              10. Changes to Our Privacy Policy
-            </h2>
-            <span className="text-[var(--primary)] ml-4 flex items-center justify-center h-8 w-6 translate-y-[-10px]">
-              <i className={`fa-solid ${expandedSections[10] ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </span>
-          </div>
-          {expandedSections[10] && (
-            <div className="animate-fadeIn">
-              <p className="mb-4 leading-relaxed text-sm">
-                We may update our Privacy Policy from time to time. Any changes will
-                be posted on this page with a revised "Last Updated" date. We
-                encourage you to review this Privacy Policy periodically to stay
-                informed about how we are protecting your information.
-              </p>
-            </div>
-          )}
-        </section>
+        </div>
       </div>
     </div>
   );

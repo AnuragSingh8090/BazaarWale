@@ -252,3 +252,142 @@ export const cancellationReturnPolicies = [
         ]
     }
 ];
+
+export const privacyHighlights = [
+    {
+        id: 1,
+        title: "Data Protection",
+        description: "Your data is encrypted & secured",
+        icon: "fa-user-shield"
+    },
+    {
+        id: 2,
+        title: "Zero Spam",
+        description: "We never sell or share your email",
+        icon: "fa-envelope-circle-check"
+    },
+    {
+        id: 3,
+        title: "100% Confidential",
+        description: "Strict privacy standards maintained",
+        icon: "fa-lock"
+    },
+    {
+        id: 4,
+        title: "Full Control",
+        description: "Manage your data preferences anytime",
+        icon: "fa-sliders"
+    }
+];
+
+export const privacyPolicies = [
+    {
+        id: 1,
+        title: "Introduction",
+        content: [
+            "At BazaarWale, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or make a purchase.",
+            "Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access our website or use our services."
+        ]
+    },
+    {
+        id: 2,
+        title: "Information We Collect",
+        intro: "We collect several types of information from and about users of our website, including:",
+        items: [
+            { label: "Personal Information", text: "This includes your name, email address, postal address, phone number, and payment information." },
+            { label: "Account Information", text: "Details such as your username, password, purchase history, and items in your wishlist." },
+            { label: "Transaction Information", text: "Data about purchases and other transactions made through our website, including payment details." },
+            { label: "Technical Information", text: "IP addresses, browser types, device types, operating system, and browsing activity." },
+            { label: "User Content", text: "Reviews, ratings, feedback, testimonials, and other content you provide on our platform." }
+        ]
+    },
+    {
+        id: 3,
+        title: "How We Collect Information",
+        intro: "We collect information in the following ways:",
+        items: [
+            { label: "Direct Interactions", text: "When you create an account, make a purchase, subscribe to newsletters, participate in surveys, or communicate with us." },
+            { label: "Automated Technologies", text: "As you navigate through our website, we may use cookies and tracking technologies to collect browsing data." },
+            { label: "Third Parties", text: "We may receive information from third parties such as business partners, payment processors, and analytics providers." }
+        ]
+    },
+    {
+        id: 4,
+        title: "How We Use Your Information",
+        intro: "We use the information we collect about you to:",
+        points: [
+            "Process and fulfill your orders",
+            "Manage your account and provide customer support",
+            "Communicate with you about products, services, and promotions",
+            "Improve our website, products, and services",
+            "Personalize your shopping experience",
+            "Protect against fraud and unauthorized transactions",
+            "Comply with legal obligations",
+            "Analyze usage patterns to enhance user experience and website functionality"
+        ]
+    },
+    {
+        id: 5,
+        title: "Disclosure of Your Information",
+        intro: "We may disclose your personal information to:",
+        items: [
+            { label: "Service Providers", text: "Third parties who perform services on our behalf, such as payment processing, shipping, customer service, and marketing." },
+            { label: "Business Partners", text: "Companies we collaborate with to offer joint promotions or products." },
+            { label: "Legal Authorities", text: "When required by law or if we believe disclosure is necessary to protect our rights, property, or safety." },
+            { label: "Business Transfers", text: "In connection with a merger, acquisition, or sale of all or a portion of our business." }
+        ],
+        outro: "We do not sell your personal information to third parties for their marketing purposes without your consent."
+    },
+    {
+        id: 6,
+        title: "Data Security",
+        content: [
+            "We implement appropriate security measures to protect your personal information from accidental loss, unauthorized access, use, alteration, or disclosure. These measures include encryption, firewalls, and secure server protocols.",
+            "However, no method of transmission over the Internet or electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security."
+        ]
+    },
+    {
+        id: 7,
+        title: "Your Rights",
+        intro: "Depending on your location, you may have certain rights regarding your personal information, including the right to:",
+        points: [
+            "Access your personal information",
+            "Correct inaccurate or incomplete information",
+            "Request deletion of your personal information",
+            "Withdraw consent where processing is based on consent",
+            "Object to processing of your personal information",
+            "Request restriction of processing your personal information",
+            "Request transfer of your personal information"
+        ],
+        outro: "To exercise any of these rights, please contact us at privacy@bazaarwale.com."
+    },
+    {
+        id: 8,
+        title: "Cookies Policy",
+        content: [
+            "Our website uses cookies to enhance your experience. Cookies are small text files that are stored on your computer when you visit websites. We use both session cookies (which expire once you close your web browser) and persistent cookies (which stay on your device until you delete them)."
+        ],
+        intro: "Types of cookies we use:",
+        items: [
+            { label: "Essential Cookies", text: "Required for the website to function properly." },
+            { label: "Analytical/Performance Cookies", text: "Allow us to recognize and count visitors and analyze website usage." },
+            { label: "Functionality Cookies", text: "Remember your preferences and choices." },
+            { label: "Targeting Cookies", text: "Record your visit to our website, pages visited, and links followed to deliver relevant advertisements." }
+        ],
+        outro: "You can set your browser to refuse all or some browser cookies, or to alert you when websites set or access cookies. If you disable or refuse cookies, some parts of our website may become inaccessible or not function properly."
+    },
+    {
+        id: 9,
+        title: "Children's Privacy",
+        content: [
+            "Our website is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us, and we will delete such information from our systems."
+        ]
+    },
+    {
+        id: 10,
+        title: "Changes to Our Privacy Policy",
+        content: [
+            "We may update our Privacy Policy from time to time. Any changes will be posted on this page with a revised \"Last Updated\" date. We encourage you to review this Privacy Policy periodically to stay informed about how we are protecting your information."
+        ]
+    }
+];
