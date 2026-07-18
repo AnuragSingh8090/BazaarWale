@@ -54,19 +54,15 @@
 }
 
 input, textarea {
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input:focus, textarea:focus {
-  transform: translateY(-2px);
-}
-
-button {
+.contact-submit-btn {
   position: relative;
   overflow: hidden;
 }
 
-button::after {
+.contact-submit-btn::after {
   content: '';
   position: absolute;
   top: 0;
@@ -77,7 +73,7 @@ button::after {
   transition: 0.5s;
 }
 
-button:hover::after {
+.contact-submit-btn:hover::after {
   left: 100%;
 }
 

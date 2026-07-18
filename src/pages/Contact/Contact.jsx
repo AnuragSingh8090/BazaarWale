@@ -334,7 +334,7 @@ const Contact = () => {
                 </div>
 
                 <button
-                  className={`${!Contact.fullname ||
+                  className={`contact-submit-btn ${!Contact.fullname ||
                     !Contact.email ||
                     !Contact.message ||
                     !Contact.mobile
