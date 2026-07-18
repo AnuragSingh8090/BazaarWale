@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { Link } from "react-router-dom";
-import { cancellationReturnPolicies, policyHighlights } from "../../constants/companyDetails";
+import { cancellationReturnPolicyDetails } from "../../constants/companyDetails";
 import { MdHeadsetMic, MdShoppingBag } from "react-icons/md";
 import "./Cancellation_Return_Policy.css";
 
 const Cancellation_Return_Policy = () => {
+  const { highlights: policyHighlights, sections: cancellationReturnPolicies } = cancellationReturnPolicyDetails;
+
   const [expandedSections, setExpandedSections] = useState(
     cancellationReturnPolicies.reduce((acc, policy) => ({ ...acc, [policy.id]: true }), {})
   );

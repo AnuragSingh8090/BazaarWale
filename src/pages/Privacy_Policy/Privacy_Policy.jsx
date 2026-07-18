@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { Link } from "react-router-dom";
-import { privacyPolicies, privacyHighlights } from "../../constants/companyDetails";
+import { privacyPolicyDetails } from "../../constants/companyDetails";
 import { MdHeadsetMic, MdShoppingBag } from "react-icons/md";
 import "./Privacy_Policy.css";
 
 const Privacy_Policy = () => {
+  const { highlights: privacyHighlights, sections: privacyPolicies } = privacyPolicyDetails;
+
   const [expandedSections, setExpandedSections] = useState(
     privacyPolicies.reduce((acc, policy) => ({ ...acc, [policy.id]: true }), {})
   );
