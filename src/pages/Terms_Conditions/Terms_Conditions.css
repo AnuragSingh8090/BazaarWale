@@ -14,3 +14,15 @@
 .faq-answer-inner {
   overflow: hidden;
 }
+
+/* Responsive sticky sidebar */
+.terms-sidebar {
+  position: sticky;
+  top: 144px; /* top-36 equivalent (36 × 4px) — below 1150px */
+}
+
+@media (min-width: 1150px) {
+  .terms-sidebar {
+    top: 104px; /* top-26 equivalent (26 × 4px) — above 1150px */
+  }
+}

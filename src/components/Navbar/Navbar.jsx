@@ -14,9 +14,15 @@ const Navbar = () => {
   const [loginPopup, setLoginPopup] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const userName = useSelector((state) => state.user.user?.name);
+  const reduxUserName = useSelector((state) => state.user.user?.name);
+  const reduxUserEmail = useSelector((state) => state.user.user?.email);
   const cartItems = useSelector((state) => state.user.user?.cart || []);
-  const isLoggedIn = useSelector((state) => state.user.isLoggedin);
+  const reduxIsLoggedIn = useSelector((state) => state.user.isLoggedin);
+
+  // Use actual Redux auth state
+  const isLoggedIn = reduxIsLoggedIn;
+  const userName = reduxUserName;
+  const userEmail = reduxUserEmail;
   const contactDetails = useSelector((state) => state.contact);
 
   const navigate = useNavigate();
@@ -130,7 +136,7 @@ const Navbar = () => {
   return (
     <nav className="global-padding navbar sticky top-0 left-0 z-50 bg-[var(--bg-white)] border-b border-[var(--border-default)] w-full py-1.5 xs:py-2">
       <div className="global-width w-full flex flex-col gap-1.5 xs:gap-2">
-        <div className="w-full flex items-center justify-between gap-2 xs:gap-3 md:gap-6">
+        <div className="w-full flex items-center gap-2 xs:gap-3 md:gap-4">
           <div className="flex items-center gap-1.5 xs:gap-2.5 shrink-0">
             <div
               className="bars_container items-center justify-center text-sm xs:text-base text-[var(--primary)] active:scale-[0.95] cursor-pointer md:hidden hover:scale-105 transition-transform p-0.5"
@@ -164,7 +170,7 @@ const Navbar = () => {
             </NavLink>
           </div>
 
-          <div className="search-wrapper relative hidden md:flex items-center w-full max-w-[260px] lg:max-w-[320px] xl:max-w-[360px] shrink-0">
+          <div className="search-wrapper relative hidden md:flex items-center w-full max-w-[260px] lg:max-w-[320px] xl:max-w-[360px] shrink-0 z-[60]">
             <div className="inputContainer flex items-center justify-center search_container w-full text-xs rounded-lg px-3 py-1.5 bg-[var(--primary-light)] gap-2 transition-colors duration-200 relative focus-within:bg-[var(--bg-white)] focus-within:ring-1 focus-within:ring-[var(--primary)] border border-transparent focus-within:border-[var(--primary)]">
               <i
                 className="fa-solid fa-magnifying-glass active:scale-[0.95] text-[var(--primary)] cursor-pointer shrink-0 text-xs"
@@ -192,7 +198,7 @@ const Navbar = () => {
             </div>
 
             {showSearchDrop && (
-              <div className="drop_container absolute top-full left-0 right-0 w-full mt-2 bg-white border border-[var(--border-default)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] z-50 overflow-hidden max-h-[320px] flex flex-col">
+              <div className="drop_container absolute top-full left-0 right-0 w-full mt-2 bg-white border border-[var(--border-default)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] z-[100] overflow-hidden max-h-[320px] flex flex-col">
                 <div className="sticky top-0 z-10 px-2.5 xs:px-3.5 py-2 xs:py-2.5 bg-white border-b border-[var(--border-light)] flex items-center justify-between shadow-xs shrink-0">
                   <span className="text-[10px] xs:text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider flex items-center gap-1.5">
                     <i className="fa-solid fa-fire text-[var(--accent)] text-[10px] xs:text-xs"></i>
@@ -254,7 +260,7 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-2 xs:gap-3.5 shrink-0">
+          <div className="flex items-center gap-2 xs:gap-3.5 shrink-0 ml-auto">
             <div className="cart_container relative active:scale-[0.95] text-sm xs:text-base cursor-pointer text-[var(--text-dark)] transition-transform duration-300 hover:scale-[1.05] shrink-0">
               <NavLink to="/cart" className="flex items-center gap-1 xs:gap-1.5">
                 <div className="relative">
@@ -295,17 +301,18 @@ const Navbar = () => {
                   </button>
 
                   {showDrop && (
-                    <div className="drop_container absolute right-0 top-full mt-2 w-52 xs:w-56 bg-[var(--bg-white)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.12)] border border-[var(--border-default)] p-1 z-50 overflow-hidden">
-                      <div className="px-3 py-2.5 rounded-lg border-b border-[var(--border-light)] bg-[var(--primary-lighter)] flex items-center gap-2.5 mb-1">
-                        <div className="w-7 h-7 rounded-full bg-[var(--primary)] text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
+                    <div className="drop_container absolute right-0 top-full mt-2 w-44 xs:w-52 sm:w-56 bg-[var(--bg-white)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.12)] border border-[var(--border-default)] p-1 z-50 overflow-hidden">
+                      <div className="px-2 xs:px-3 py-1.5 xs:py-2.5 rounded-lg border-b border-[var(--border-light)] bg-[var(--primary-lighter)] flex items-center gap-2 xs:gap-2.5 mb-1">
+                        <div className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-[var(--primary)] text-white font-bold text-[10px] xs:text-xs flex items-center justify-center shadow-xs shrink-0">
                           {userInitial}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold text-[var(--text-dark)] truncate">{userName}</p>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                            <span className="text-[10px] text-[var(--primary)] font-semibold truncate">Active Account</span>
-                          </div>
+                          <p className="text-[11px] xs:text-xs sm:text-sm font-bold text-[var(--text-dark)] truncate line-clamp-1" title={userName}>
+                            {userName}
+                          </p>
+                          <p className="text-[9px] xs:text-[10px] sm:text-[11px] text-[var(--primary)] font-medium truncate line-clamp-1 mt-0.5" title={userEmail}>
+                            {userEmail}
+                          </p>
                         </div>
                       </div>
 
@@ -314,14 +321,14 @@ const Navbar = () => {
                           to="/account"
                           onClick={hideAccountMenu}
                           className={({ isActive }) =>
-                            `flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${
                               isActive
                                 ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
                                 : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
                             }`
                           }
                         >
-                          <i className="fa-solid fa-user-gear text-[var(--primary)] text-sm w-4 shrink-0"></i>
+                          <i className="fa-solid fa-user-gear text-[var(--primary)] text-xs xs:text-sm w-3.5 xs:w-4 shrink-0"></i>
                           <span>My Account</span>
                         </NavLink>
 
@@ -329,14 +336,14 @@ const Navbar = () => {
                           to="/orders"
                           onClick={hideAccountMenu}
                           className={({ isActive }) =>
-                            `flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${
                               isActive
                                 ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
                                 : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
                             }`
                           }
                         >
-                          <i className="fa-solid fa-box-archive text-[var(--primary)] text-sm w-4 shrink-0"></i>
+                          <i className="fa-solid fa-box-archive text-[var(--primary)] text-xs xs:text-sm w-3.5 xs:w-4 shrink-0"></i>
                           <span>My Orders</span>
                         </NavLink>
 
@@ -344,14 +351,14 @@ const Navbar = () => {
                           to="/wishlist"
                           onClick={hideAccountMenu}
                           className={({ isActive }) =>
-                            `flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${
                               isActive
                                 ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
                                 : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
                             }`
                           }
                         >
-                          <i className="fa-solid fa-heart text-[var(--accent)] text-sm w-4 shrink-0"></i>
+                          <i className="fa-solid fa-heart text-[var(--accent)] text-xs xs:text-sm w-3.5 xs:w-4 shrink-0"></i>
                           <span>My Wishlist</span>
                         </NavLink>
                       </div>
@@ -363,9 +370,9 @@ const Navbar = () => {
                             hideAccountMenu();
                             setLoginPopup(true);
                           }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-[var(--error)] hover:bg-[var(--accent-light)] transition-colors cursor-pointer"
+                          className="w-full flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-semibold text-[var(--error)] hover:bg-[var(--accent-light)] transition-colors cursor-pointer"
                         >
-                          <i className="fa-solid fa-right-from-bracket text-sm w-4 shrink-0"></i>
+                          <i className="fa-solid fa-right-from-bracket text-xs xs:text-sm w-3.5 xs:w-4 shrink-0"></i>
                           <span>Log Out</span>
                         </button>
                       </div>
@@ -484,7 +491,7 @@ const Navbar = () => {
 
         <ul
           ref={navbarReference}
-          className="hidden navbar-container fixed top-0 left-0 z-50 h-screen max-h-screen overflow-y-auto w-[75%] max-w-[270px] flex-col items-start navItems p-3 xs:p-4 text-xs xs:text-sm font-[500] text-[var(--text-primary)] bg-[var(--bg-white)] shadow-2xl select-none gap-1 xs:gap-1.5 border-r border-[var(--border-default)] md:flex md:flex-wrap md:static md:w-full md:h-max md:max-h-none md:shadow-none md:bg-transparent md:border-none md:p-0 md:gap-[10px] md:flex-row"
+          className="hidden navbar-container fixed top-0 left-0 z-50 h-screen max-h-screen overflow-y-auto w-[75%] max-w-[270px] flex-col items-start navItems p-3 xs:p-4 text-[13px] xs:text-sm font-[500] text-[var(--text-primary)] bg-[var(--bg-white)] shadow-2xl select-none gap-0.5 xs:gap-1 border-r border-[var(--border-default)] md:flex md:flex-wrap md:static md:w-full md:max-w-none md:h-max md:max-h-none md:shadow-none md:bg-transparent md:border-none md:p-0 md:gap-[8px] md:flex-row md:transform-none md:opacity-100"
         >
           <div className="flex items-center justify-between w-full pb-2.5 border-b border-[var(--border-light)] md:hidden mb-1">
             <div className="flex items-center gap-2">
@@ -518,7 +525,7 @@ const Navbar = () => {
             onClick={closeNavbar}
             to="/"
             end
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-house text-xs"></i>
@@ -529,7 +536,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/electronics"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-mobile-screen-button text-xs"></i>
@@ -540,7 +547,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/clothing"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-shirt text-xs"></i>
@@ -551,7 +558,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/kids"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-children text-xs"></i>
@@ -562,7 +569,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/beauty"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-spa text-xs"></i>
@@ -573,7 +580,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/home_appliences"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-plug text-xs"></i>
@@ -584,7 +591,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/kitchen"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-kitchen-set text-xs"></i>
@@ -595,7 +602,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/personal_care"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-soap text-xs"></i>
@@ -606,7 +613,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/about_us"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-building text-xs"></i>
@@ -617,7 +624,7 @@ const Navbar = () => {
           <NavLink
             onClick={closeNavbar}
             to="/contact"
-            className="py-1.5 xs:py-2 px-3 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
+            className="py-1 xs:py-1.5 px-2.5 w-full shrink-0 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-lighter)] md:w-auto transition-all duration-300"
           >
             <li className="flex items-center gap-2.5">
               <i className="fa-solid fa-headset text-xs"></i>

@@ -20,10 +20,8 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { ToastContainer } from "react-toastify";
 
-
-
 function App() {
-  const isAuthPage = false
+  const isAuthPage = false;
   return (
     <>
       {!isAuthPage && <Navbar />}
@@ -46,6 +44,12 @@ function App() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/account" element={<MyAccount />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/clothing" element={<Products />} />
+        <Route path="/kids" element={<Products />} />
+        <Route path="/beauty" element={<Products />} />
+        <Route path="/home_appliences" element={<Products />} />
+        <Route path="/kitchen" element={<Products />} />
+        <Route path="/personal_care" element={<Products />} />
         <Route path="*" element={<Error />} />
       </Routes>
 

@@ -126,7 +126,7 @@ const Terms_Conditions = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-          <div className="hidden md:block md:w-1/4 sticky top-33 shrink-0 w-full">
+          <div className="hidden md:block md:w-1/4 terms-sidebar shrink-0 w-full">
             <div className="bg-[var(--bg-white)] rounded-xl p-4 shadow-sm border border-[var(--border-default)]">
               <h2 className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider mb-3 pb-2 border-b border-[var(--border-light)]">
                 Contents

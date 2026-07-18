@@ -1,3 +1,4 @@
+/* Mobile sidebar: full pill active style */
 .navItems .active {
   color: var(--primary) !important;
   font-weight: 600 !important;
@@ -5,6 +6,14 @@
   background-color: var(--primary-light) !important;
   box-shadow: 0 2px 8px rgba(0, 142, 204, 0.12) !important;
   transition: all 0.3s ease;
+}
+
+/* Desktop nav: active link — same look as hover but with primary bg */
+@media (min-width: 768px) {
+  .navItems .active {
+    background-color: var(--primary-light) !important;
+    box-shadow: none !important;
+  }
 }
 
 .navbarActive {
@@ -87,4 +96,22 @@
 
 .search-dropdown-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+/* Reset sidebar animation artifacts on desktop */
+@media (min-width: 768px) {
+  .navbar-container.navbarInactive,
+  .navbar-container.navbarActive {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: max-content !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+  }
 }
