@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
+import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { ImSpinner8 } from "react-icons/im";
 import apiService from "../../services/apiService";
 import { companyDetails, faqs } from "../../constants/companyDetails";
@@ -71,6 +72,7 @@ const Contact = () => {
   return (
     <>
       <div className="global-padding py-6 xs:py-8 md:py-10 bg-[var(--bg-body)]">
+        <ScrollToTop />
         <div className="w-full global-width">
 
           <div className="text-center mb-5 xs:mb-6 md:mb-8">

@@ -105,3 +105,150 @@ export const faqs = [
         answer: "If you forgot your password, click on the 'Forgot Password' link on the login page. Enter the email address associated with your account, and we will send you a link to reset your password."
     }
 ];
+
+export const policyHighlights = [
+    {
+        id: 1,
+        title: "Easy Cancellation",
+        description: "Cancel anytime before shipping",
+        icon: "fa-ban"
+    },
+    {
+        id: 2,
+        title: "30-Day Returns",
+        description: "Full policy for eligible items",
+        icon: "fa-rotate-left"
+    },
+    {
+        id: 3,
+        title: "5-7 Days Refund",
+        description: "Direct to original payment mode",
+        icon: "fa-wallet"
+    },
+    {
+        id: 4,
+        title: "Free Replacement",
+        description: "For damaged or defective items",
+        icon: "fa-arrows-rotate"
+    }
+];
+
+export const cancellationReturnPolicies = [
+    {
+        id: 1,
+        title: "Cancellation Policy",
+        intro: "At BazaarWale, we understand that plans change and you may need to cancel your order. Please review our cancellation policy:",
+        subsections: [
+            {
+                title: "Order Cancellation Before Shipping",
+                icon: "fa-circle-check",
+                variant: "primary",
+                points: [
+                    "You can cancel your order at any time before it has been shipped.",
+                    "To cancel an order, log in to your account, go to order history, and select the cancel option.",
+                    "Alternatively, you can contact our customer service team via email or phone.",
+                    "Once your cancellation request is received, we will process it within 24 hours.",
+                    "If payment has already been made, the refund will be processed according to our refund policy."
+                ]
+            },
+            {
+                title: "Order Cancellation After Shipping",
+                icon: "fa-truck-ramp-box",
+                variant: "neutral",
+                points: [
+                    "Orders that have already been shipped cannot be cancelled directly.",
+                    "In such cases, you will need to refuse the delivery or follow our return policy.",
+                    "Shipping charges are non-refundable if the order has already been shipped."
+                ]
+            }
+        ]
+    },
+    {
+        id: 2,
+        title: "Return Policy",
+        intro: "We strive to ensure you're completely satisfied with your purchase. If you're not, you may be eligible to return the product:",
+        subsections: [
+            {
+                title: "Return Eligibility",
+                icon: "fa-shield-halved",
+                variant: "primary",
+                points: [
+                    "Returns are accepted within 30 days of delivery.",
+                    "Products must be in their original condition, unused, unwashed, and with all tags attached.",
+                    "Original packaging must be intact and included with the return.",
+                    "Certain products cannot be returned due to hygiene reasons (e.g. personal care items).",
+                    "Products marked as \"non-returnable\" on the product page cannot be returned."
+                ]
+            },
+            {
+                title: "How to Return",
+                icon: "fa-list-check",
+                variant: "neutral",
+                points: [
+                    "Log in to your account and visit the order history section.",
+                    "Select the order and item(s) you wish to return.",
+                    "Choose a reason for the return from the dropdown menu.",
+                    "Follow the instructions to generate a return shipping label.",
+                    "Package the item securely and attach the return shipping label.",
+                    "Drop off the package at the nearest authorized courier center."
+                ]
+            }
+        ]
+    },
+    {
+        id: 3,
+        title: "Refund Policy",
+        intro: "Once we receive your returned item, our team will inspect it and process your refund:",
+        subsections: [
+            {
+                title: "Refund Process",
+                icon: "fa-clock-rotate-left",
+                variant: "neutral",
+                points: [
+                    "Refunds are processed within 5-7 business days after inspect.",
+                    "Credited back to original payment method used.",
+                    "Cash on delivery processed to wallet or bank account.",
+                    "Confirmation email sent once refund is processed."
+                ]
+            },
+            {
+                title: "Refundable Amount",
+                icon: "fa-hand-holding-dollar",
+                variant: "primary",
+                points: [
+                    "Product price is fully refundable if criteria met.",
+                    "Original shipping non-refundable unless our error.",
+                    "Full amount including shipping refunded for defective items."
+                ]
+            }
+        ]
+    },
+    {
+        id: 4,
+        title: "Replacement Policy",
+        intro: "If you receive a damaged or defective product, you may request a replacement:",
+        subsections: [
+            {
+                title: "Replacement Eligibility",
+                icon: "fa-triangle-exclamation",
+                variant: "neutral",
+                points: [
+                    "Replacements available for damaged, defective, or incorrect items.",
+                    "Must be requested within 7 days of delivery.",
+                    "Photos of damaged or defective product may be required.",
+                    "Replacements subject to product availability."
+                ]
+            },
+            {
+                title: "Replacement Process",
+                icon: "fa-truck-fast",
+                variant: "primary",
+                points: [
+                    "Log in to account and visit order history section.",
+                    "Select order and item(s) for replacement.",
+                    "Choose \"Replacement\" as preferred resolution and submit details."
+                ]
+            }
+        ]
+    }
+];

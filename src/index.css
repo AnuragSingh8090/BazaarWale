@@ -85,6 +85,8 @@ body {
 
 .global-width {
   max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .global-padding {
