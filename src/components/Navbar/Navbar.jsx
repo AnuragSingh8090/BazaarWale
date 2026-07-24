@@ -1,61 +1,48 @@
 import "./Navbar.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ImSpinner8 } from "react-icons/im";
-import { logoutUser } from "../../store/slices/userSlice";
-import { companyDetails, searchProductsData } from "../../constants/companyDetails";
+import { companyDetails } from "../../constants/companyDetails";
+import SearchDropdown from "../SearchDropdown/SearchDropdown";
 
 const Navbar = () => {
-  const [searchText, setSearchText] = useState("");
-  const [showDrop, setShowDrop] = useState(false);
-  const [showSearchDrop, setShowSearchDrop] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [loginPopup, setLoginPopup] = useState(false);
+  const [userDropdown, setUserDropdown] = useState(false);
+  const [logoutPopup, setLogoutPopup] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const reduxUserName = useSelector((state) => state.user.user?.name);
-  const reduxUserEmail = useSelector((state) => state.user.user?.email);
-  const cartItems = useSelector((state) => state.user.user?.cart || []);
-  const reduxIsLoggedIn = useSelector((state) => state.user.isLoggedin);
-
-  // Use actual Redux auth state
-  const isLoggedIn = reduxIsLoggedIn;
-  const userName = reduxUserName;
-  const userEmail = reduxUserEmail;
-  const contactDetails = useSelector((state) => state.contact);
-
   const navigate = useNavigate();
   const navbarReference = useRef(null);
-  const dispatch = useDispatch();
 
-  const handleSearch = () => {
-    if (searchText.trim()) {
-      setShowSearchDrop(false);
-      navigate("/products");
-    }
-  };
+  // Temporary local states for user information (removing Redux dependency)
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [user, setUser] = useState({
+    name: "Anurag Kumar Singh",
+    email: "anurag.singh8090@gmail.com",
+    cart: [
+      { id: 1, name: "Sample Laptop", price: "$999" },
+      { id: 2, name: "Premium Hoodie", price: "$59" }
+    ]
+  });
 
-  const clearSearch = (e) => {
-    e.stopPropagation();
-    setSearchText("");
-    setShowSearchDrop(false);
+
+
+
+
+  const getFormattedName = (name) => {
+    if (!name) return "User";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0];
+    return `${parts[0]} ${parts[1]}`;
   };
 
   const handleLogout = () => {
-    setLoginPopup(false);
-    setShowDrop(false);
-    dispatch(logoutUser());
+    setLogoutPopup(false);
+    setUserDropdown(false);
+    setIsLoggedIn(false);
+    setUser(null);
     navigate("/");
   };
 
-  const showAccountMenu = () => {
-    setShowDrop(true);
-  };
-
-  const hideAccountMenu = () => {
-    setShowDrop(false);
-  };
+  const showAccountMenu = () => setUserDropdown(true);
+  const hideAccountMenu = () => setUserDropdown(false);
 
   const openNavbar = () => {
     setIsMobileMenuOpen(true);
@@ -81,26 +68,12 @@ const Navbar = () => {
     }
   };
 
-  useEffect(() => {
-    if (searchText) {
-      setSearchLoading(true);
-      const timer = setTimeout(() => {
-        setSearchLoading(false);
-      }, 250);
-      return () => clearTimeout(timer);
-    } else {
-      setSearchLoading(false);
-    }
-  }, [searchText]);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     const handleClickOutside = (event) => {
       if (!event.target.closest(".user_container")) {
         hideAccountMenu();
-      }
-      if (!event.target.closest(".search-wrapper")) {
-        setShowSearchDrop(false);
       }
       if (
         !event.target.closest(".bars_container") &&
@@ -118,20 +91,6 @@ const Navbar = () => {
     };
   }, []);
 
-  const userInitial = userName ? userName.charAt(0).toUpperCase() : "U";
-
-  const getFormattedName = (name) => {
-    if (!name) return "User";
-    const parts = name.trim().split(/\s+/);
-    if (parts.length === 1) return parts[0];
-    if (parts.length === 2) return `${parts[0]} ${parts[1]}`;
-    return `${parts[0]} ${parts[1]}`;
-  };
-
-  const filteredProducts = searchProductsData.filter((prod) =>
-    prod.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    prod.category.toLowerCase().includes(searchText.toLowerCase())
-  );
 
   return (
     <nav className="global-padding navbar sticky top-0 left-0 z-50 bg-[var(--bg-white)] border-b border-[var(--border-default)] w-full py-1.5 xs:py-2">
@@ -150,114 +109,26 @@ const Navbar = () => {
               <div className="navLogo w-6 h-6 xs:w-7 xs:h-7 md:w-8 md:h-8 flex-shrink-0">
                 <img
                   src={companyDetails.companyLogo || "/brand-logo.png"}
-                  alt={contactDetails.brandName || "BazaarWale"}
+                  alt={companyDetails.companyName || "BazaarWale"}
                   className="w-full h-full object-contain"
                 />
               </div>
-              {(contactDetails.brandName || companyDetails.companyName) && (
-                <span
-                  className="text-xs xs:text-sm md:text-base shrink-0 font-bold tracking-tight"
-                  style={{
-                    fontFamily: "var(--custom-font)",
-                    background: "linear-gradient(to right, var(--primary), #d26c1e)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  {contactDetails.brandName || companyDetails.companyName}
-                </span>
-              )}
+              <span
+                className="text-xs xs:text-sm md:text-base shrink-0 font-bold tracking-tight"
+                style={{
+                  fontFamily: "var(--custom-font)",
+                  background: "linear-gradient(to right, var(--primary), #d26c1e)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {companyDetails.companyName || "BazaarWale"}
+              </span>
             </NavLink>
           </div>
 
-          <div className="search-wrapper relative hidden md:flex items-center w-full max-w-[260px] lg:max-w-[320px] xl:max-w-[360px] shrink-0 z-[60]">
-            <div className="inputContainer flex items-center justify-center search_container w-full text-xs rounded-lg px-3 py-1.5 bg-[var(--primary-light)] gap-2 transition-colors duration-200 relative focus-within:bg-[var(--bg-white)] focus-within:ring-1 focus-within:ring-[var(--primary)] border border-transparent focus-within:border-[var(--primary)]">
-              <i
-                className="fa-solid fa-magnifying-glass active:scale-[0.95] text-[var(--primary)] cursor-pointer shrink-0 text-xs"
-                onClick={handleSearch}
-              ></i>
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full bg-transparent text-[var(--text-dark)] focus:outline-none placeholder:text-[var(--text-muted)] text-xs"
-                onChange={(e) => setSearchText(e.target.value)}
-                value={searchText}
-                onFocus={() => setShowSearchDrop(true)}
-                onClick={() => setShowSearchDrop(true)}
-                onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
-              />
-              <div className="w-4 h-4 shrink-0 flex items-center justify-center">
-                {searchText ? (
-                  <i
-                    className="fa-solid fa-xmark text-[var(--text-muted)] hover:text-[var(--text-dark)] cursor-pointer text-xs transition-colors"
-                    onClick={clearSearch}
-                    title="Clear search"
-                  ></i>
-                ) : null}
-              </div>
-            </div>
-
-            {showSearchDrop && (
-              <div className="drop_container absolute top-full left-0 right-0 w-full mt-2 bg-white border border-[var(--border-default)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] z-[100] overflow-hidden max-h-[320px] flex flex-col">
-                <div className="sticky top-0 z-10 px-2.5 xs:px-3.5 py-2 xs:py-2.5 bg-white border-b border-[var(--border-light)] flex items-center justify-between shadow-xs shrink-0">
-                  <span className="text-[10px] xs:text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider flex items-center gap-1.5">
-                    <i className="fa-solid fa-fire text-[var(--accent)] text-[10px] xs:text-xs"></i>
-                    {searchText.trim() ? "Search Results" : "Featured Products"}
-                  </span>
-                  <span className="text-[9px] xs:text-[10px] text-[var(--text-secondary)] font-medium">
-                    {searchLoading ? "Searching..." : `${filteredProducts.length} items`}
-                  </span>
-                </div>
-
-                <div className="search-dropdown-scroll scroll-smooth flex-1 divide-y divide-[var(--border-light)] max-h-[260px]">
-                  {searchLoading ? (
-                    <div className="p-5 xs:p-6 text-center text-xs text-[var(--text-secondary)] flex items-center justify-center gap-2">
-                      <ImSpinner8 className="animate-spin text-[var(--primary)] text-sm xs:text-base" />
-                      <span className="text-[11px] xs:text-xs">Searching products...</span>
-                    </div>
-                  ) : filteredProducts.length > 0 ? (
-                    filteredProducts.map((prod) => (
-                      <div
-                        key={prod.id}
-                        onClick={() => {
-                          setShowSearchDrop(false);
-                          navigate(prod.link || "/products");
-                        }}
-                        className="flex items-center gap-2 xs:gap-3 p-2 xs:p-2.5 hover:bg-[var(--primary-lighter)] transition-colors cursor-pointer group"
-                      >
-                        <img
-                          src={prod.image}
-                          alt={prod.name}
-                          className="w-8 h-8 xs:w-10 xs:h-10 object-contain rounded-md bg-[var(--bg-light)] p-1 shrink-0 group-hover:scale-105 transition-transform"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[11px] xs:text-xs font-semibold text-[var(--text-dark)] group-hover:text-[var(--primary)] truncate transition-colors">
-                            {prod.name}
-                          </p>
-                          <span className="text-[9px] xs:text-[10px] text-[var(--text-secondary)] font-medium">
-                            {prod.category}
-                          </span>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <p className="text-[11px] xs:text-xs font-bold text-[var(--primary)]">{prod.price}</p>
-                          {prod.discount && (
-                            <span className="text-[8px] xs:text-[9px] font-semibold text-[var(--success)] bg-green-50 px-1 xs:px-1.5 py-0.5 rounded">
-                              {prod.discount}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="p-5 xs:p-6 text-center space-y-1">
-                      <i className="fa-solid fa-magnifying-glass-minus text-lg xs:text-xl text-[var(--text-muted)] mb-1 block"></i>
-                      <p className="text-[11px] xs:text-xs font-semibold text-[var(--text-dark)]">No products found</p>
-                      <p className="text-[10px] xs:text-[11px] text-[var(--text-muted)]">Try searching for "iPhone", "MacBook", etc.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+          <div className="search-wrapper relative hidden md:flex items-center w-full max-w-[350px] lg:max-w-[400px] shrink-0 z-[60]">
+            <SearchDropdown />
           </div>
 
           <div className="flex items-center gap-2 xs:gap-3.5 shrink-0 ml-auto">
@@ -269,7 +140,7 @@ const Navbar = () => {
                     title="Cart"
                   ></i>
                   <span className="absolute -top-1.5 -right-2 select-none flex items-center justify-center bg-[#d63909] text-white text-[9px] xs:text-[10px] font-bold rounded-full h-3.5 w-3.5 xs:h-4 xs:min-w-[16px] px-1 transition-transform duration-300 hover:scale-110">
-                    {cartItems.length || "0"}
+                    {user?.cart?.length || "0"}
                   </span>
                 </div>
                 <span className="text-[11px] xs:text-xs md:text-sm font-semibold hidden xs:inline">Cart</span>
@@ -281,37 +152,37 @@ const Navbar = () => {
                 <div className="user_container relative">
                   <button
                     type="button"
-                    onClick={() => (showDrop ? hideAccountMenu() : showAccountMenu())}
+                    onClick={() => (userDropdown ? hideAccountMenu() : showAccountMenu())}
                     className="flex items-center gap-1 xs:gap-1.5 px-1.5 xs:px-2 py-1 rounded-full bg-[var(--primary-lighter)] border border-[var(--primary-medium)] hover:bg-[var(--primary-light)] transition-all cursor-pointer select-none"
                   >
                     <div className="w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-[var(--primary)] text-white font-bold text-[10px] xs:text-xs flex items-center justify-center shadow-xs shrink-0">
-                      {userInitial}
+                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
                     </div>
 
                     <span className="text-[11px] xs:text-xs md:text-sm font-semibold text-[var(--text-dark)] select-none">
                       <span className="hidden min-[450px]:inline min-[600px]:hidden">
-                        {userName ? userName.charAt(0).toUpperCase() : "U"}
+                        {user?.name?.charAt(0)?.toUpperCase() || "U"}
                       </span>
                       <span className="hidden min-[600px]:inline truncate max-w-[120px]">
-                        {getFormattedName(userName)}
+                        {getFormattedName(user?.name)}
                       </span>
                     </span>
 
-                    <i className={`fa-solid fa-chevron-down text-[9px] xs:text-[10px] text-[var(--primary)] transition-transform duration-200 ${showDrop ? "rotate-180" : ""}`}></i>
+                    <i className={`fa-solid fa-chevron-down text-[9px] xs:text-[10px] text-[var(--primary)] transition-transform duration-200 ${userDropdown ? "rotate-180" : ""}`}></i>
                   </button>
 
-                  {showDrop && (
-                    <div className="drop_container absolute right-0 top-full mt-2 w-44 xs:w-52 sm:w-56 bg-[var(--bg-white)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.12)] border border-[var(--border-default)] p-1 z-50 overflow-hidden">
+                  {userDropdown && (
+                    <div className="drop_container absolute right-0 top-full mt-2 w-44 xs:w-52 sm:w-56 bg-[var(--bg-white)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.12)] border border-[var(--border-default)] p-1 z-55 overflow-hidden">
                       <div className="px-2 xs:px-3 py-1.5 xs:py-2.5 rounded-lg border-b border-[var(--border-light)] bg-[var(--primary-lighter)] flex items-center gap-2 xs:gap-2.5 mb-1">
                         <div className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-[var(--primary)] text-white font-bold text-[10px] xs:text-xs flex items-center justify-center shadow-xs shrink-0">
-                          {userInitial}
+                          {user?.name?.charAt(0)?.toUpperCase() || "U"}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[11px] xs:text-xs sm:text-sm font-bold text-[var(--text-dark)] truncate line-clamp-1" title={userName}>
-                            {userName}
+                          <p className="text-[11px] xs:text-xs sm:text-sm font-bold text-[var(--text-dark)] truncate line-clamp-1" title={user?.name || "Unknown"}>
+                            {user?.name || "Unknown"}
                           </p>
-                          <p className="text-[9px] xs:text-[10px] sm:text-[11px] text-[var(--primary)] font-medium truncate line-clamp-1 mt-0.5" title={userEmail}>
-                            {userEmail}
+                          <p className="text-[9px] xs:text-[10px] sm:text-[11px] text-[var(--primary)] font-medium truncate line-clamp-1 mt-0.5" title={user?.email || "Unknown"}>
+                            {user?.email || "Unknown"}
                           </p>
                         </div>
                       </div>
@@ -321,10 +192,9 @@ const Navbar = () => {
                           to="/account"
                           onClick={hideAccountMenu}
                           className={({ isActive }) =>
-                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${
-                              isActive
-                                ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
-                                : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
+                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${isActive
+                              ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
+                              : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
                             }`
                           }
                         >
@@ -336,10 +206,9 @@ const Navbar = () => {
                           to="/orders"
                           onClick={hideAccountMenu}
                           className={({ isActive }) =>
-                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${
-                              isActive
-                                ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
-                                : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
+                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${isActive
+                              ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
+                              : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
                             }`
                           }
                         >
@@ -351,14 +220,13 @@ const Navbar = () => {
                           to="/wishlist"
                           onClick={hideAccountMenu}
                           className={({ isActive }) =>
-                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${
-                              isActive
-                                ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
-                                : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
+                            `flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-medium transition-all ${isActive
+                              ? "bg-[var(--primary-light)] text-[var(--primary)] font-semibold"
+                              : "text-[var(--text-dark)] hover:bg-[var(--primary-lighter)] hover:text-[var(--primary)]"
                             }`
                           }
                         >
-                          <i className="fa-solid fa-heart text-[var(--accent)] text-xs xs:text-sm w-3.5 xs:w-4 shrink-0"></i>
+                          <i className="fa-solid fa-heart text-[var(--primary)] text-xs xs:text-sm w-3.5 xs:w-4 shrink-0"></i>
                           <span>My Wishlist</span>
                         </NavLink>
                       </div>
@@ -368,7 +236,7 @@ const Navbar = () => {
                           type="button"
                           onClick={() => {
                             hideAccountMenu();
-                            setLoginPopup(true);
+                            setLogoutPopup(true);
                           }}
                           className="w-full flex items-center gap-2 xs:gap-2.5 px-2.5 xs:px-3 py-1.5 xs:py-2 rounded-lg text-[11px] xs:text-xs font-semibold text-[var(--error)] hover:bg-[var(--accent-light)] transition-colors cursor-pointer"
                         >
@@ -393,93 +261,7 @@ const Navbar = () => {
         </div>
 
         <div className="search-wrapper relative flex md:hidden items-center w-full mt-0.5">
-          <div className="inputContainer flex items-center justify-center search_container w-full text-xs rounded-lg px-2.5 xs:px-3 py-1.5 bg-[var(--primary-light)] gap-2 transition-colors duration-200 relative focus-within:bg-[var(--bg-white)] focus-within:ring-1 focus-within:ring-[var(--primary)] border border-transparent focus-within:border-[var(--primary)]">
-            <i
-              className="fa-solid fa-magnifying-glass active:scale-[0.95] text-[var(--primary)] cursor-pointer text-xs shrink-0"
-              onClick={handleSearch}
-            ></i>
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="w-full bg-transparent text-[var(--text-dark)] focus:outline-none placeholder:text-[var(--text-muted)] text-[11px] xs:text-xs"
-              onChange={(e) => setSearchText(e.target.value)}
-              value={searchText}
-              onFocus={() => setShowSearchDrop(true)}
-              onClick={() => setShowSearchDrop(true)}
-              onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
-            />
-            <div className="w-4 h-4 shrink-0 flex items-center justify-center">
-              {searchText ? (
-                <i
-                  className="fa-solid fa-xmark text-[var(--text-muted)] hover:text-[var(--text-dark)] cursor-pointer text-xs transition-colors"
-                  onClick={clearSearch}
-                  title="Clear search"
-                ></i>
-              ) : null}
-            </div>
-          </div>
-
-          {showSearchDrop && (
-            <div className="drop_container absolute top-full left-0 right-0 w-full mt-2 bg-white border border-[var(--border-default)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] z-50 overflow-hidden max-h-[300px] flex flex-col">
-              <div className="sticky top-0 z-10 px-2.5 xs:px-3.5 py-2 xs:py-2.5 bg-white border-b border-[var(--border-light)] flex items-center justify-between shadow-xs shrink-0">
-                <span className="text-[10px] xs:text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider flex items-center gap-1.5">
-                  <i className="fa-solid fa-fire text-[var(--accent)] text-[10px] xs:text-xs"></i>
-                  {searchText.trim() ? "Search Results" : "Featured Products"}
-                </span>
-                <span className="text-[9px] xs:text-[10px] text-[var(--text-secondary)] font-medium">
-                  {searchLoading ? "Searching..." : `${filteredProducts.length} items`}
-                </span>
-              </div>
-
-              <div className="search-dropdown-scroll scroll-smooth flex-1 divide-y divide-[var(--border-light)] max-h-[240px]">
-                {searchLoading ? (
-                  <div className="p-5 xs:p-6 text-center text-xs text-[var(--text-secondary)] flex items-center justify-center gap-2">
-                    <ImSpinner8 className="animate-spin text-[var(--primary)] text-sm xs:text-base" />
-                    <span className="text-[11px] xs:text-xs">Searching products...</span>
-                  </div>
-                ) : filteredProducts.length > 0 ? (
-                  filteredProducts.map((prod) => (
-                    <div
-                      key={prod.id}
-                      onClick={() => {
-                        setShowSearchDrop(false);
-                        navigate(prod.link || "/products");
-                      }}
-                      className="flex items-center gap-2 xs:gap-3 p-2 xs:p-2.5 hover:bg-[var(--primary-lighter)] transition-colors cursor-pointer group"
-                    >
-                      <img
-                        src={prod.image}
-                        alt={prod.name}
-                        className="w-8 h-8 xs:w-10 xs:h-10 object-contain rounded-md bg-[var(--bg-light)] p-1 shrink-0 group-hover:scale-105 transition-transform"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[11px] xs:text-xs font-semibold text-[var(--text-dark)] group-hover:text-[var(--primary)] truncate transition-colors">
-                          {prod.name}
-                        </p>
-                        <span className="text-[9px] xs:text-[10px] text-[var(--text-secondary)] font-medium">
-                          {prod.category}
-                        </span>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-[11px] xs:text-xs font-bold text-[var(--primary)]">{prod.price}</p>
-                        {prod.discount && (
-                          <span className="text-[8px] xs:text-[9px] font-semibold text-[var(--success)] bg-green-50 px-1 xs:px-1.5 py-0.5 rounded">
-                            {prod.discount}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-5 xs:p-6 text-center space-y-1">
-                    <i className="fa-solid fa-magnifying-glass-minus text-lg xs:text-xl text-[var(--text-muted)] mb-1 block"></i>
-                    <p className="text-[11px] xs:text-xs font-semibold text-[var(--text-dark)]">No products found</p>
-                    <p className="text-[10px] xs:text-[11px] text-[var(--text-muted)]">Try searching for "iPhone", "MacBook", etc.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          <SearchDropdown />
         </div>
 
         {isMobileMenuOpen && (
@@ -509,7 +291,7 @@ const Navbar = () => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                {contactDetails.brandName || companyDetails.companyName}
+                {companyDetails.companyName || "BazaarWale"}
               </span>
             </div>
             <button
@@ -634,29 +416,33 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {loginPopup && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-          <div className="bg-[var(--bg-white)] p-5 xs:p-6 rounded-2xl shadow-2xl border border-[var(--border-default)] max-w-sm w-full text-center space-y-4 animate-[fadeIn_0.2s_ease-out]">
-            <div className="w-10 h-10 xs:w-12 xs:h-12 rounded-full bg-[var(--accent-light)] text-[var(--error)] flex items-center justify-center mx-auto text-lg xs:text-xl">
-              <i className="fa-solid fa-triangle-exclamation"></i>
+      {logoutPopup && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 transition-all duration-300">
+          <div className="bg-[var(--bg-white)] p-6 xs:p-7 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-[var(--border-default)] max-w-sm w-full text-center space-y-5 animate-[fadeIn_0.2s_ease-out]">
+            <div className="w-12 h-12 rounded-full bg-[var(--accent-light)] text-[var(--error)] flex items-center justify-center mx-auto text-xl shadow-inner">
+              <i className="fa-solid fa-triangle-exclamation animate-pulse"></i>
             </div>
-            <div>
-              <h3 className="text-sm xs:text-base font-bold text-[var(--text-dark)]">Confirm Logout</h3>
-              <p className="text-[11px] xs:text-xs text-[var(--text-secondary)] mt-1">Are you sure you want to log out of your account?</p>
+            <div className="space-y-1.5">
+              <h3 className="text-base xs:text-lg font-bold text-[var(--text-dark)] tracking-tight">Confirm Logout</h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-[1.1]">
+                Are you sure you want to log out of your account? You will need to log back in to access your orders and profile.
+              </p>
             </div>
-            <div className="flex items-center justify-center gap-3 pt-2">
+            <div className="flex items-center justify-center gap-3 pt-1">
               <button
                 type="button"
-                onClick={() => setLoginPopup(false)}
-                className="flex-1 py-2 px-3.5 rounded-lg bg-[var(--bg-light)] border border-[var(--border-default)] text-[var(--text-dark)] font-semibold text-xs hover:bg-[var(--border-light)] transition-colors cursor-pointer"
+                onClick={() => setLogoutPopup(false)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg bg-[var(--bg-light)] border border-[var(--border-default)] text-[var(--text-dark)] font-semibold text-xs hover:bg-[var(--border-light)] active:scale-98 transition-all cursor-pointer"
               >
+                <i className="fa-solid fa-xmark text-[11px]"></i>
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex-1 py-2 px-3.5 rounded-lg bg-[var(--error)] text-white font-semibold text-xs hover:brightness-110 transition-colors shadow-xs cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg bg-[var(--error)] text-white font-semibold text-xs hover:brightness-110 active:scale-98 transition-all shadow-md hover:shadow-lg cursor-pointer"
               >
+                <i className="fa-solid fa-right-from-bracket text-[11px]"></i>
                 Log Out
               </button>
             </div>
