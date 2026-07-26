@@ -98,7 +98,7 @@ const Navbar = () => {
         <div className="w-full flex items-center gap-2 xs:gap-3 md:gap-4">
           <div className="flex items-center gap-1.5 xs:gap-2.5 shrink-0">
             <div
-              className="bars_container items-center justify-center text-sm xs:text-base text-[var(--primary)] active:scale-[0.95] cursor-pointer md:hidden hover:scale-105 transition-transform p-0.5"
+              className="bars_container flex items-center justify-center text-base xs:text-lg sm:text-xl text-[var(--primary)] active:scale-[0.95] cursor-pointer md:hidden hover:scale-105 transition-transform p-1 xs:p-1.5"
               onClick={openNavbar}
               aria-label="Open Navigation Menu"
             >
@@ -106,7 +106,7 @@ const Navbar = () => {
             </div>
 
             <NavLink to="/" className="flex items-center gap-1.5 xs:gap-2 group">
-              <div className="navLogo w-6 h-6 xs:w-7 xs:h-7 md:w-8 md:h-8 flex-shrink-0">
+              <div className="navLogo w-6 h-6 xs:w-8 xs:h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 flex-shrink-0">
                 <img
                   src={companyDetails.companyLogo || "/brand-logo.png"}
                   alt={companyDetails.companyName || "BazaarWale"}
@@ -114,7 +114,7 @@ const Navbar = () => {
                 />
               </div>
               <span
-                className="text-xs xs:text-sm md:text-base shrink-0 font-bold tracking-tight"
+                className="text-xs xs:text-base sm:text-lg md:text-xl shrink-0 font-bold tracking-tight"
                 style={{
                   fontFamily: "var(--custom-font)",
                   background: "linear-gradient(to right, var(--primary), #d26c1e)",

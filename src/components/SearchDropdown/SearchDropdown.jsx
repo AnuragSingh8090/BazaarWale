@@ -9,6 +9,9 @@ const SearchDropdown = () => {
   const [searchLoading, setSearchLoading] = useState(false);
 
   const navigate = useNavigate();
+  const containerRef = useRef(null);
+  const inputRef = useRef(null);
+  const prevWidthRef = useRef(typeof window !== "undefined" ? window.innerWidth : 0);
 
   useEffect(() => {
     if (searchText) {
@@ -24,20 +27,27 @@ const SearchDropdown = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest(".search-wrapper")) {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
         setShowSearchDrop(false);
       }
     };
 
     const handleResize = () => {
-      setShowSearchDrop(false);
+      // Mobile soft keyboard triggers window height resize.
+      // Only close dropdown if horizontal width actually changes (orientation change or desktop resize).
+      if (window.innerWidth !== prevWidthRef.current) {
+        prevWidthRef.current = window.innerWidth;
+        setShowSearchDrop(false);
+      }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
     window.addEventListener("resize", handleResize);
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
@@ -46,9 +56,8 @@ const SearchDropdown = () => {
     e.stopPropagation();
     setSearchText("");
     setShowSearchDrop(false);
+    inputRef.current?.focus();
   };
-
-  const inputRef = useRef(null);
 
   const handleSearch = () => {
     if (searchText.trim()) {
@@ -63,9 +72,9 @@ const SearchDropdown = () => {
   );
 
   return (
-    <>
+    <div ref={containerRef} className="relative w-full">
       <div
-        className="inputContainer flex items-center justify-center search_container w-full text-xs rounded-lg px-2.5 xs:px-3 py-1.5 bg-[var(--primary-light)] gap-2 transition-colors duration-200 relative focus-within:bg-[var(--bg-white)] focus-within:ring-1 focus-within:ring-[var(--primary)] border border-transparent focus-within:border-[var(--primary)] cursor-text"
+        className="inputContainer flex items-center justify-center search_container w-full text-xs rounded-lg px-2.5 xs:px-3 min-[500px]:px-3.5 md:px-3 py-1.5 xs:py-2 min-[500px]:py-2 md:py-1.5 bg-[var(--primary-light)] gap-2 transition-colors duration-200 relative focus-within:bg-[var(--bg-white)] focus-within:ring-1 focus-within:ring-[var(--primary)] border border-transparent focus-within:border-[var(--primary)] cursor-text"
         onClick={() => {
           setShowSearchDrop(true);
           inputRef.current?.focus();
@@ -83,7 +92,10 @@ const SearchDropdown = () => {
           type="text"
           placeholder="Search products..."
           className="w-full bg-transparent text-[var(--text-dark)] focus:outline-none placeholder:text-[var(--text-muted)] text-[11px] xs:text-xs md:text-[14px]"
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+            if (!showSearchDrop) setShowSearchDrop(true);
+          }}
           value={searchText}
           onFocus={() => setShowSearchDrop(true)}
           onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
@@ -100,7 +112,7 @@ const SearchDropdown = () => {
       </div>
 
       {showSearchDrop && (
-        <div className="drop_container absolute top-full left-0 right-0 w-full mt-2 bg-white border border-[var(--border-default)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col z-50 md:z-[100] max-h-[300px] md:max-h-[320px]">
+        <div className="drop_container absolute top-full left-0 right-0 w-full mt-1.5 bg-white border border-[var(--border-default)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col z-50 md:z-[100] max-h-[300px] md:max-h-[320px]">
           <div className="sticky top-0 z-10 px-2.5 xs:px-3.5 py-2 xs:py-2.5 bg-white border-b border-[var(--border-light)] flex items-center justify-between shadow-xs shrink-0">
             <span className="text-[10px] xs:text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider flex items-center gap-1.5">
               <i className="fa-solid fa-fire text-[var(--accent)] text-[10px] xs:text-xs"></i>
@@ -111,7 +123,7 @@ const SearchDropdown = () => {
             </span>
           </div>
 
-          <div className="search-dropdown-scroll scroll-smooth flex-1 divide-y divide-[var(--border-light)] max-h-[240px] md:max-h-[260px]">
+          <div className="search-dropdown-scroll scroll-smooth flex-1 divide-y divide-[var(--border-light)] max-h-[240px] md:max-h-[260px] overflow-y-auto">
             {searchLoading ? (
               <div className="p-5 xs:p-6 text-center text-xs text-[var(--text-secondary)] flex items-center justify-center gap-2">
                 <ImSpinner8 className="animate-spin text-[var(--primary)] text-sm xs:text-base" />
@@ -160,7 +172,7 @@ const SearchDropdown = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

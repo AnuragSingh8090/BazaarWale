@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Mail, Check, AlertCircle } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Mail, Check, AlertCircle, Bell } from "lucide-react";
 import { errorToast, sucessToast } from "../Toasters/Toasters";
 import apiService from "../../services/apiService";
 import { Link } from "react-router-dom";
@@ -14,6 +14,7 @@ export default function SubscribeEmail() {
     return emailRegex.test(email);
   };
 
+  const AbortSignal = useRef(new AbortController());
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -29,7 +30,7 @@ export default function SubscribeEmail() {
         return;
       }
       setStatus("loading");
-      const response = await apiService.newsletter({ email });
+      const response = await apiService.newsletter({ email }, AbortSignal.current.signal);
 
       if (response) {
         setStatus("success");
@@ -50,158 +51,90 @@ export default function SubscribeEmail() {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      AbortSignal.current.abort();
+    };
+  }, []);
+
   return (
-    <div className=" py-12 ">
-      <div className="max-w-full mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            {/* Left side - Content */}
-            <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--primary)] p-8 sm:p-12 text-white">
-              <div className="flex items-center mb-6">
-                <Mail className="h-8 w-8 mr-3" />
-                <h2 className="text-2xl sm:text-3xl font-bold">Stay Updated</h2>
-              </div>
-
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">
-                Never Miss Out on Amazing Deals!
-              </h3>
-
-              <div className="space-y-3 text-white opacity-80">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 w-2 h-2 bg-white rounded-full mt-2 mr-3"></div>
-                  <p>
-                    Get exclusive access to flash sales and limited-time offers
-                  </p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 w-2 h-2 bg-white rounded-full mt-2 mr-3"></div>
-                  <p>
-                    Be the first to know about new arrivals across all
-                    categories
-                  </p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 w-2 h-2 bg-white rounded-full mt-2 mr-3"></div>
-                  <p>Receive personalized product recommendations</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 w-2 h-2 bg-white rounded-full mt-2 mr-3"></div>
-                  <p>Join millions of happy shoppers saving big every day</p>
-                </div>
-              </div>
-
-              <div className="mt-8 text-sm text-white opacity-70">
-                <p>🔒 Your privacy is protected. Unsubscribe anytime.</p>
-              </div>
-            </div>
-
-            {/* Right side - Form */}
-            <div className="p-8 sm:p-12 bg-[var(--primary-lighter)]">
-              <div className="max-w-md mx-auto">
-                <h4 className="text-2xl font-bold text-gray-900 mb-2">
-                  Subscribe Now
-                </h4>
-                <p className="text-gray-600 mb-8">
-                  Join our newsletter for the latest updates on electronics,
-                  fashion, home & kitchen, books, and everything in between!
-                </p>
-
-                <div className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email address"
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[var(--primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] transition-colors ${status === "error"
-                          ? "border-red-300"
-                          : "border-gray-300"
-                          }`}
-                        disabled={status === "loading"}
-                        onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
-                      />
-                      <Mail className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
-                    </div>
-                  </div>
-
-                  {message && (
-                    <div
-                      className={`flex items-center p-3 rounded-lg text-sm ${status === "success"
-                        ? "bg-green-50 text-green-700 border border-green-200"
-                        : "bg-red-50 text-red-700 border border-red-200"
-                        }`}
-                    >
-                      {status === "success" ? (
-                        <Check className="h-4 w-4 mr-2 flex-shrink-0" />
-                      ) : (
-                        <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
-                      )}
-                      {message}
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleSubmit}
-                    disabled={status === "loading"}
-                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${status === "loading"
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[var(--primary)] hover:bg-[var(--primary)] hover:opacity-90 active:transform active:scale-95"
-                      } focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2`}
-                  >
-                    {status === "loading" ? (
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                        Subscribing...
-                      </div>
-                    ) : (
-                      "Subscribe to Newsletter"
-                    )}
-                  </button>
-                </div>
-
-                <div className="mt-6 text-center">
-                  <div className="text-xs text-gray-500 flex gap-2 justify-center items-center text-center">
-                    By subscribing, you agree to our{" "}
-                    <Link to="/privacy_policy">
-                      <p className="text-[var(--primary)] hover:text-[var(--primary)] hover:opacity-80 underline cursor-pointer">
-                        Privacy Policy
-                      </p>
-                    </Link>{" "}
-                    and{" "}
-                    <Link to="/terms_conditions">
-                      <p className="text-[var(--primary)] hover:text-[var(--primary)] hover:opacity-80 underline">
-                        Terms of Service
-                      </p>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Trust indicators */}
-                <div className="mt-8 hidden pt-6 border-t border-gray-100">
-                  <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                      2M+ Subscribers
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-[var(--primary)] rounded-full mr-2"></span>
-                      Spam-Free
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <section className="py-3 xs:py-4 sm:py-6">
+      <div className="w-full px-3 xs:px-4">
+        <div className="max-w-lg sm:max-w-xl mx-auto bg-[var(--bg-white)] rounded-xl shadow-sm border border-[var(--border-light)] p-3.5 xs:p-5 sm:p-6 text-center relative overflow-hidden">
+          <div className="inline-flex items-center justify-center w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 bg-[var(--primary-lighter)] text-[var(--primary)] rounded-full mb-2 xs:mb-3 relative z-10">
+            <Bell className="h-3.5 w-3.5 xs:h-4 xs:w-4 sm:h-4.5 sm:w-4.5" />
           </div>
+
+          <h2 className="heading relative z-10">
+            Subscribe to our Newsletter
+          </h2>
+
+          <p className="sub-heading mb-3 xs:mb-4 mx-auto relative z-10 max-w-sm xs:max-w-md">
+            Get the latest updates on new products, exclusive deals, and upcoming sales directly in your inbox.
+          </p>
+
+          <div className="max-w-xs xs:max-w-sm mx-auto w-full space-y-2.5 relative z-10">
+            <div className="flex flex-col xs:flex-row gap-2">
+              <div className="relative flex-1 group">
+                <Mail className={`absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 xs:h-4 xs:w-4 transition-colors ${status === 'error' ? 'text-[var(--error)]' : 'text-[var(--text-muted)] group-focus-within:text-[var(--primary)]'}`} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  disabled={status === "loading"}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+                  className={`w-full pl-8 xs:pl-9 pr-3 py-1.5 xs:py-2 text-[11px] xs:text-xs bg-[var(--bg-white)] border rounded-lg focus:outline-none transition-all ${status === "error"
+                    ? "border-[var(--error)] bg-red-50 focus:border-[var(--error)]"
+                    : "border-[var(--border-default)] focus:border-[var(--primary)] shadow-sm focus:shadow-md"
+                    }`}
+                />
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                disabled={status === "loading"}
+                className={`py-1.5 xs:py-2 px-4 xs:px-5 rounded-lg font-semibold text-[11px] xs:text-xs text-white transition-all flex justify-center items-center shrink-0 cursor-pointer ${status === "loading"
+                  ? "bg-[var(--border-medium)] cursor-not-allowed"
+                  : "bg-[var(--primary)] hover:brightness-110 active:scale-[0.98] shadow-sm hover:shadow-md"
+                  }`}
+              >
+                {status === "loading" ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-2 border-white/20 border-t-white mr-1.5"></div>
+                    Subscribing...
+                  </>
+                ) : (
+                  "Subscribe"
+                )}
+              </button>
+            </div>
+
+            {message && (
+              <div
+                className={`flex items-start gap-1.5 p-1.5 xs:p-2 rounded-lg text-[10px] xs:text-xs font-medium animate-[fadeIn_0.3s_ease-out] text-left ${status === "success"
+                  ? "bg-[var(--success-light)] text-[var(--success-dark)] border border-[var(--success)]"
+                  : "bg-red-50 text-[var(--error)] border border-red-200"
+                  }`}
+              >
+                {status === "success" ? (
+                  <Check className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                )}
+                <p className="leading-snug">{message}</p>
+              </div>
+            )}
+          </div>
+
+          <p className="text-[9px] xs:text-[10px] text-[var(--text-muted)] mt-3 xs:mt-3.5 relative z-10">
+            By subscribing, you agree to our{" "}
+            <Link to="/privacy_policy" className="text-[var(--primary)] hover:underline font-medium">Privacy Policy</Link>
+            {" "}and{" "}
+            <Link to="/terms_conditions" className="text-[var(--primary)] hover:underline font-medium">Terms and Conditions</Link>.
+          </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
