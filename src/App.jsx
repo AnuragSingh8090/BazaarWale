@@ -19,35 +19,49 @@ import Products from "./pages/Products/Products";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { ToastContainer } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import apiService from "./services/apiService";
 import { useSelector, useDispatch } from "react-redux";
 import { startLoading, loginUser, stopLoading } from "./store/slices/userSlice";
+import { errorToast } from "./components/Toasters/Toasters";
 
 function App() {
   const location = useLocation();
   const dispatch = useDispatch()
+  const abortControllerRef = useRef(null);
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const { isLoggedIn, loading } = useSelector((state) => state.user)
 
 
   async function getUserBasicData() {
+    abortControllerRef.current = new AbortController()
+    const timeoutId = setTimeout(() => {
+      abortControllerRef.current.abort();
+    }, 10000);
     try {
       dispatch(startLoading())
-      const response = await apiService.getBasicUserData()
+      const response = await apiService.getBasicUserData(abortControllerRef.current.signal)
       const { user } = response
       dispatch(loginUser(user))
+
     }
     catch (error) {
-      if (error.status !== 401) {
-        console.log(error)
+      if (error.status !== 401 && error.name !== "AbortError") {
+        console.log(error);
       }
+      if (error.name === "AbortError" || error.name === 'CanceledError') {
+        errorToast("Failed to Login, Please refresh")
+      }
+    }
+    finally {
+      clearTimeout(timeoutId);
       dispatch(stopLoading())
     }
   }
 
   useEffect(() => {
     getUserBasicData()
+
   }, [])
 
 

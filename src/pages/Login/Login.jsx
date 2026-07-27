@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../../store/slices/userSlice";
 import { ImSpinner8 } from "react-icons/im";
 import apiService from "../../services/apiService";
+import { startLoading, stopLoading } from "../../store/slices/userSlice";
 import "./Login.css";
 
 const Login = () => {
@@ -77,7 +78,7 @@ const Login = () => {
       const token = response.token;
       const { name, email, cart, userId } = response.user;
       sucessToast("Login Successfully !!");
-
+      dispatch(startLoading())
       setTimeout(() => {
         dispatch(
           loginUser({
@@ -88,6 +89,7 @@ const Login = () => {
             userId,
           })
         );
+        dispatch(stopLoading())
         navigate("/");
       }, 1000);
       setLoading(false);

@@ -1,0 +1,107 @@
+[
+  {
+    "id": "LOG-1001",
+    "timestamp": "2026-07-27T09:15:12Z",
+    "level": "INFO",
+    "service": "auth-service",
+    "event": "USER_LOGIN",
+    "userId": "USR-1001",
+    "ip": "192.168.1.20",
+    "message": "User logged in successfully."
+  },
+  {
+    "id": "LOG-1002",
+    "timestamp": "2026-07-27T09:16:30Z",
+    "level": "INFO",
+    "service": "product-service",
+    "event": "FETCH_PRODUCTS",
+    "userId": "USR-1001",
+    "category": "Electronics",
+    "count": 25,
+    "message": "Products fetched successfully."
+  },
+  {
+    "id": "LOG-1003",
+    "timestamp": "2026-07-27T09:18:45Z",
+    "level": "WARN",
+    "service": "payment-service",
+    "event": "PAYMENT_RETRY",
+    "userId": "USR-1001",
+    "orderId": "ORD-5001",
+    "attempt": 2,
+    "message": "Payment gateway timeout. Retrying..."
+  },
+  {
+    "id": "LOG-1004",
+    "timestamp": "2026-07-27T09:20:11Z",
+    "level": "ERROR",
+    "service": "order-service",
+    "event": "ORDER_CREATION_FAILED",
+    "userId": "USR-1002",
+    "orderId": "ORD-5002",
+    "errorCode": "DB_CONN_ERROR",
+    "message": "Unable to connect to database."
+  },
+  {
+    "id": "LOG-1005",
+    "timestamp": "2026-07-27T09:21:54Z",
+    "level": "INFO",
+    "service": "wishlist-service",
+    "event": "ADD_TO_WISHLIST",
+    "userId": "USR-1003",
+    "productId": "PRD-301",
+    "message": "Product added to wishlist."
+  },
+  {
+    "id": "LOG-1006",
+    "timestamp": "2026-07-27T09:23:40Z",
+    "level": "ERROR",
+    "service": "auth-service",
+    "event": "TOKEN_EXPIRED",
+    "userId": "USR-1004",
+    "status": 401,
+    "message": "Access token has expired."
+  },
+  {
+    "id": "LOG-1007",
+    "timestamp": "2026-07-27T09:24:02Z",
+    "level": "INFO",
+    "service": "auth-service",
+    "event": "TOKEN_REFRESH",
+    "userId": "USR-1004",
+    "message": "Access token refreshed successfully."
+  },
+  {
+    "id": "LOG-1008",
+    "timestamp": "2026-07-27T09:25:50Z",
+    "level": "ERROR",
+    "service": "inventory-service",
+    "event": "OUT_OF_STOCK",
+    "productId": "PRD-502",
+    "availableQuantity": 0,
+    "message": "Product is out of stock."
+  },
+  {
+    "id": "LOG-1009",
+    "timestamp": "2026-07-27T09:27:31Z",
+    "level": "WARN",
+    "service": "cart-service",
+    "event": "HIGH_CART_VALUE",
+    "userId": "USR-1005",
+    "cartValue": 1250.75,
+    "currency": "USD",
+    "message": "Cart value exceeds review threshold."
+  },
+  {
+    "id": "LOG-1010",
+    "timestamp": "2026-07-27T09:30:00Z",
+    "level": "INFO",
+    "service": "notification-service",
+    "event": "EMAIL_SENT",
+    "userId": "USR-1001",
+    "emailType": "ORDER_CONFIRMATION",
+    "message": "Order confirmation email sent successfully."
+  }
+]
+
+SastaHacker = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJWSVRFX0JBQ0tFTkRfVVJMIjoiaHR0cHM6Ly9iYXphYXJ3YWxlLWJhY2tlbmQub25yZW5kZXIuY29tIHx8IGh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9.ih3-y7KUiuzwD2o7mKtXWAgffSPDmvxj4IFzelrk3kI
