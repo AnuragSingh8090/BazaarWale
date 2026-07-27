@@ -19,9 +19,12 @@ import Products from "./pages/Products/Products";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { ToastContainer } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 function App() {
-  const isAuthPage = false;
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
   return (
     <>
       {!isAuthPage && <Navbar />}

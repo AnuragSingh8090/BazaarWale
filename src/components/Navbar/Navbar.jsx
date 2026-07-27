@@ -3,27 +3,23 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { companyDetails } from "../../constants/companyDetails";
 import SearchDropdown from "../SearchDropdown/SearchDropdown";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../../store/slices/userSlice";
+import { errorToast, sucessToast } from "../Toasters/Toasters";
+import apiService from "../../services/apiService";
+import { ImSpinner8 } from "react-icons/im";
 
 const Navbar = () => {
   const [userDropdown, setUserDropdown] = useState(false);
   const [logoutPopup, setLogoutPopup] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false)
   const navigate = useNavigate();
+
   const navbarReference = useRef(null);
 
-  // Temporary local states for user information (removing Redux dependency)
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [user, setUser] = useState({
-    name: "Anurag Kumar Singh",
-    email: "anurag.singh8090@gmail.com",
-    cart: [
-      { id: 1, name: "Sample Laptop", price: "$999" },
-      { id: 2, name: "Premium Hoodie", price: "$59" }
-    ]
-  });
-
-
-
+  const { user, isLoggedIn } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
 
   const getFormattedName = (name) => {
@@ -33,12 +29,24 @@ const Navbar = () => {
     return `${parts[0]} ${parts[1]}`;
   };
 
-  const handleLogout = () => {
-    setLogoutPopup(false);
-    setUserDropdown(false);
-    setIsLoggedIn(false);
-    setUser(null);
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      setLogoutLoading(true)
+      const response = await apiService.logoutUser()
+      console.log(response)
+      setLogoutPopup(false);
+      setUserDropdown(false);
+      dispatch(logoutUser())
+      navigate("/");
+      setLogoutLoading(false)
+      sucessToast(response.message || "Logged out successfully")
+    }
+    catch (error) {
+      console.log(error)
+      errorToast(error?.response?.data?.message || "Failed to logout")
+      setLogoutLoading(false)
+    }
+
   };
 
   const showAccountMenu = () => setUserDropdown(true);
@@ -88,6 +96,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
       document.removeEventListener("click", handleClickOutside);
+
     };
   }, []);
 
@@ -431,19 +440,29 @@ const Navbar = () => {
             <div className="flex items-center justify-center gap-3 pt-1">
               <button
                 type="button"
+                disabled={logoutLoading}
                 onClick={() => setLogoutPopup(false)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg bg-[var(--bg-light)] border border-[var(--border-default)] text-[var(--text-dark)] font-semibold text-xs hover:bg-[var(--border-light)] active:scale-98 transition-all cursor-pointer"
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg bg-[var(--bg-light)] border border-[var(--border-default)] text-[var(--text-dark)] font-semibold text-xs hover:bg-[var(--border-light)] active:scale-98 transition-all cursor-pointer ${logoutLoading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <i className="fa-solid fa-xmark text-[11px]"></i>
                 Cancel
               </button>
               <button
                 type="button"
+                disabled={logoutLoading}
                 onClick={handleLogout}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg bg-[var(--error)] text-white font-semibold text-xs hover:brightness-110 active:scale-98 transition-all shadow-md hover:shadow-lg cursor-pointer"
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg bg-[var(--error)] text-white font-semibold text-xs hover:brightness-110 active:scale-98 transition-all shadow-md hover:shadow-lg cursor-pointer ${logoutLoading ? "opacity-75 cursor-not-allowed" : ""}`}
               >
-                <i className="fa-solid fa-right-from-bracket text-[11px]"></i>
-                Log Out
+                {logoutLoading ? (
+                  <span className="flex items-center gap-1.5">
+                    Logging out... <ImSpinner8 className="animate-spin text-xs" />
+                  </span>
+                ) : (
+                  <>
+                    <i className="fa-solid fa-right-from-bracket text-[11px]"></i>
+                    Log Out
+                  </>
+                )}
               </button>
             </div>
           </div>

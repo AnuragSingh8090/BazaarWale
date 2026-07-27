@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
-import { ImSpinner8 } from "react-icons/im";
 import { useDispatch } from "react-redux";
-import { loginStart, loginUser } from "../../store/slices/userSlice";
+import { loginUser } from "../../store/slices/userSlice";
+import { ImSpinner8 } from "react-icons/im";
 import apiService from "../../services/apiService";
 import "./Login.css";
 
@@ -12,7 +12,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const [resetEmailorMobile, setResetEmailorMobile] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
@@ -26,8 +25,6 @@ const Login = () => {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [otpStatus, setOtpStatus] = useState(null);
 
-  const dispatch = useDispatch();
-
   const otpRefs = [
     useRef(null),
     useRef(null),
@@ -38,6 +35,7 @@ const Login = () => {
   ];
 
   const abortControllerRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let interval;
@@ -74,11 +72,11 @@ const Login = () => {
         email: Login.email,
         password: Login.password,
       };
+
       const response = await apiService.loginUser(user, abortControllerRef.current.signal);
       const token = response.token;
       const { name, email, cart, userId } = response.user;
       sucessToast("Login Successfully !!");
-      dispatch(loginStart());
 
       setTimeout(() => {
         dispatch(
@@ -455,9 +453,8 @@ const Login = () => {
 
               <button
                 disabled={!Login.email || !Login.password || loading}
-                className={`${
-                  !Login.email || !Login.password || loading ? "disabled" : ""
-                } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer`}
+                className={`${!Login.email || !Login.password || loading ? "disabled" : ""
+                  } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer`}
               >
                 {loading ? (
                   <span className="flex gap-2 items-center">
@@ -485,74 +482,66 @@ const Login = () => {
               <div className="flex items-center justify-between mb-5 px-1">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full flex items-center justify-center text-[10px] xs:text-xs font-bold ${
-                      forgotPasswordStep >= 1
-                        ? "bg-[var(--primary)] text-[var(--text-white)]"
-                        : "bg-[var(--bg-light)] text-[var(--text-secondary)] border border-[var(--border-default)]"
-                    }`}
+                    className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full flex items-center justify-center text-[10px] xs:text-xs font-bold ${forgotPasswordStep >= 1
+                      ? "bg-[var(--primary)] text-[var(--text-white)]"
+                      : "bg-[var(--bg-light)] text-[var(--text-secondary)] border border-[var(--border-default)]"
+                      }`}
                   >
                     1
                   </div>
                   <span
-                    className={`text-[11px] xs:text-xs font-semibold hidden sm:inline ${
-                      forgotPasswordStep === 1
-                        ? "text-[var(--primary)]"
-                        : "text-[var(--text-secondary)]"
-                    }`}
+                    className={`text-[11px] xs:text-xs font-semibold hidden sm:inline ${forgotPasswordStep === 1
+                      ? "text-[var(--primary)]"
+                      : "text-[var(--text-secondary)]"
+                      }`}
                   >
                     Account
                   </span>
                 </div>
                 <div
-                  className={`flex-1 h-0.5 mx-2 ${
-                    forgotPasswordStep >= 2
-                      ? "bg-[var(--primary)]"
-                      : "bg-[var(--border-default)]"
-                  }`}
+                  className={`flex-1 h-0.5 mx-2 ${forgotPasswordStep >= 2
+                    ? "bg-[var(--primary)]"
+                    : "bg-[var(--border-default)]"
+                    }`}
                 ></div>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full flex items-center justify-center text-[10px] xs:text-xs font-bold ${
-                      forgotPasswordStep >= 2
-                        ? "bg-[var(--primary)] text-[var(--text-white)]"
-                        : "bg-[var(--bg-light)] text-[var(--text-secondary)] border border-[var(--border-default)]"
-                    }`}
+                    className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full flex items-center justify-center text-[10px] xs:text-xs font-bold ${forgotPasswordStep >= 2
+                      ? "bg-[var(--primary)] text-[var(--text-white)]"
+                      : "bg-[var(--bg-light)] text-[var(--text-secondary)] border border-[var(--border-default)]"
+                      }`}
                   >
                     2
                   </div>
                   <span
-                    className={`text-[11px] xs:text-xs font-semibold hidden sm:inline ${
-                      forgotPasswordStep === 2
-                        ? "text-[var(--primary)]"
-                        : "text-[var(--text-secondary)]"
-                    }`}
+                    className={`text-[11px] xs:text-xs font-semibold hidden sm:inline ${forgotPasswordStep === 2
+                      ? "text-[var(--primary)]"
+                      : "text-[var(--text-secondary)]"
+                      }`}
                   >
                     Verify OTP
                   </span>
                 </div>
                 <div
-                  className={`flex-1 h-0.5 mx-2 ${
-                    forgotPasswordStep >= 3
-                      ? "bg-[var(--primary)]"
-                      : "bg-[var(--border-default)]"
-                  }`}
+                  className={`flex-1 h-0.5 mx-2 ${forgotPasswordStep >= 3
+                    ? "bg-[var(--primary)]"
+                    : "bg-[var(--border-default)]"
+                    }`}
                 ></div>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full flex items-center justify-center text-[10px] xs:text-xs font-bold ${
-                      forgotPasswordStep >= 3
-                        ? "bg-[var(--primary)] text-[var(--text-white)]"
-                        : "bg-[var(--bg-light)] text-[var(--text-secondary)] border border-[var(--border-default)]"
-                    }`}
+                    className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full flex items-center justify-center text-[10px] xs:text-xs font-bold ${forgotPasswordStep >= 3
+                      ? "bg-[var(--primary)] text-[var(--text-white)]"
+                      : "bg-[var(--bg-light)] text-[var(--text-secondary)] border border-[var(--border-default)]"
+                      }`}
                   >
                     3
                   </div>
                   <span
-                    className={`text-[11px] xs:text-xs font-semibold hidden sm:inline ${
-                      forgotPasswordStep === 3
-                        ? "text-[var(--primary)]"
-                        : "text-[var(--text-secondary)]"
-                    }`}
+                    className={`text-[11px] xs:text-xs font-semibold hidden sm:inline ${forgotPasswordStep === 3
+                      ? "text-[var(--primary)]"
+                      : "text-[var(--text-secondary)]"
+                      }`}
                   >
                     New Password
                   </span>
@@ -583,9 +572,8 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={loading || !resetEmail}
-                    className={`${
-                      loading || !resetEmail ? "disabled" : ""
-                    } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer contact-submit-btn`}
+                    className={`${loading || !resetEmail ? "disabled" : ""
+                      } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer contact-submit-btn`}
                   >
                     {loading ? (
                       <span className="flex gap-2 items-center">
@@ -635,13 +623,12 @@ const Login = () => {
                         onPaste={handleOtpPaste}
                         ref={otpRefs[index]}
                         placeholder="-"
-                        className={`w-10 h-10 xs:w-12 xs:h-12 border rounded-lg text-center focus:outline-none transition-colors text-base xs:text-lg font-bold ${
-                          otpStatus === "success"
-                            ? "border-green-500 bg-green-50 text-green-700"
-                            : otpStatus === "error"
+                        className={`w-10 h-10 xs:w-12 xs:h-12 border rounded-lg text-center focus:outline-none transition-colors text-base xs:text-lg font-bold ${otpStatus === "success"
+                          ? "border-green-500 bg-green-50 text-green-700"
+                          : otpStatus === "error"
                             ? "border-red-500 bg-red-50 text-red-700"
                             : "border-[var(--border-default)] focus:border-[var(--primary)] bg-[var(--bg-white)] text-[var(--text-dark)]"
-                        }`}
+                          }`}
                         maxLength={1}
                         required
                         autoFocus={index === 0}
@@ -652,9 +639,8 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={loading || otp.join("").length !== 6}
-                    className={`${
-                      loading || otp.join("").length !== 6 ? "disabled" : ""
-                    } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer contact-submit-btn`}
+                    className={`${loading || otp.join("").length !== 6 ? "disabled" : ""
+                      } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer contact-submit-btn`}
                   >
                     {loading ? (
                       <span className="flex gap-2 items-center">
@@ -737,25 +723,24 @@ const Login = () => {
                         <div className="flex items-center gap-2">
                           <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
                             <div
-                              className={`h-full transition-all duration-300 ${
-                                passwordStrength === 0
-                                  ? "w-0"
-                                  : passwordStrength === 1
+                              className={`h-full transition-all duration-300 ${passwordStrength === 0
+                                ? "w-0"
+                                : passwordStrength === 1
                                   ? "w-1/3 bg-red-500"
                                   : passwordStrength === 2
-                                  ? "w-2/3 bg-yellow-500"
-                                  : "w-full bg-green-500"
-                              }`}
+                                    ? "w-2/3 bg-yellow-500"
+                                    : "w-full bg-green-500"
+                                }`}
                             ></div>
                           </div>
                           <span className="text-[10px] xs:text-xs font-semibold text-[var(--text-secondary)]">
                             {passwordStrength === 0
                               ? ""
                               : passwordStrength === 1
-                              ? "Weak"
-                              : passwordStrength === 2
-                              ? "Medium"
-                              : "Strong"}
+                                ? "Weak"
+                                : passwordStrength === 2
+                                  ? "Medium"
+                                  : "Strong"}
                           </span>
                         </div>
                       </div>
@@ -798,9 +783,8 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={loading || !newPassword || !confirmPassword}
-                    className={`${
-                      loading || !newPassword || !confirmPassword ? "disabled" : ""
-                    } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer contact-submit-btn`}
+                    className={`${loading || !newPassword || !confirmPassword ? "disabled" : ""
+                      } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer contact-submit-btn`}
                   >
                     {loading ? (
                       <span className="flex gap-2 items-center">

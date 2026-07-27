@@ -1,11 +1,14 @@
 
 import axios from "axios";
 
+// Global Axios configuration
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
+
 const apiService = {
-  // Authentication endpoints
   getBasicUserData: async (signal) => {
     const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/userdatabasic`,
+      `/api/user/profile/userdatabasic`,
       signal ? { signal } : {}
     );
     return response.data;
@@ -13,16 +16,16 @@ const apiService = {
 
   loginUser: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/login`,
+      `/api/user/auth/login`,
       data,
-      signal ? { signal } : {}
+      signal ? { signal } : {},
     );
     return response.data;
   },
 
   registerUser: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/register`,
+      `/api/user/auth/register`,
       data,
       signal ? { signal } : {}
     );
@@ -31,7 +34,7 @@ const apiService = {
 
   refreshToken: async (signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/refresh-token`,
+      `/api/user/auth/refresh-token`,
       {},
       signal ? { signal } : {}
     );
@@ -40,7 +43,7 @@ const apiService = {
 
   logoutUser: async (signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/logout`,
+      `/api/user/auth/logout`,
       {},
       signal ? { signal } : {}
     );
@@ -49,7 +52,7 @@ const apiService = {
 
   validateResetPasswordEmail: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/validateresetpasswordemail`,
+      `/api/user/auth/validateresetpasswordemail`,
       data,
       signal ? { signal } : {}
     );
@@ -58,7 +61,7 @@ const apiService = {
 
   validateResetPasswordOtp: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/validateresetpasswordotp`,
+      `/api/user/auth/validateresetpasswordotp`,
       data,
       signal ? { signal } : {}
     );
@@ -67,7 +70,7 @@ const apiService = {
 
   resetPassword: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/resetpassword`,
+      `/api/user/auth/resetpassword`,
       data,
       signal ? { signal } : {}
     );
@@ -77,7 +80,7 @@ const apiService = {
   // User Profile endpoints
   userData: async (signal) => {
     const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/userdata`,
+      `/api/user/profile/userdata`,
       signal ? { signal } : {}
     );
     return response.data;
@@ -85,7 +88,7 @@ const apiService = {
 
   updateUserProfile: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/update-user-profile`,
+      `/api/user/profile/update-user-profile`,
       data,
       signal ? { signal } : {}
     );
@@ -94,7 +97,7 @@ const apiService = {
 
   changePassword: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/change-password`,
+      `/api/user/profile/change-password`,
       data,
       signal ? { signal } : {}
     );
@@ -103,7 +106,7 @@ const apiService = {
 
   deleteUser: async (signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/delete-user`,
+      `/api/user/profile/delete-user`,
       {},
       signal ? { signal } : {}
     );
@@ -112,7 +115,7 @@ const apiService = {
 
   verifyUserEmail: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/verify-user-email`,
+      `/api/user/profile/verify-user-email`,
       data,
       signal ? { signal } : {}
     );
@@ -121,7 +124,7 @@ const apiService = {
 
   verifyUserEmailOtp: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/verify-user-email-otp`,
+      `/api/user/profile/verify-user-email-otp`,
       data,
       signal ? { signal } : {}
     );
@@ -130,7 +133,7 @@ const apiService = {
 
   manageTwoFactorAuth: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/manage-twofactor-auth`,
+      `/api/user/profile/manage-twofactor-auth`,
       data,
       signal ? { signal } : {}
     );
@@ -139,7 +142,7 @@ const apiService = {
 
   manageLoginActivity: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/manage-login-activity`,
+      `/api/user/profile/manage-login-activity`,
       data,
       signal ? { signal } : {}
     );
@@ -148,7 +151,7 @@ const apiService = {
 
   addAddress: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/add-address`,
+      `/api/user/profile/add-address`,
       data,
       signal ? { signal } : {}
     );
@@ -158,7 +161,7 @@ const apiService = {
   // Contact endpoints
   newsletter: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/contact/newsletter`,
+      `/api/user/contact/newsletter`,
       data,
       signal ? { signal } : {}
     );
@@ -167,7 +170,7 @@ const apiService = {
 
   contactUs: async (data, signal) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/contact/contact`,
+      `/api/user/contact/contact`,
       data,
       signal ? { signal } : {}
     );
