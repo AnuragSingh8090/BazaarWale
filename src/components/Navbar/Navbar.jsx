@@ -33,7 +33,6 @@ const Navbar = () => {
     try {
       setLogoutLoading(true)
       const response = await apiService.logoutUser()
-      console.log(response)
       setLogoutPopup(false);
       setUserDropdown(false);
       dispatch(logoutUser())

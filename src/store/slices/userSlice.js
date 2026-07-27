@@ -28,8 +28,10 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.user = { name, email, userId, cart };
-      state.token = token;
-      localStorage.setItem("userToken", token);
+      if(token){
+        state.token = token;
+        localStorage.setItem("userToken", token);
+      }
     },
 
     updateUserData: (state, action) => {

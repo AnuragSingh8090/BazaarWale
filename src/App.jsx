@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -19,11 +19,39 @@ import Products from "./pages/Products/Products";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import LoadingPage from "./components/loadinPage/LoadingPage";
 import { ToastContainer } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import apiService from "./services/apiService";
+import { useSelector, useDispatch } from "react-redux";
+import { loginStart, loginUser } from "./store/slices/userSlice";
 
 function App() {
   const location = useLocation();
+  const dispatch = useDispatch()
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const { isLoggedIn, loading } = useSelector((state) => state.user)
+
+
+  async function getUserBasicData() {
+    try {
+      dispatch(loginStart())
+      const response = await apiService.getBasicUserData()
+      const { user } = response
+      dispatch(loginUser(user))
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getUserBasicData()
+  }, [])
+
+  console.log('App rendered')
+
+  if (loading) {
+    return <LoadingPage />
+  }
 
   return (
     <>
@@ -31,7 +59,6 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/loading" element={<LoadingPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

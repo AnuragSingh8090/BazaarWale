@@ -1,9 +1,6 @@
 
-import axios from "axios";
-
-// Global Axios configuration
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
-axios.defaults.withCredentials = true;
+// import axios from "axios";
+import axios from "./loginInterceptor";
 
 const apiService = {
   getBasicUserData: async (signal) => {
