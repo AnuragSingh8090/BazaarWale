@@ -17,8 +17,13 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loginStart: (state) => {
+    startLoading: (state) => {
       state.loading = true;
+      state.error = null;
+    },
+
+    stopLoading: (state) => {
+      state.loading = false;
       state.error = null;
     },
 
@@ -28,7 +33,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.user = { name, email, userId, cart };
-      if(token){
+      if (token) {
         state.token = token;
         localStorage.setItem("userToken", token);
       }
@@ -69,7 +74,8 @@ const userSlice = createSlice({
 });
 
 export const {
-  loginStart,
+  startLoading,
+  stopLoading,
   loginUser,
   updateUserData,
   updateToken,

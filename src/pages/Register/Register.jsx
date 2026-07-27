@@ -4,7 +4,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
 import apiService from "../../services/apiService";
 import { useDispatch } from "react-redux";
-import { loginUser, loginStart } from "../../store/slices/userSlice";
+import { loginUser, startLoading } from "../../store/slices/userSlice";
 import "./Register.css";
 
 const Register = () => {
@@ -264,11 +264,10 @@ const Register = () => {
                         className="absolute opacity-0 w-5 h-5"
                       />
                       <div
-                        className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border ${
-                          Register.gender === "male"
+                        className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border ${Register.gender === "male"
                             ? "border-[var(--primary)]"
                             : "border-[var(--border-default)]"
-                        } flex items-center justify-center`}
+                          } flex items-center justify-center`}
                       >
                         {Register.gender === "male" && (
                           <div className="w-2.5 h-2.5 xs:w-3 xs:h-3 rounded-full bg-[var(--primary)]"></div>
@@ -290,11 +289,10 @@ const Register = () => {
                         className="absolute opacity-0 w-5 h-5"
                       />
                       <div
-                        className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border ${
-                          Register.gender === "female"
+                        className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border ${Register.gender === "female"
                             ? "border-[var(--primary)]"
                             : "border-[var(--border-default)]"
-                        } flex items-center justify-center`}
+                          } flex items-center justify-center`}
                       >
                         {Register.gender === "female" && (
                           <div className="w-2.5 h-2.5 xs:w-3 xs:h-3 rounded-full bg-[var(--primary)]"></div>
@@ -316,16 +314,15 @@ const Register = () => {
                 !Register.gender ||
                 loading
               }
-              className={`contact-submit-btn ${
-                !Register.fullname ||
-                !Register.mobile ||
-                !Register.email ||
-                !Register.password ||
-                !Register.gender ||
-                loading
+              className={`contact-submit-btn ${!Register.fullname ||
+                  !Register.mobile ||
+                  !Register.email ||
+                  !Register.password ||
+                  !Register.gender ||
+                  loading
                   ? "disabled"
                   : ""
-              } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-2`}
+                } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-2`}
             >
               {loading ? (
                 <span className="flex gap-2 items-center">

@@ -22,7 +22,7 @@ import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import apiService from "./services/apiService";
 import { useSelector, useDispatch } from "react-redux";
-import { loginStart, loginUser } from "./store/slices/userSlice";
+import { startLoading, loginUser, stopLoading } from "./store/slices/userSlice";
 
 function App() {
   const location = useLocation();
@@ -33,13 +33,16 @@ function App() {
 
   async function getUserBasicData() {
     try {
-      dispatch(loginStart())
+      dispatch(startLoading())
       const response = await apiService.getBasicUserData()
       const { user } = response
       dispatch(loginUser(user))
     }
     catch (error) {
-      console.log(error)
+      if (error.status !== 401) {
+        console.log(error)
+      }
+      dispatch(stopLoading())
     }
   }
 
@@ -47,7 +50,7 @@ function App() {
     getUserBasicData()
   }, [])
 
-  console.log('App rendered')
+
 
   if (loading) {
     return <LoadingPage />
