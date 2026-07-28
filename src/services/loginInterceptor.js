@@ -2,10 +2,12 @@ import axios from "axios";
 import apiService from "./apiService";
 import Store from '../store/Store.js'
 import { updateToken, logoutUser } from "../store/slices/userSlice";
+import { errorToast } from "../components/Toasters/Toasters";
 
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
+    timeout: 10000
 });
 
 api.interceptors.request.use((config) => {
@@ -29,10 +31,18 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
         const status = error.status || error.response?.status;
+        console.log(error)
+        if (error.code === "ECONNABORTED") {
+            errorToast("Server is busy please try again after some time")
+            return Promise.reject(error)
+        }
 
-        if (status === 401 && !originalRequest._retry) {
+        else if (status === 401 && error.response.data.code === "LOGOUT_USER") {
+            return Promise.reject(error)
+        }
+
+        else if (status === 401 && !originalRequest._retry) {
             originalRequest._retry = true; // stop this request from retrying more than once
-
             try {
                 await getRefreshToken(); // wait for a fresh token
                 return api(originalRequest); // resend original request — request interceptor attaches new token from localStorage automatically
