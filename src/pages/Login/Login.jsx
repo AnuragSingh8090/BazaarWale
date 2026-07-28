@@ -89,8 +89,8 @@ const Login = () => {
             userId,
           })
         );
-        dispatch(stopLoading())
         navigate("/");
+        dispatch(stopLoading())
       }, 1000);
       setLoading(false);
     } catch (error) {
