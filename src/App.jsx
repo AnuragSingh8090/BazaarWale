@@ -32,14 +32,12 @@ function App() {
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   const { isLoggedIn, loading } = useSelector((state) => state.user)
 
-
   async function getUserBasicData() {
     abortControllerRef.current = new AbortController()
     const timeoutId = setTimeout(() => {
       abortControllerRef.current.abort();
     }, 10000);
     try {
-      dispatch(startLoading())
       const response = await apiService.getBasicUserData(abortControllerRef.current.signal)
       const { user } = response
       dispatch(loginUser(user))
@@ -60,6 +58,7 @@ function App() {
   }
 
   useEffect(() => {
+
     getUserBasicData()
 
   }, [])
