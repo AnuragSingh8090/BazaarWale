@@ -4,7 +4,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
 import apiService from "../../services/apiService";
 import { useDispatch } from "react-redux";
-import { loginUser, startLoading } from "../../store/slices/userSlice";
+import { loginUser, startLoading, stopLoading } from "../../store/slices/userSlice";
 import "./Register.css";
 
 const Register = () => {
@@ -23,12 +23,6 @@ const Register = () => {
   const navigate = useNavigate();
 
   const abortControllerRef = useRef(null);
-
-  function redirectHome() {
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
-  }
 
   useEffect(() => {
     return () => {
@@ -55,11 +49,12 @@ const Register = () => {
       };
 
       const response = await apiService.registerUser(user, abortControllerRef.current.signal);
-      const token = response;
+      const token = response.token;
       const { name, email, cart, userId } = response.user;
       sucessToast("Account Created Successfully !!");
-      dispatch(loginStart());
+      dispatch(startLoading());
       setTimeout(() => {
+        navigate("/");
         dispatch(
           loginUser({
             token,
@@ -69,11 +64,9 @@ const Register = () => {
             userId,
           })
         );
-        navigate("/");
+        dispatch(stopLoading())
+        setLoading(false);
       }, 1500);
-
-      setLoading(false);
-      redirectHome();
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
@@ -265,8 +258,8 @@ const Register = () => {
                       />
                       <div
                         className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border ${Register.gender === "male"
-                            ? "border-[var(--primary)]"
-                            : "border-[var(--border-default)]"
+                          ? "border-[var(--primary)]"
+                          : "border-[var(--border-default)]"
                           } flex items-center justify-center`}
                       >
                         {Register.gender === "male" && (
@@ -290,8 +283,8 @@ const Register = () => {
                       />
                       <div
                         className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border ${Register.gender === "female"
-                            ? "border-[var(--primary)]"
-                            : "border-[var(--border-default)]"
+                          ? "border-[var(--primary)]"
+                          : "border-[var(--border-default)]"
                           } flex items-center justify-center`}
                       >
                         {Register.gender === "female" && (
@@ -315,13 +308,13 @@ const Register = () => {
                 loading
               }
               className={`contact-submit-btn ${!Register.fullname ||
-                  !Register.mobile ||
-                  !Register.email ||
-                  !Register.password ||
-                  !Register.gender ||
-                  loading
-                  ? "disabled"
-                  : ""
+                !Register.mobile ||
+                !Register.email ||
+                !Register.password ||
+                !Register.gender ||
+                loading
+                ? "disabled"
+                : ""
                 } w-full bg-[var(--primary)] text-white py-2.5 xs:py-3 rounded-lg font-semibold text-[11px] xs:text-xs md:text-sm hover:brightness-110 transition duration-150 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center cursor-pointer mt-2`}
             >
               {loading ? (
