@@ -1,7 +1,7 @@
 import axios from "axios";
 import apiService from "./apiService";
 import Store from '../store/Store.js'
-import { startLoading, stopLoading, updateToken, logoutUser } from "../store/slices/userSlice";
+import { updateToken, logoutUser } from "../store/slices/userSlice";
 
 
 const api = axios.create({
@@ -50,10 +50,9 @@ async function getRefreshToken() {
     if (!refreshPromise) {
         refreshPromise = (async () => {
             try {
-                Store.dispatch(startLoading())
                 const response = await apiService.refreshToken()
                 const token = response.token;
-                Store.dispatch(updateToken(token)) // this also syncs localStorage, per your setup
+                Store.dispatch(updateToken(token))
                 return token;
             }
             catch (error) {
@@ -61,7 +60,6 @@ async function getRefreshToken() {
                 throw error; // must rethrow so the response interceptor's catch block also fires
             }
             finally {
-                Store.dispatch(stopLoading())
                 refreshPromise = null; // reset so the next expiry can start a fresh refresh cycle
             }
         })();
