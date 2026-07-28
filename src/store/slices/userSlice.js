@@ -48,7 +48,7 @@ const userSlice = createSlice({
 
 
     updateToken: (state, action) => {
-      const { token } = action.payload;
+      const token = action.payload;
       if (!token) return
       state.token = token;
       localStorage.setItem("userToken", token);
