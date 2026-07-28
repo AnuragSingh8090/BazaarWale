@@ -70,7 +70,9 @@ const Register = () => {
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
-      errorToast(error.response?.data?.message || "Registration failed");
+      if (error.code !== "ECONNABORTED") {
+        errorToast(error.response?.data?.message || "Registration failed");
+      }
       console.error("Registration error:", error);
     }
   };

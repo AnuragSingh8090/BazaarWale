@@ -96,9 +96,11 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
-      errorToast(
-        error.response ? error.response.data.message : "Login failed"
-      );
+      if (error.code !== "ECONNABORTED") {
+        errorToast(
+          error.response ? error.response.data.message : "Login failed"
+        );
+      }
       console.error("Login error:", error);
     }
   };
@@ -191,9 +193,11 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
-      errorToast(
-        error.response ? error.response.data.message : "Failed to send OTP"
-      );
+      if (error.code !== "ECONNABORTED") {
+        errorToast(
+          error.response ? error.response.data.message : "Failed to send OTP"
+        );
+      }
       console.error("Send OTP error:", error);
     }
   };
@@ -223,12 +227,14 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
-      setOtpStatus("error");
-      setOtp(["", "", "", "", "", ""]);
-      otpRefs[0].current.focus();
-      errorToast(
-        error.response ? error.response.data.message : "Invalid OTP"
-      );
+      if (error.code !== "ECONNABORTED") {
+        setOtpStatus("error");
+        setOtp(["", "", "", "", "", ""]);
+        otpRefs[0].current.focus();
+        errorToast(
+          error.response ? error.response.data.message : "Invalid OTP"
+        );
+      }
       console.error("OTP verification error:", error);
     }
   };
@@ -277,9 +283,11 @@ const Login = () => {
     } catch (error) {
       if (error.message === 'canceled') return;
       setLoading(false);
-      errorToast(
-        error.response ? error.response.data.message : "Failed to reset password"
-      );
+      if (error.code !== "ECONNABORTED") {
+        errorToast(
+          error.response ? error.response.data.message : "Failed to reset password"
+        );
+      }
       console.error("Password reset error:", error);
     }
   };
@@ -341,9 +349,11 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       if (error.message === 'canceled') return;
-      errorToast(
-        error.response ? error.response.data.message : "Failed to send OTP"
-      );
+      if (error.code !== "ECONNABORTED") {
+        errorToast(
+          error.response ? error.response.data.message : "Failed to send OTP"
+        );
+      }
       console.error("Resend OTP error:", error);
     }
   };
