@@ -1,11 +1,17 @@
 import axios from "axios";
-import apiService from "./apiService";
 import Store from '../store/Store.js'
 import { updateToken, logoutUser } from "../store/slices/userSlice";
 import { errorToast } from "../components/Toasters/Toasters";
 
 
 const api = axios.create({
+    baseURL: import.meta.env.VITE_BACKEND_URL,
+    timeout: 20000
+});
+
+// Plain axios instance (no interceptors) used ONLY for refresh-token calls
+// so that a 401 on the refresh endpoint doesn't trigger another refresh cycle.
+const plainAxios = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
     timeout: 10000
 });
@@ -31,7 +37,6 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
         const status = error.status || error.response?.status;
-        console.log(error)
         if (error.code === "ECONNABORTED") {
             errorToast("Server is busy please try again after some time")
             return Promise.reject(error)
@@ -60,8 +65,13 @@ async function getRefreshToken() {
     if (!refreshPromise) {
         refreshPromise = (async () => {
             try {
-                const response = await apiService.refreshToken()
-                const token = response.token;
+                // Use plainAxios so a 401 here does NOT trigger the interceptor again
+                const response = await plainAxios.post(
+                    `/api/user/auth/refresh-token`,
+                    {},
+                    { withCredentials: true }
+                );
+                const token = response.data.token;
                 Store.dispatch(updateToken(token))
                 return token;
             }

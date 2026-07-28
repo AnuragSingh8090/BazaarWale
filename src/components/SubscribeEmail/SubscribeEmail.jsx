@@ -44,10 +44,9 @@ export default function SubscribeEmail() {
     } catch (error) {
       setStatus("failed");
       setMessage("Failed to Subscribe !!");
-      errorToast(
-        error.response ? error.response.data.message : "Internal Server Error!"
-      );
-      console.log(error);
+      // errorToast(
+      //   error.response ? error.response.data.message : "Internal Server Error!"
+      // );
     }
   };
 

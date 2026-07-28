@@ -80,6 +80,7 @@ const Login = () => {
       sucessToast("Login Successfully !!");
       dispatch(startLoading())
       setTimeout(() => {
+        navigate("/");
         dispatch(
           loginUser({
             token,
@@ -89,7 +90,6 @@ const Login = () => {
             userId,
           })
         );
-        navigate("/");
         dispatch(stopLoading())
       }, 1000);
       setLoading(false);
