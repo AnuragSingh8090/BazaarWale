@@ -77,7 +77,6 @@ function App() {
   return (
     <>
       {!isAuthPage && <Navbar />}
-      <button onClick={() => navigate('/login')} className="border rounded p-2 text-[15px] bg-black text-white text-center">Go to login</button>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
