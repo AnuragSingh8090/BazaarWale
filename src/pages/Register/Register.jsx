@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner8 } from "react-icons/im";
 import { errorToast, sucessToast } from "../../components/Toasters/Toasters";
 import apiService from "../../services/apiService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser, startLoading, stopLoading } from "../../store/slices/userSlice";
 import "./Register.css";
 
@@ -21,6 +21,7 @@ const Register = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { lastRoute } = useSelector(state => state.user);
 
   const abortControllerRef = useRef(null);
 
@@ -54,7 +55,7 @@ const Register = () => {
       sucessToast("Account Created Successfully !!");
       dispatch(startLoading());
       setTimeout(() => {
-        navigate("/");
+        navigate(lastRoute || "/");
         dispatch(
           loginUser({
             token,
@@ -333,7 +334,7 @@ const Register = () => {
 
             <button
               type="button"
-              onClick={() => navigate("/")}
+              onClick={() => navigate(lastRoute || "/")}
               className="w-full mt-2 bg-[var(--bg-light)] border border-[var(--border-default)] text-[var(--text-dark)] hover:bg-[var(--border-light)] font-semibold py-2.5 xs:py-3 px-4 rounded-lg text-xs xs:text-sm transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
             >
               <i className="fa-solid fa-arrow-left"></i>

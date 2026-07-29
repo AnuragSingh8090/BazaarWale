@@ -11,6 +11,7 @@ const initialState = {
   error: null,
   loading: true,
   token: null,
+  lastRoute: "/"
 };
 
 const userSlice = createSlice({
@@ -54,6 +55,12 @@ const userSlice = createSlice({
       localStorage.setItem("userToken", token);
     },
 
+    updateRoute: (state, action) => {
+      const updatedRoute = action.payload
+      if (!updatedRoute) return
+      state.lastRoute = updatedRoute
+    },
+
     logoutUser: (state) => {
       state.isLoggedIn = false;
       state.loading = false;
@@ -80,6 +87,7 @@ export const {
   updateUserData,
   updateToken,
   logoutUser,
+  updateRoute,
 } = userSlice.actions;
 
 export default userSlice.reducer;

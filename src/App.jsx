@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate, Navigate, Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -22,15 +22,16 @@ import { ToastContainer } from "react-toastify";
 import { useEffect, useRef } from "react";
 import apiService from "./services/apiService";
 import { useSelector, useDispatch } from "react-redux";
-import { startLoading, loginUser, stopLoading } from "./store/slices/userSlice";
+import { startLoading, loginUser, stopLoading, updateRoute } from "./store/slices/userSlice";
 import { errorToast } from "./components/Toasters/Toasters";
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch()
   const abortControllerRef = useRef(null);
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-  const { isLoggedIn, loading } = useSelector((state) => state.user)
+  const { isLoggedIn, loading, lastRoute } = useSelector((state) => state.user)
 
   async function getUserBasicData() {
     abortControllerRef.current = new AbortController()
@@ -58,10 +59,14 @@ function App() {
   }
 
   useEffect(() => {
-
     getUserBasicData()
-
   }, [])
+
+  useEffect(() => {
+    if (location.pathname !== "/login" && location.pathname !== "/register") {
+      dispatch(updateRoute(location.pathname))
+    }
+  }, [location.pathname])
 
 
 
@@ -72,30 +77,35 @@ function App() {
   return (
     <>
       {!isAuthPage && <Navbar />}
-
+      <button onClick={() => navigate('/login')} className="border rounded p-2 text-[15px] bg-black text-white text-center">Go to login</button>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/electronics" element={<Products />} />
-        <Route path="/product-details/:productId" element={<ProductDetails />} />
+        <Route path="/login" element={isLoggedIn ? <Navigate to={lastRoute || "/"} replace /> : <Login />} />
+        <Route path="/register" element={isLoggedIn ? <Navigate to={lastRoute || "/"} replace /> : <Register />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
         <Route path="/about_us" element={<About_Us />} />
         <Route path="/terms_conditions" element={<Terms_Conditions />} />
         <Route path="/privacy_policy" element={<Privacy_Policy />} />
         <Route path="/cancellation_return_policy" element={<Cancellation_Return_Policy />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/account" element={<MyAccount />} />
-        <Route path="/orders" element={<Orders />} />
+        <Route path="/electronics" element={<Products />} />
+        <Route path="/product-details/:productId" element={<ProductDetails />} />
         <Route path="/clothing" element={<Products />} />
         <Route path="/kids" element={<Products />} />
         <Route path="/beauty" element={<Products />} />
         <Route path="/home_appliences" element={<Products />} />
         <Route path="/kitchen" element={<Products />} />
         <Route path="/personal_care" element={<Products />} />
+        <Route path="/cart" element={<Cart />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/account" element={<MyAccount />} />
+          <Route path="/orders" element={<Orders />} />
+        </Route>
+
         <Route path="*" element={<Error />} />
       </Routes>
 
@@ -106,3 +116,23 @@ function App() {
 }
 
 export default App;
+
+
+
+export const ProtectedRoute = () => {
+  const { isLoggedIn } = useSelector((state) => state.user);
+  const location = useLocation();
+
+  if (!isLoggedIn) {
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location.pathname }}
+        replace
+      />
+    );
+  }
+
+  return <Outlet />;
+}
+

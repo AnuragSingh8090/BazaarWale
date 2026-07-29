@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { sucessToast, errorToast } from "../../components/Toasters/Toasters";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/slices/userSlice";
 import { ImSpinner8 } from "react-icons/im";
 import apiService from "../../services/apiService";
@@ -25,6 +25,7 @@ const Login = () => {
   const [resendTimer, setResendTimer] = useState(0);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [otpStatus, setOtpStatus] = useState(null);
+  const { lastRoute } = useSelector(state => state.user)
 
   const otpRefs = [
     useRef(null),
@@ -80,7 +81,7 @@ const Login = () => {
       sucessToast("Login Successfully !!");
       dispatch(startLoading())
       setTimeout(() => {
-        navigate("/");
+        navigate(lastRoute || "/");
         dispatch(
           loginUser({
             token,

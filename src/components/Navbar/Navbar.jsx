@@ -36,7 +36,7 @@ const Navbar = () => {
       setLogoutPopup(false);
       setUserDropdown(false);
       dispatch(logoutUser())
-      navigate("/");
+      navigate("/", { replace: true });
       setLogoutLoading(false)
       sucessToast(response.message || "Logged out successfully")
     }
